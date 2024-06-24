@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "homepage": "${mod_website}",
+    "sources": "${mod_repository}"
+  },
+  "license": "${mod_license}",
+  "icon": "assets/template/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.daqem.template.fabric.TemplateCommonFabric"
+    ],
+    "client": [
+      "com.daqem.template.fabric.TemplateClientFabric"
+    ]
+  },
+  "mixins": [
+    "template-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "architectury": ">=${architectury_version}"
+  }
+}
