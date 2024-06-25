@@ -43,9 +43,6 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
-
-//    modImplementation "curse.maven:supermartijn642s-config-lib-438332:${project.config_library_file_forge}"
-//    modImplementation "curse.maven:ui-933200:${project.ui_library_file_forge}"
 }
 
 processResources {
@@ -72,8 +69,9 @@ processResources {
 }
 
 shadowJar {
+    exclude "architectury.common.json"
+
     configurations = [project.configurations.shadowBundle]
-    archiveClassifier.set 'dev-shadow'
     archiveClassifier = "neoforge-dev-shadow"
 }
 

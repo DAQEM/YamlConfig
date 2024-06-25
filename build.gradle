@@ -23,6 +23,7 @@ subprojects {
     apply plugin: "dev.architectury.loom"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     base {
         archivesName = rootProject.archives_base_name
@@ -44,6 +45,8 @@ subprojects {
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         mappings loom.officialMojangMappings()
+
+        implementation "org.snakeyaml:snakeyaml-engine:2.7"
     }
 
     java {
