@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.impl.entry;
 
 import com.daqem.yamlconfig.api.entry.IStringConfigEntry;
-import com.daqem.yamlconfig.api.exception.ConfigEntryParseException;
+import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -38,18 +38,18 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
     }
 
     @Override
-    public void parse(String value) throws ConfigEntryParseException {
+    public void validate(String value) throws ConfigEntryValidationException {
         if (minLength != -1 && value.length() < minLength) {
-            throw new ConfigEntryParseException(getKey(), "String length (" + value.length() + ") is less than the minimum length (" + minLength + ")");
+            throw new ConfigEntryValidationException(getKey(), "String length (" + value.length() + ") is less than the minimum length (" + minLength + ")");
         }
         if (maxLength != -1 && value.length() > maxLength) {
-            throw new ConfigEntryParseException(getKey(), "String length (" + value.length() + ") is greater than the maximum length (" + maxLength + ")");
+            throw new ConfigEntryValidationException(getKey(), "String length (" + value.length() + ") is greater than the maximum length (" + maxLength + ")");
         }
         if (pattern != null && !value.matches(pattern)) {
-            throw new ConfigEntryParseException(getKey(), "String (" + value + ") does not match the pattern (" + pattern + ")");
+            throw new ConfigEntryValidationException(getKey(), "String (" + value + ") does not match the pattern (" + pattern + ")");
         }
         if (!validValues.isEmpty() && !validValues.contains(value)) {
-            throw new ConfigEntryParseException(getKey(), "String (" + value + ") is not a valid value");
+            throw new ConfigEntryValidationException(getKey(), "String (" + value + ") is not a valid value");
         }
     }
 

@@ -5,6 +5,7 @@ import com.daqem.yamlconfig.api.ConfigExtension;
 import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.IConfigBuilder;
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.exception.YamlConfigException;
 import com.daqem.yamlconfig.impl.entry.StackConfigEntry;
 
@@ -19,7 +20,7 @@ public class ConfigBuilder implements IConfigBuilder {
     private final Path path;
     private boolean isBuilt = false;
 
-    private final Deque<Map<String, IConfigEntry<?>>> contextStack = new LinkedList<>(List.of(new LinkedHashMap<>()));
+    private final Deque<IStackConfigEntry> contextStack = new ArrayDeque<>(Collections.singletonList(new StackConfigEntry(null, new LinkedHashMap<>())));
 
     public ConfigBuilder(String modId) {
         this(modId, modId);
@@ -72,7 +73,7 @@ public class ConfigBuilder implements IConfigBuilder {
         }
         IConfig config = new Config(this.modId, this.name, this.extension, this.path, contextStack.getFirst());
         config.load();
-        config.save();
+//        config.save();
 
         this.isBuilt = true;
     }
@@ -82,7 +83,7 @@ public class ConfigBuilder implements IConfigBuilder {
         if (isBuilt) {
             throw new YamlConfigException("Cannot define new entries after the config has been built");
         }
-        contextStack.peek().put(entry.getKey(), entry);
+        contextStack.peek().getValue().put(entry.getKey(), entry);
         return entry;
     }
 
@@ -96,8 +97,8 @@ public class ConfigBuilder implements IConfigBuilder {
 
     @Override
     public void push(String key) {
-        Map<String, IConfigEntry<?>> newContext = new LinkedHashMap<>();
-        contextStack.peek().put(key, new StackConfigEntry(key, newContext));
-        contextStack.push(newContext);
+        StackConfigEntry stackConfigEntry = new StackConfigEntry(key, new LinkedHashMap<>());
+        contextStack.peek().getValue().put(key, stackConfigEntry);
+        contextStack.push(stackConfigEntry);
     }
 }

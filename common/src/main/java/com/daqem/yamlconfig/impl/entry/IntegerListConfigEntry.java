@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.impl.entry;
 
 import com.daqem.yamlconfig.api.entry.IIntegerListConfigEntry;
-import com.daqem.yamlconfig.api.exception.ConfigEntryParseException;
+import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
 import java.util.List;
 
@@ -35,14 +35,14 @@ public class IntegerListConfigEntry extends BaseListConfigEntry<Integer> impleme
     }
 
     @Override
-    public void parse(List<Integer> value) throws ConfigEntryParseException {
-        super.parse(value);
+    public void validate(List<Integer> value) throws ConfigEntryValidationException {
+        super.validate(value);
         for (int element : value) {
             if (minValue != -1 && element < minValue) {
-                throw new ConfigEntryParseException(getKey(), "Element is too small. Expected at least " + minValue);
+                throw new ConfigEntryValidationException(getKey(), "Element is too small. Expected at least " + minValue);
             }
             if (maxValue != -1 && element > maxValue) {
-                throw new ConfigEntryParseException(getKey(), "Element is too large. Expected at most " + maxValue);
+                throw new ConfigEntryValidationException(getKey(), "Element is too large. Expected at most " + maxValue);
             }
         }
     }

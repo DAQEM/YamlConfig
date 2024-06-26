@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.impl.entry;
 
 import com.daqem.yamlconfig.api.entry.IIntegerConfigEntry;
-import com.daqem.yamlconfig.api.exception.ConfigEntryParseException;
+import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
 public class IntegerConfigEntry extends BaseConfigEntry<Integer> implements IIntegerConfigEntry {
 
@@ -19,9 +19,9 @@ public class IntegerConfigEntry extends BaseConfigEntry<Integer> implements IInt
     }
 
     @Override
-    public void parse(Integer value) throws ConfigEntryParseException {
+    public void validate(Integer value) throws ConfigEntryValidationException {
         if (getValue() < minValue || getValue() > maxValue) {
-            throw new ConfigEntryParseException(getKey(), "Value is out of bounds. Expected between " + minValue + " and " + maxValue);
+            throw new ConfigEntryValidationException(getKey(), "Value is out of bounds. Expected between " + minValue + " and " + maxValue);
         }
     }
 

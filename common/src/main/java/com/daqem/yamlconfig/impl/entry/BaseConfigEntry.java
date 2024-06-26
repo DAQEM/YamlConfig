@@ -2,8 +2,7 @@ package com.daqem.yamlconfig.impl.entry;
 
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
-import com.daqem.yamlconfig.api.exception.ConfigEntryParseException;
-import com.daqem.yamlconfig.api.exception.YamlConfigException;
+import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
 public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
 
@@ -35,9 +34,9 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     @Override
     public void setValue(T value) {
         try {
-            parse(value);
+            validate(value);
             this.value = value;
-        } catch (ConfigEntryParseException e) {
+        } catch (ConfigEntryValidationException e) {
             YamlConfig.LOGGER.error("Failed to parse config entry: " + e.getKey());
             YamlConfig.LOGGER.error("Reason: " + e.getMessage());
             this.value = defaultValue;

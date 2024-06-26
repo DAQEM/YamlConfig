@@ -1,6 +1,7 @@
 package com.daqem.yamlconfig.api;
 
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.entry.IStackConfigEntry;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
 import org.snakeyaml.engine.v2.nodes.Node;
 
@@ -21,9 +22,7 @@ public interface IConfig {
 
     Path getPath();
 
-    Map<String, IConfigEntry<?>> getContext();
+    IStackConfigEntry getContext();
 
     MappingNode getNode();
-
-    Map<String, Object> toMap(Map<String, IConfigEntry<?>> context);
 }
