@@ -20,7 +20,7 @@ public class ConfigBuilder implements IConfigBuilder {
     private final Path path;
     private boolean isBuilt = false;
 
-    private final Deque<IStackConfigEntry> contextStack = new ArrayDeque<>(Collections.singletonList(new StackConfigEntry(null, new LinkedHashMap<>())));
+    private final Deque<IStackConfigEntry> contextStack = new ArrayDeque<>(Collections.singletonList(new StackConfigEntry("parent", new LinkedHashMap<>())));
 
     public ConfigBuilder(String modId) {
         this(modId, modId);
@@ -73,7 +73,7 @@ public class ConfigBuilder implements IConfigBuilder {
         }
         IConfig config = new Config(this.modId, this.name, this.extension, this.path, contextStack.getFirst());
         config.load();
-//        config.save();
+        config.save();
 
         this.isBuilt = true;
     }

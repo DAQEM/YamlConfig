@@ -1,26 +1,29 @@
 package com.daqem.yamlconfig.api.entry;
 
 import net.minecraft.network.codec.StreamCodec;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.SequenceNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.nodes.*;
 
 import java.util.List;
 
 public interface IIntegerListConfigEntry extends IListConfigEntry<Integer> {
 
-    StreamCodec<IIntegerListConfigEntry, Node> CODEC = StreamCodec.of(
+    StreamCodec<IIntegerListConfigEntry, NodeTuple> CODEC = StreamCodec.of(
             (integerListConfigEntry, node) -> {
-                if (node instanceof SequenceNode sequenceNode) {
+                if (node.getValueNode() instanceof SequenceNode sequenceNode) {
                     integerListConfigEntry.setValue(sequenceNode.getValue().stream()
                             .filter(n -> n instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.INT))
                             .map(n -> Integer.parseInt(((ScalarNode) n).getValue()))
                             .toList());
                 }
             },
-            stringListConfigEntry -> {
-                return null;
+            integerListConfigEntry -> {
+                ScalarNode keyNode = new ScalarNode(Tag.STR, integerListConfigEntry.getKey(), ScalarStyle.PLAIN);
+                SequenceNode valueNode = new SequenceNode(Tag.SEQ, integerListConfigEntry.getValue().stream()
+                        .map(s -> (Node) new ScalarNode(Tag.INT, Integer.toString(s), ScalarStyle.PLAIN))
+                        .toList(), FlowStyle.BLOCK);
+                return new NodeTuple(keyNode, valueNode);
             }
     );
 
@@ -29,8 +32,8 @@ public interface IIntegerListConfigEntry extends IListConfigEntry<Integer> {
     int getMaxValue();
 
     @Override
-    default <B extends IConfigEntry<List<Integer>>> StreamCodec<B, Node> getCodec() {
+    default <B extends IConfigEntry<List<Integer>>> StreamCodec<B, NodeTuple> getCodec() {
         //noinspection unchecked
-        return (StreamCodec<B, Node>) CODEC;
+        return (StreamCodec<B, NodeTuple>) CODEC;
     }
 }

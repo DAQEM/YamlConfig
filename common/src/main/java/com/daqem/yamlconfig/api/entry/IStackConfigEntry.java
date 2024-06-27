@@ -1,40 +1,39 @@
 package com.daqem.yamlconfig.api.entry;
 
 import net.minecraft.network.codec.StreamCodec;
-import org.snakeyaml.engine.v2.nodes.MappingNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.common.FlowStyle;
+import org.snakeyaml.engine.v2.common.ScalarStyle;
+import org.snakeyaml.engine.v2.nodes.*;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public interface IStackConfigEntry extends IConfigEntry<Map<String, IConfigEntry<?>>> {
 
-    StreamCodec<IStackConfigEntry, Node> CODEC = StreamCodec.of(
-            (stackConfigEntry, node) -> {
-                if (node instanceof MappingNode mappingNode && stackConfigEntry.getValue() != null) {
-                    stackConfigEntry.applyValues(mappingNode);
+    StreamCodec<IStackConfigEntry, NodeTuple> CODEC = StreamCodec.of(
+            (stackConfigEntry, tuple) -> {
+                if (tuple.getValueNode() instanceof MappingNode mappingNode && stackConfigEntry.getValue() != null) {
+                    for (Map.Entry<String, IConfigEntry<?>> entry : stackConfigEntry.getValue().entrySet()) {
+                        mappingNode.getValue().stream()
+                                .filter(nodeTuple -> nodeTuple.getKeyNode() instanceof ScalarNode keyNode
+                                        && keyNode.getValue().equals(entry.getKey()))
+                                .findFirst()
+                                .ifPresent(valueNode -> entry.getValue().encode(valueNode));
+                    }
                 }
             },
             stackConfigEntry -> {
-                return null;
+                List<NodeTuple> nodeTuples = stackConfigEntry.getValue().values().stream().map(IConfigEntry::decode).toList();
+                ScalarNode keyNode = new ScalarNode(Tag.STR, stackConfigEntry.getKey(), ScalarStyle.PLAIN);
+                MappingNode mappingNode = new MappingNode(Tag.MAP, nodeTuples, FlowStyle.BLOCK);
+                return new NodeTuple(keyNode, mappingNode);
             }
     );
 
-    default void applyValues(MappingNode node) {
-        for (Map.Entry<String, IConfigEntry<?>> entry : getValue().entrySet()) {
-            node.getValue().stream()
-                    .filter(nodeTuple -> nodeTuple.getKeyNode() instanceof ScalarNode keyNode
-                            && keyNode.getValue().equals(entry.getKey()))
-                    .map(NodeTuple::getValueNode)
-                    .findFirst()
-                    .ifPresent(valueNode -> entry.getValue().encode(valueNode));
-        }
-    }
-
     @Override
-    default <B extends IConfigEntry<Map<String, IConfigEntry<?>>>> StreamCodec<B, Node> getCodec() {
+    default <B extends IConfigEntry<Map<String, IConfigEntry<?>>>> StreamCodec<B, NodeTuple> getCodec() {
         //noinspection unchecked
-        return (StreamCodec<B, Node>) CODEC;
+        return (StreamCodec<B, NodeTuple>) CODEC;
     }
 }

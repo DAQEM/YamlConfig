@@ -23,6 +23,4 @@ public interface IConfig {
     Path getPath();
 
     IStackConfigEntry getContext();
-
-    MappingNode getNode();
 }

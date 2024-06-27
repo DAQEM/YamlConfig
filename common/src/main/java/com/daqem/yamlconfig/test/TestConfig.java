@@ -22,12 +22,12 @@ public class TestConfig {
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
         testInt = builder.define(new IntegerConfigEntry("testInt", 10, 0, 100));
-        testString = builder.define(new StringConfigEntry("testString", "test"));
+        testString = builder.define((StringConfigEntry) new StringConfigEntry("testString", "test").withComments(List.of("This is a test string.")));
         builder.push("test");
         testString1 = builder.define(new StringConfigEntry("testString", "test"));
         builder.pop();
         testStringList = builder.define(new StringListConfigEntry("testStringList", List.of("test1", "test2", "test3")));
-        testIntList = builder.define(new IntegerListConfigEntry("testIntList", List.of(1, 2, 3), 1, 3));
+        testIntList = builder.define(new IntegerListConfigEntry("testIntList", List.of(1, 2, 3)));
         builder.build();
     }
 }
