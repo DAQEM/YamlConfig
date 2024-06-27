@@ -92,7 +92,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
             }
         }
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: '" + getDefaultValue() + "'");
+            comments.addDefaultValues("'" + getDefaultValue() + "'");
         }
         return comments;
     }

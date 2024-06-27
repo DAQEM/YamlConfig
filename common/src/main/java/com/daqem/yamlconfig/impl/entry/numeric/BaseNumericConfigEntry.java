@@ -50,7 +50,7 @@ public abstract class BaseNumericConfigEntry<T extends Number & Comparable<T>> e
 
         }
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: " + getDefaultValue());
+            comments.addDefaultValues(getDefaultValue().toString());
         }
         return comments;
     }

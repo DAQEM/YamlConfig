@@ -5,7 +5,12 @@ import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import com.daqem.yamlconfig.impl.ConfigBuilder;
 import com.daqem.yamlconfig.impl.entry.*;
+import com.daqem.yamlconfig.impl.entry.minecraft.RegistryConfigEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,6 +33,7 @@ public class TestConfig {
     public static IConfigEntry<Difficulty> testEnum;
     public static IConfigEntry<Map<String, Integer>> testIntegerMap;
     public static IConfigEntry<LocalDateTime> testDateTime;
+    public static IConfigEntry<Item> testItem;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
@@ -57,6 +63,8 @@ public class TestConfig {
         testIntegerMap = builder.defineIntegerMap("testIntegerMap", Map.of("test1", 1, "test2", 2, "test3", 3));
 
         testDateTime = builder.defineDateTime("testDateTime", LocalDateTime.of(2021, 1, 1, 0, 0, 0));
+
+        testItem = builder.defineRegistry("testItem", Items.STONE, BuiltInRegistries.ITEM);
 
         config = builder.build();
     }

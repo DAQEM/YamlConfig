@@ -6,19 +6,32 @@ import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.IConfigBuilder;
 import com.daqem.yamlconfig.api.entry.*;
 import com.daqem.yamlconfig.api.entry.list.IStringListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IDoubleListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IFloatListConfigEntry;
 import com.daqem.yamlconfig.api.entry.list.numeric.IIntegerListConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.IStringMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IDoubleMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.entry.map.numeric.IIntegerMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.minecraft.IRegistryConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.exception.YamlConfigException;
 import com.daqem.yamlconfig.impl.entry.*;
 import com.daqem.yamlconfig.impl.entry.list.StringListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.list.numeric.DoubleListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.list.numeric.FloatListConfigEntry;
 import com.daqem.yamlconfig.impl.entry.list.numeric.IntegerListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.map.StringMapConfigEntry;
+import com.daqem.yamlconfig.impl.entry.map.numeric.DoubleMapConfigEntry;
+import com.daqem.yamlconfig.impl.entry.map.numeric.FloatMapConfigEntry;
 import com.daqem.yamlconfig.impl.entry.map.numeric.IntegerMapConfigEntry;
+import com.daqem.yamlconfig.impl.entry.minecraft.RegistryConfigEntry;
 import com.daqem.yamlconfig.impl.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.entry.numeric.IntegerConfigEntry;
+import net.minecraft.core.Registry;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -141,18 +154,88 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
-    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue) {
-        return define(new IntegerListConfigEntry(key, defaultValue, minValue, maxValue));
+    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minLength, int maxLength) {
+        return define(new IntegerListConfigEntry(key, defaultValue, minLength, maxLength));
     }
 
     @Override
-    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength) {
-        return define(new IntegerListConfigEntry(key, defaultValue, minValue, maxValue, minLength, maxLength));
+    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minLength, int maxLength, int minValue, int maxValue) {
+        return define(new IntegerListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
+    }
+
+    @Override
+    public IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue) {
+        return define(new FloatListConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue, int minLength, int maxLength) {
+        return define(new FloatListConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue, int minLength, int maxLength, float minValue, float maxValue) {
+        return define(new FloatListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
+    }
+
+    @Override
+    public IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue) {
+        return define(new DoubleListConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue, int minLength, int maxLength) {
+        return define(new DoubleListConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue, int minLength, int maxLength, double minValue, double maxValue) {
+        return define(new DoubleListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
     }
 
     @Override
     public IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue) {
         return define(new IntegerMapConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue, int minLength, int maxLength) {
+        return define(new IntegerMapConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue, int minLength, int maxLength, int minValue, int maxValue) {
+        return define(new IntegerMapConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
+    }
+
+    @Override
+    public IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue) {
+        return define(new FloatMapConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue, int minLength, int maxLength) {
+        return define(new FloatMapConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue, int minLength, int maxLength, float minValue, float maxValue) {
+        return define(new FloatMapConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
+    }
+
+    @Override
+    public IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue) {
+        return define(new DoubleMapConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue, int minLength, int maxLength) {
+        return define(new DoubleMapConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue, int minLength, int maxLength, double minValue, double maxValue) {
+        return define(new DoubleMapConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue));
     }
 
     @Override
@@ -226,6 +309,31 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
+    public IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue) {
+        return define(new StringMapConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength) {
+        return define(new StringMapConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, String pattern) {
+        return define(new StringMapConfigEntry(key, defaultValue, minLength, maxLength, pattern));
+    }
+
+    @Override
+    public IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, List<String> validValues) {
+        return define(new StringMapConfigEntry(key, defaultValue, minLength, maxLength, validValues));
+    }
+
+    @Override
+    public IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues) {
+        return define(new StringMapConfigEntry(key, defaultValue, minLength, maxLength, pattern, validValues));
+    }
+
+    @Override
     public IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue) {
         return define(new DateTimeConfigEntry(key, defaultValue));
     }
@@ -233,6 +341,11 @@ public class ConfigBuilder implements IConfigBuilder {
     @Override
     public IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue, LocalDateTime minDateTime, LocalDateTime maxDateTime) {
         return define(new DateTimeConfigEntry(key, defaultValue, minDateTime, maxDateTime));
+    }
+
+    @Override
+    public <T> IRegistryConfigEntry<T> defineRegistry(String key, T defaultValue, Registry<T> registry) {
+        return define(new RegistryConfigEntry<>(key, defaultValue, registry));
     }
 
     @Override

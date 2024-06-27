@@ -82,7 +82,7 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
             }
         }
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: " + getDefaultValue().stream().map(s -> "'" + s + "'").toList());
+            comments.addDefaultValues(getDefaultValue().stream().map(s -> "'" + s + "'").toList().toString());
         }
         return comments;
     }

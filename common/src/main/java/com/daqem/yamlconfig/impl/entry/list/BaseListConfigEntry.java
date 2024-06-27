@@ -24,10 +24,10 @@ public abstract class BaseListConfigEntry<T> extends BaseConfigEntry<List<T>> im
 
     @Override
     public void validate(List<T> value) throws ConfigEntryValidationException {
-        if (minLength != -1 && value.size() < minLength) {
+        if (minLength != Integer.MIN_VALUE && value.size() < minLength) {
             throw new ConfigEntryValidationException(getKey(), "List is too short. Expected at least " + minLength + " elements");
         }
-        if (maxLength != -1 && value.size() > maxLength) {
+        if (maxLength != Integer.MAX_VALUE && value.size() > maxLength) {
             throw new ConfigEntryValidationException(getKey(), "List is too long. Expected at most " + maxLength + " elements");
         }
     }

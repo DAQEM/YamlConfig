@@ -22,4 +22,6 @@ public interface IComments {
     String getValidationParameters();
 
     void addValidationParameter(String parameter);
+
+    void addDefaultValues(String defaultValue);
 }

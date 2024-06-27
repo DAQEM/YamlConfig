@@ -52,7 +52,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
             }
         }
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: " + getDefaultValue().format(IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+            comments.addDefaultValues(getDefaultValue().format(IDateTimeConfigEntry.DATE_TIME_FORMATTER));
         }
         return comments;
     }

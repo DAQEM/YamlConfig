@@ -9,7 +9,7 @@ import org.snakeyaml.engine.v2.nodes.*;
 
 import java.util.List;
 
-public interface IIntegerListConfigEntry extends IListConfigEntry<Integer> {
+public interface IIntegerListConfigEntry extends INumericListConfigEntry<Integer> {
 
     StreamCodec<IIntegerListConfigEntry, NodeTuple> CODEC = StreamCodec.of(
             (integerListConfigEntry, node) -> {
@@ -28,10 +28,6 @@ public interface IIntegerListConfigEntry extends IListConfigEntry<Integer> {
                 return new NodeTuple(keyNode, valueNode);
             }
     );
-
-    int getMinValue();
-
-    int getMaxValue();
 
     @Override
     default <B extends IConfigEntry<List<Integer>>> StreamCodec<B, NodeTuple> getCodec() {

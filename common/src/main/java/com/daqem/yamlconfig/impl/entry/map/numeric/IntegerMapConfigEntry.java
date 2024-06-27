@@ -9,4 +9,12 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
     public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue) {
         super(key, defaultValue);
     }
+
+    public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue, int minLength, int maxLength) {
+        super(key, defaultValue, minLength, maxLength);
+    }
+
+    public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue, int minLength, int maxLength, Integer minValue, Integer maxValue) {
+        super(key, defaultValue, minLength, maxLength, minValue, maxValue);
+    }
 }

@@ -20,7 +20,7 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
     public IComments getComments() {
         IComments comments = super.getComments();
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: " + getDefaultValue());
+            comments.addDefaultValues(getDefaultValue().toString());
         }
         return comments;
     }

@@ -34,7 +34,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
             comments.addValidationParameter("Allowed values: " + Stream.of(getEnumClass().getEnumConstants()).map(s -> "'" + s + "'").toList());
         }
         if (comments.showDefaultValues()) {
-            comments.addValidationParameter("Default value: " + getDefaultValue());
+            comments.addDefaultValues(getDefaultValue().toString());
         }
         return comments;
     }

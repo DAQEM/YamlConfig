@@ -67,4 +67,14 @@ public class Comments implements IComments {
             validationParameters += ", " + parameter;
         }
     }
+
+    @Override
+    public void addDefaultValues(String defaultValue) {
+        defaultValue = "Default value: " + defaultValue;
+        if (validationParameters == null) {
+            validationParameters = defaultValue;
+        } else {
+            validationParameters += ", " + defaultValue;
+        }
+    }
 }

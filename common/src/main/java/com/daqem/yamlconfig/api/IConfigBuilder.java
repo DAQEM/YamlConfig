@@ -2,11 +2,18 @@ package com.daqem.yamlconfig.api;
 
 import com.daqem.yamlconfig.api.entry.*;
 import com.daqem.yamlconfig.api.entry.list.IStringListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IDoubleListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IFloatListConfigEntry;
 import com.daqem.yamlconfig.api.entry.list.numeric.IIntegerListConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.IStringMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IDoubleMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.entry.map.numeric.IIntegerMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.minecraft.IRegistryConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
+import net.minecraft.core.Registry;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -45,11 +52,39 @@ public interface IConfigBuilder {
 
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue);
 
-    IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue);
+    IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minLength, int maxLength);
 
-    IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength);
+    IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minLength, int maxLength, int minValue, int maxValue);
+
+    IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue);
+
+    IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue, int minLength, int maxLength);
+
+    IFloatListConfigEntry defineFloatList(String key, List<Float> defaultValue, int minLength, int maxLength, float minValue, float maxValue);
+
+    IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue);
+
+    IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue, int minLength, int maxLength);
+
+    IDoubleListConfigEntry defineDoubleList(String key, List<Double> defaultValue, int minLength, int maxLength, double minValue, double maxValue);
 
     IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue);
+
+    IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue, int minLength, int maxLength);
+
+    IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue, int minLength, int maxLength, int minValue, int maxValue);
+
+    IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue);
+
+    IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue, int minLength, int maxLength);
+
+    IFloatMapConfigEntry defineFloatMap(String key, Map<String, Float> defaultValue, int minLength, int maxLength, float minValue, float maxValue);
+
+    IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue);
+
+    IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue, int minLength, int maxLength);
+
+    IDoubleMapConfigEntry defineDoubleMap(String key, Map<String, Double> defaultValue, int minLength, int maxLength, double minValue, double maxValue);
 
     <E extends Enum<E>> IEnumConfigEntry<E> defineEnum(String key, E defaultValue, Class<E> enumClass);
 
@@ -76,11 +111,24 @@ public interface IConfigBuilder {
     IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern);
 
     IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, List<String> validValues);
+
     IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues);
+
+    IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue);
+
+    IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength);
+
+    IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, String pattern);
+
+    IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, List<String> validValues);
+
+    IStringMapConfigEntry defineStringMap(String key, Map<String, String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues);
 
     IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue);
 
     IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue, LocalDateTime minDateTime, LocalDateTime maxDateTime);
+
+    <T> IRegistryConfigEntry<T> defineRegistry(String key, T defaultValue, Registry<T> registry);
 
     void pop();
 
