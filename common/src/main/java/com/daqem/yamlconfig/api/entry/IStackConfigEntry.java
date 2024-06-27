@@ -2,12 +2,12 @@ package com.daqem.yamlconfig.api.entry;
 
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.*;
+import org.snakeyaml.engine.v2.nodes.MappingNode;
+import org.snakeyaml.engine.v2.nodes.NodeTuple;
+import org.snakeyaml.engine.v2.nodes.ScalarNode;
+import org.snakeyaml.engine.v2.nodes.Tag;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public interface IStackConfigEntry extends IConfigEntry<Map<String, IConfigEntry<?>>> {
 
