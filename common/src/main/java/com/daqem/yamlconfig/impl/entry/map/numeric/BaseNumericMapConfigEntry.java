@@ -36,8 +36,7 @@ public abstract class BaseNumericMapConfigEntry<T extends Number & Comparable<T>
         super.validate(value);
         for (Map.Entry<String, T> entry : value.entrySet()) {
             T element = entry.getValue();
-            if ((minValue != null && element.compareTo(minValue) < 0)
-                    || (maxValue != null && element.compareTo(maxValue) > 0)) {
+            if ((minValue != null && element.compareTo(minValue) < 0) || (maxValue != null && element.compareTo(maxValue) > 0)) {
                 throw new ConfigEntryValidationException(getKey() + "." + entry.getKey(), "Element is out of bounds. Expected between " + minValue + " and " + maxValue);
             }
         }

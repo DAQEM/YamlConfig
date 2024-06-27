@@ -9,6 +9,7 @@ import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -76,6 +77,10 @@ public interface IConfigBuilder {
 
     IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, List<String> validValues);
     IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues);
+
+    IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue);
+
+    IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue, LocalDateTime minDateTime, LocalDateTime maxDateTime);
 
     void pop();
 

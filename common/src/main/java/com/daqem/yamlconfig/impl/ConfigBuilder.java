@@ -21,6 +21,7 @@ import com.daqem.yamlconfig.impl.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.entry.numeric.IntegerConfigEntry;
 
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class ConfigBuilder implements IConfigBuilder {
@@ -222,6 +223,16 @@ public class ConfigBuilder implements IConfigBuilder {
     @Override
     public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues) {
         return define(new StringListConfigEntry(key, defaultValue, minLength, maxLength, pattern, validValues));
+    }
+
+    @Override
+    public IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue) {
+        return define(new DateTimeConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue, LocalDateTime minDateTime, LocalDateTime maxDateTime) {
+        return define(new DateTimeConfigEntry(key, defaultValue, minDateTime, maxDateTime));
     }
 
     @Override

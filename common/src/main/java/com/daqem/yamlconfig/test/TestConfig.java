@@ -7,6 +7,7 @@ import com.daqem.yamlconfig.impl.ConfigBuilder;
 import com.daqem.yamlconfig.impl.entry.*;
 import net.minecraft.world.Difficulty;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,7 @@ public class TestConfig {
     public static IConfigEntry<Double> testDouble;
     public static IConfigEntry<Difficulty> testEnum;
     public static IConfigEntry<Map<String, Integer>> testIntegerMap;
+    public static IConfigEntry<LocalDateTime> testDateTime;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
@@ -53,6 +55,8 @@ public class TestConfig {
         testEnum = builder.defineEnum("testEnum", Difficulty.NORMAL, Difficulty.class);
 
         testIntegerMap = builder.defineIntegerMap("testIntegerMap", Map.of("test1", 1, "test2", 2, "test3", 3));
+
+        testDateTime = builder.defineDateTime("testDateTime", LocalDateTime.of(2021, 1, 1, 0, 0, 0));
 
         config = builder.build();
     }
