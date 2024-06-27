@@ -19,7 +19,7 @@ public interface IStringListConfigEntry extends IListConfigEntry<String> {
                 }
             },
             stringListConfigEntry -> {
-                ScalarNode keyNode = new ScalarNode(Tag.STR, stringListConfigEntry.getKey(), ScalarStyle.PLAIN);
+                ScalarNode keyNode = stringListConfigEntry.createKeyNode();
                 SequenceNode valueNode = new SequenceNode(Tag.SEQ, stringListConfigEntry.getValue().stream()
                         .map(s -> (Node) new ScalarNode(Tag.STR, s, ScalarStyle.SINGLE_QUOTED))
                         .toList(), FlowStyle.BLOCK);

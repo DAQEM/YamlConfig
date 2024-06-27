@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl.entry;
 
+import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
     private final List<String> validValues;
 
     public StringConfigEntry(String key, String defaultValue) {
-        this(key, defaultValue, -1, -1);
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public StringConfigEntry(String key, String defaultValue, int minLength, int maxLength) {
@@ -39,10 +40,10 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
 
     @Override
     public void validate(String value) throws ConfigEntryValidationException {
-        if (minLength != -1 && value.length() < minLength) {
+        if (minLength != Integer.MIN_VALUE && value.length() < minLength) {
             throw new ConfigEntryValidationException(getKey(), "String length (" + value.length() + ") is less than the minimum length (" + minLength + ")");
         }
-        if (maxLength != -1 && value.length() > maxLength) {
+        if (maxLength != Integer.MAX_VALUE && value.length() > maxLength) {
             throw new ConfigEntryValidationException(getKey(), "String length (" + value.length() + ") is greater than the maximum length (" + maxLength + ")");
         }
         if (pattern != null && !value.matches(pattern)) {
@@ -71,5 +72,28 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
     @Override
     public List<String> getValidValues() {
         return validValues;
+    }
+
+    @Override
+    public IComments getComments() {
+        IComments comments = super.getComments();
+        if (comments.showValidationParameters()) {
+            if (minLength != Integer.MIN_VALUE) {
+                comments.addValidationParameter("Minimum length: " + minLength);
+            }
+            if (maxLength != Integer.MAX_VALUE) {
+                comments.addValidationParameter("Maximum length: " + maxLength);
+            }
+            if (pattern != null) {
+                comments.addValidationParameter("Pattern: " + pattern);
+            }
+            if (!validValues.isEmpty()) {
+                comments.addValidationParameter("Valid values: " + validValues);
+            }
+        }
+        if (comments.showDefaultValues()) {
+            comments.addValidationParameter("Default value: '" + getDefaultValue() + "'");
+        }
+        return comments;
     }
 }

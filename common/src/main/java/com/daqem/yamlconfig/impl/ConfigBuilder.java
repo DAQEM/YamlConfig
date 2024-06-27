@@ -4,10 +4,9 @@ import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.ConfigExtension;
 import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.IConfigBuilder;
-import com.daqem.yamlconfig.api.entry.IConfigEntry;
-import com.daqem.yamlconfig.api.entry.IStackConfigEntry;
+import com.daqem.yamlconfig.api.entry.*;
 import com.daqem.yamlconfig.api.exception.YamlConfigException;
-import com.daqem.yamlconfig.impl.entry.StackConfigEntry;
+import com.daqem.yamlconfig.impl.entry.*;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -67,7 +66,7 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
-    public void build() {
+    public IConfig build() {
         if (isBuilt) {
             throw new IllegalStateException("Config has already been built");
         }
@@ -76,6 +75,7 @@ public class ConfigBuilder implements IConfigBuilder {
         config.save();
 
         this.isBuilt = true;
+        return config;
     }
 
     @Override
@@ -88,6 +88,101 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
+    public IBooleanConfigEntry defineBoolean(String key, boolean defaultValue) {
+        return define(new BooleanConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IIntegerConfigEntry defineInteger(String key, int defaultValue) {
+        return define(new IntegerConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IIntegerConfigEntry defineInteger(String key, int defaultValue, int minValue, int maxValue) {
+        return define(new IntegerConfigEntry(key, defaultValue, minValue, maxValue));
+    }
+
+    @Override
+    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue) {
+        return define(new IntegerListConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue) {
+        return define(new IntegerListConfigEntry(key, defaultValue, minValue, maxValue));
+    }
+
+    @Override
+    public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength) {
+        return define(new IntegerListConfigEntry(key, defaultValue, minValue, maxValue, minLength, maxLength));
+    }
+
+    @Override
+    public IStringConfigEntry defineString(String key, String defaultValue) {
+        return define(new StringConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IStringConfigEntry defineString(String key, String defaultValue, int minLength, int maxLength) {
+        return define(new StringConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IStringConfigEntry defineString(String key, String defaultValue, int minLength, int maxLength, String pattern) {
+        return define(new StringConfigEntry(key, defaultValue, minLength, maxLength, pattern));
+    }
+
+    @Override
+    public IStringConfigEntry defineString(String key, String defaultValue, int minLength, int maxLength, List<String> validValues) {
+        return define(new StringConfigEntry(key, defaultValue, minLength, maxLength, validValues));
+    }
+
+    @Override
+    public IStringConfigEntry defineString(String key, String defaultValue, int minLength, int maxLength, String pattern, List<String> validValues) {
+        return define(new StringConfigEntry(key, defaultValue, minLength, maxLength, pattern, validValues));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue) {
+        return define(new StringListConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength) {
+        return define(new StringListConfigEntry(key, defaultValue, minLength, maxLength));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, String pattern) {
+        return define(new StringListConfigEntry(key, defaultValue, pattern));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, List<String> validValues) {
+        return define(new StringListConfigEntry(key, defaultValue, validValues));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, String pattern, List<String> validValues) {
+        return define(new StringListConfigEntry(key, defaultValue, pattern, validValues));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern) {
+        return define(new StringListConfigEntry(key, defaultValue, minLength, maxLength, pattern));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, List<String> validValues) {
+        return define(new StringListConfigEntry(key, defaultValue, minLength, maxLength, validValues));
+    }
+
+    @Override
+    public IStringListConfigEntry defineStringList(String key, List<String> defaultValue, int minLength, int maxLength, String pattern, List<String> validValues) {
+        return define(new StringListConfigEntry(key, defaultValue, minLength, maxLength, pattern, validValues));
+    }
+
+    @Override
     public void pop() {
         if (contextStack.size() <= 1) {
             throw new IllegalStateException("Cannot pop the root context");
@@ -96,9 +191,10 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
-    public void push(String key) {
+    public IStackConfigEntry push(String key) {
         StackConfigEntry stackConfigEntry = new StackConfigEntry(key, new LinkedHashMap<>());
         contextStack.peek().getValue().put(key, stackConfigEntry);
         contextStack.push(stackConfigEntry);
+        return stackConfigEntry;
     }
 }

@@ -6,6 +6,8 @@ import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
+import java.util.List;
+
 public interface IIntegerConfigEntry extends IConfigEntry<Integer> {
 
     StreamCodec<IIntegerConfigEntry, NodeTuple> CODEC = StreamCodec.of(
@@ -14,9 +16,9 @@ public interface IIntegerConfigEntry extends IConfigEntry<Integer> {
                     integerConfigEntry.setValue(Integer.parseInt(scalarNode.getValue()));
                 }
             },
-            stringListConfigEntry -> {
-                ScalarNode keyNode = new ScalarNode(Tag.STR, stringListConfigEntry.getKey(), ScalarStyle.PLAIN);
-                ScalarNode valueNode = new ScalarNode(Tag.INT, String.valueOf(stringListConfigEntry.getValue()), ScalarStyle.PLAIN);
+            integerConfigEntry -> {
+                ScalarNode keyNode = integerConfigEntry.createKeyNode();
+                ScalarNode valueNode = new ScalarNode(Tag.INT, Integer.toString(integerConfigEntry.getValue()), ScalarStyle.PLAIN);
                 return new NodeTuple(keyNode, valueNode);
             }
     );

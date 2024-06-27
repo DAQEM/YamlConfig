@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl.entry;
 
+import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
@@ -33,5 +34,23 @@ public class IntegerConfigEntry extends BaseConfigEntry<Integer> implements IInt
     @Override
     public int getMaxValue() {
         return maxValue;
+    }
+
+    @Override
+    public IComments getComments() {
+        IComments comments = super.getComments();
+        if (comments.showValidationParameters()) {
+            if (minValue != Integer.MIN_VALUE) {
+                comments.addValidationParameter("Minimum value: " + minValue);
+            }
+            if (maxValue != Integer.MAX_VALUE) {
+                comments.addValidationParameter("Maximum value: " + maxValue);
+            }
+
+        }
+        if (comments.showDefaultValues()) {
+            comments.addValidationParameter("Default value: " + getDefaultValue());
+        }
+        return comments;
     }
 }

@@ -2,7 +2,6 @@ package com.daqem.yamlconfig.api.entry;
 
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.Node;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
@@ -18,8 +17,8 @@ public interface IStringConfigEntry extends IConfigEntry<String> {
                 }
             },
             stringListConfigEntry -> {
-                ScalarNode keyNode = new ScalarNode(Tag.STR, stringListConfigEntry.getKey(), ScalarStyle.PLAIN);
-                ScalarNode valueNode = new ScalarNode(Tag.STR, String.valueOf(stringListConfigEntry.getValue()), ScalarStyle.SINGLE_QUOTED);
+                ScalarNode keyNode = stringListConfigEntry.createKeyNode();
+                ScalarNode valueNode = new ScalarNode(Tag.STR, stringListConfigEntry.getValue(), ScalarStyle.SINGLE_QUOTED);
                 return new NodeTuple(keyNode, valueNode);
             }
     );

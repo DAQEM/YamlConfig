@@ -1,11 +1,10 @@
 package com.daqem.yamlconfig.test;
 
 import com.daqem.yamlconfig.api.ConfigExtension;
+import com.daqem.yamlconfig.api.IConfig;
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import com.daqem.yamlconfig.impl.ConfigBuilder;
-import com.daqem.yamlconfig.impl.entry.IntegerConfigEntry;
-import com.daqem.yamlconfig.impl.entry.IntegerListConfigEntry;
-import com.daqem.yamlconfig.impl.entry.StringConfigEntry;
-import com.daqem.yamlconfig.impl.entry.StringListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,21 +12,34 @@ import java.util.List;
 
 public class TestConfig {
 
-    public static IntegerConfigEntry testInt;
-    public static StringConfigEntry testString;
-    public static StringConfigEntry testString1;
-    public static StringListConfigEntry testStringList;
-    public static IntegerListConfigEntry testIntList;
+    public static IConfig config;
+
+    public static IConfigEntry<Integer> testInt;
+    public static IConfigEntry<String> testString;
+    public static IConfigEntry<String> testString1;
+    public static IConfigEntry<List<String>> testStringList;
+    public static IConfigEntry<List<Integer>> testIntList;
+    public static IConfigEntry<Boolean> testBoolean;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
-        testInt = builder.define(new IntegerConfigEntry("testInt", 10, 0, 100));
-        testString = builder.define((StringConfigEntry) new StringConfigEntry("testString", "test").withComments(List.of("This is a test string.")));
-        builder.push("test");
-        testString1 = builder.define(new StringConfigEntry("testString", "test"));
+
+        testInt = builder.defineInteger("testInt", 10, 0, 100);
+
+        testString = builder.defineString("testString", "test");
+
+        builder.push("test").withComments("This is a test stack.", "And another comment.", "Wow even a third comment.");
+
+        testString1 = builder.defineString("testString", "test");
+
         builder.pop();
-        testStringList = builder.define(new StringListConfigEntry("testStringList", List.of("test1", "test2", "test3")));
-        testIntList = builder.define(new IntegerListConfigEntry("testIntList", List.of(1, 2, 3)));
-        builder.build();
+
+        testStringList = builder.defineStringList("testStringList", List.of("test1", "test2", "test3"), "test\\d+");
+
+        testIntList = builder.defineIntegerList("testIntList", List.of(1, 2, 3));
+
+        testBoolean = builder.defineBoolean("testBoolean", true);
+
+        config = builder.build();
     }
 }

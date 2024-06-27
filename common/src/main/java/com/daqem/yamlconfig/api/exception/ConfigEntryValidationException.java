@@ -4,11 +4,6 @@ public class ConfigEntryValidationException extends YamlConfigException {
 
     private final String key;
 
-    public ConfigEntryValidationException(String key, String message, Throwable cause) {
-        super(message, cause);
-        this.key = key;
-    }
-
     public ConfigEntryValidationException(String key, String message) {
         super(message);
         this.key = key;

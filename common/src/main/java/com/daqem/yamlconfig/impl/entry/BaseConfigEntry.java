@@ -1,11 +1,13 @@
 package com.daqem.yamlconfig.impl.entry;
 
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.impl.Comments;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
@@ -13,7 +15,8 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     private final String key;
     private final T defaultValue;
     private T value;
-    private List<String> comments = new LinkedList<>();
+    private IComments comments = new Comments(new ArrayList<>());
+
 
     public BaseConfigEntry(String key, T defaultValue) {
         this.key = key;
@@ -49,23 +52,25 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     }
 
     @Override
-    public List<String> getComments() {
+    public IComments getComments() {
         return comments;
     }
 
     @Override
-    public void setComments(List<String> comments) {
-        this.comments = comments;
+    public IConfigEntry<T> withComments(String... comments) {
+        return withComments(true, comments);
     }
 
     @Override
-    public void addComment(String comment) {
-        comments.add(comment);
+    public IConfigEntry<T> withComments(boolean showDefaultValues, String... comments) {
+        return withComments(showDefaultValues, true, comments);
     }
 
     @Override
-    public IConfigEntry<T> withComments(List<String> comments) {
-        this.comments = comments;
+    public IConfigEntry<T> withComments(boolean showDefaultValues, boolean showValidationParameters, String... comments) {
+        this.comments.setComments(new ArrayList<>(List.of(comments)));
+        this.comments.setShowDefaultValues(showDefaultValues);
+        this.comments.setShowValidationParameters(showValidationParameters);
         return this;
     }
 }

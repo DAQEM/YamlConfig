@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl.entry;
 
+import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IStringListConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import com.mojang.serialization.Codec;
@@ -16,24 +17,27 @@ import java.util.Optional;
 
 public class StringListConfigEntry extends BaseListConfigEntry<String> implements IStringListConfigEntry {
 
-//    public static final StreamCodec<Node, StringListConfigEntry> CODEC = StreamCodec.of(
-//            (node, stringListConfigEntry) -> {
-//                node.setBlockComments(List.of(new CommentLine(Optional.empty(), Optional.empty(), "", CommentType.BLOCK)));
-//            },
-//            node -> {
-//                return new StringListConfigEntry("test", List.of("test1", "test2", "test3"));
-//            }
-//    );
-
     private final @Nullable String pattern;
     private final List<String> validValues;
 
     public StringListConfigEntry(String key, List<String> defaultValue) {
-        this(key, defaultValue, -1, -1);
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public StringListConfigEntry(String key, List<String> defaultValue, int minLength, int maxLength) {
         this(key, defaultValue, minLength, maxLength, List.of());
+    }
+
+    public StringListConfigEntry(String key, List<String> defaultValue, @Nullable String pattern) {
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, pattern, List.of());
+    }
+
+    public StringListConfigEntry(String key, List<String> defaultValue, List<String> validValues) {
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, null, validValues);
+    }
+
+    public StringListConfigEntry(String key, List<String> defaultValue, @Nullable String pattern, List<String> validValues) {
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, pattern, validValues);
     }
 
     public StringListConfigEntry(String key, List<String> defaultValue, int minLength, int maxLength, @Nullable String pattern) {
@@ -71,5 +75,22 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
     @Override
     public List<String> getValidValues() {
         return validValues;
+    }
+
+    @Override
+    public IComments getComments() {
+        IComments comments = super.getComments();
+        if (comments.showValidationParameters()) {
+            if (pattern != null) {
+                comments.addValidationParameter("Pattern: " + pattern);
+            }
+            if (!validValues.isEmpty()) {
+                comments.addValidationParameter("Valid values: " + validValues);
+            }
+        }
+        if (comments.showDefaultValues()) {
+            comments.addValidationParameter("Default value: " + getDefaultValue().stream().map(s -> "'" + s + "'").toList());
+        }
+        return comments;
     }
 }

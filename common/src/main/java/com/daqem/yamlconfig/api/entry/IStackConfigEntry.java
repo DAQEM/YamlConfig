@@ -24,9 +24,9 @@ public interface IStackConfigEntry extends IConfigEntry<Map<String, IConfigEntry
                 }
             },
             stackConfigEntry -> {
-                List<NodeTuple> nodeTuples = stackConfigEntry.getValue().values().stream().map(IConfigEntry::decode).toList();
-                ScalarNode keyNode = new ScalarNode(Tag.STR, stackConfigEntry.getKey(), ScalarStyle.PLAIN);
-                MappingNode mappingNode = new MappingNode(Tag.MAP, nodeTuples, FlowStyle.BLOCK);
+                ScalarNode keyNode = stackConfigEntry.createKeyNode();
+                MappingNode mappingNode = new MappingNode(Tag.MAP, stackConfigEntry.getValue()
+                        .values().stream().map(IConfigEntry::decode).toList(), FlowStyle.BLOCK);
                 return new NodeTuple(keyNode, mappingNode);
             }
     );

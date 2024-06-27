@@ -19,7 +19,7 @@ public interface IIntegerListConfigEntry extends IListConfigEntry<Integer> {
                 }
             },
             integerListConfigEntry -> {
-                ScalarNode keyNode = new ScalarNode(Tag.STR, integerListConfigEntry.getKey(), ScalarStyle.PLAIN);
+                ScalarNode keyNode = integerListConfigEntry.createKeyNode();
                 SequenceNode valueNode = new SequenceNode(Tag.SEQ, integerListConfigEntry.getValue().stream()
                         .map(s -> (Node) new ScalarNode(Tag.INT, Integer.toString(s), ScalarStyle.PLAIN))
                         .toList(), FlowStyle.BLOCK);

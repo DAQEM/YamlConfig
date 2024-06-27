@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl.entry;
 
+import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IListConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
@@ -11,7 +12,7 @@ public abstract class BaseListConfigEntry<T> extends BaseConfigEntry<List<T>> im
     private final int maxLength;
 
     public BaseListConfigEntry(String key, List<T> value) {
-        this(key, value, -1, -1);
+        this(key, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public BaseListConfigEntry(String key, List<T> value, int minLength, int maxLength) {
@@ -38,5 +39,19 @@ public abstract class BaseListConfigEntry<T> extends BaseConfigEntry<List<T>> im
     @Override
     public int getMaxLength() {
         return maxLength;
+    }
+
+    @Override
+    public IComments getComments() {
+        IComments comments = super.getComments();
+        if (comments.showValidationParameters()) {
+            if (minLength != Integer.MIN_VALUE) {
+                comments.addValidationParameter("Minimum length: " + minLength);
+            }
+            if (maxLength != Integer.MAX_VALUE) {
+                comments.addValidationParameter("Maximum length: " + maxLength);
+            }
+        }
+        return comments;
     }
 }
