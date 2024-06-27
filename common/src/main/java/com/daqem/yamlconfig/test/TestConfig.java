@@ -20,6 +20,8 @@ public class TestConfig {
     public static IConfigEntry<List<String>> testStringList;
     public static IConfigEntry<List<Integer>> testIntList;
     public static IConfigEntry<Boolean> testBoolean;
+    public static IConfigEntry<Float> testFloat;
+    public static IConfigEntry<Double> testDouble;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
@@ -39,6 +41,10 @@ public class TestConfig {
         testIntList = builder.defineIntegerList("testIntList", List.of(1, 2, 3));
 
         testBoolean = builder.defineBoolean("testBoolean", true);
+
+        testFloat = builder.defineFloat("testFloat", 1.0F);
+
+        testDouble = builder.defineDouble("testDouble", 1.0D);
 
         config = builder.build();
     }

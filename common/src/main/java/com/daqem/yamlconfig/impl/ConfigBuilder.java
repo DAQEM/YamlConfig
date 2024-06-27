@@ -103,6 +103,26 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
+    public IFloatConfigEntry defineFloat(String key, float defaultValue) {
+        return define(new FloatConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IFloatConfigEntry defineFloat(String key, float defaultValue, float minValue, float maxValue) {
+        return define(new FloatConfigEntry(key, defaultValue, minValue, maxValue));
+    }
+
+    @Override
+    public IDoubleConfigEntry defineDouble(String key, double defaultValue) {
+        return define(new DoubleConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IDoubleConfigEntry defineDouble(String key, double defaultValue, double minValue, double maxValue) {
+        return define(new DoubleConfigEntry(key, defaultValue, minValue, maxValue));
+    }
+
+    @Override
     public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue) {
         return define(new IntegerListConfigEntry(key, defaultValue));
     }

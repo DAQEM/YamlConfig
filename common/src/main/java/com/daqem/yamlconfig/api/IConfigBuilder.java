@@ -29,6 +29,14 @@ public interface IConfigBuilder {
 
     IIntegerConfigEntry defineInteger(String key, int defaultValue, int minValue, int maxValue);
 
+    IFloatConfigEntry defineFloat(String key, float defaultValue);
+
+    IFloatConfigEntry defineFloat(String key, float defaultValue, float minValue, float maxValue);
+
+    IDoubleConfigEntry defineDouble(String key, double defaultValue);
+
+    IDoubleConfigEntry defineDouble(String key, double defaultValue, double minValue, double maxValue);
+
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue);
 
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue);
