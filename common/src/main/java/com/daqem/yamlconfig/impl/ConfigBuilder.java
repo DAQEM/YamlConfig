@@ -138,6 +138,11 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
+    public <E extends Enum<E>> IEnumConfigEntry<E> defineEnum(String key, E defaultValue, Class<E> enumClass) {
+        return define(new EnumConfigEntry<>(key, defaultValue, enumClass));
+    }
+
+    @Override
     public IStringConfigEntry defineString(String key, String defaultValue) {
         return define(new StringConfigEntry(key, defaultValue));
     }

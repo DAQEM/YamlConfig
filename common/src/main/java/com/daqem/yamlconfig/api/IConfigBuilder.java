@@ -43,6 +43,8 @@ public interface IConfigBuilder {
 
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength);
 
+    <E extends Enum<E>> IEnumConfigEntry<E> defineEnum(String key, E defaultValue, Class<E> enumClass);
+
     IStringConfigEntry defineString(String key, String defaultValue);
 
     IStringConfigEntry defineString(String key, String defaultValue, int minLength, int maxLength);

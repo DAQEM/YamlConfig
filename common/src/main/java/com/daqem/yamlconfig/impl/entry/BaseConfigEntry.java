@@ -7,7 +7,6 @@ import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import com.daqem.yamlconfig.impl.Comments;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
@@ -15,7 +14,7 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     private final String key;
     private final T defaultValue;
     private T value;
-    private IComments comments = new Comments(new ArrayList<>());
+    private final IComments comments = new Comments(new ArrayList<>());
 
 
     public BaseConfigEntry(String key, T defaultValue) {

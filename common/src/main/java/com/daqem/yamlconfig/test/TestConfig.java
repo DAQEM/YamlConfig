@@ -5,6 +5,7 @@ import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import com.daqem.yamlconfig.impl.ConfigBuilder;
 import com.daqem.yamlconfig.impl.entry.*;
+import net.minecraft.world.Difficulty;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ public class TestConfig {
     public static IConfigEntry<Boolean> testBoolean;
     public static IConfigEntry<Float> testFloat;
     public static IConfigEntry<Double> testDouble;
+    public static IConfigEntry<Difficulty> testEnum;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
@@ -45,6 +47,8 @@ public class TestConfig {
         testFloat = builder.defineFloat("testFloat", 1.0F);
 
         testDouble = builder.defineDouble("testDouble", 1.0D);
+
+        testEnum = builder.defineEnum("testEnum", Difficulty.NORMAL, Difficulty.class);
 
         config = builder.build();
     }
