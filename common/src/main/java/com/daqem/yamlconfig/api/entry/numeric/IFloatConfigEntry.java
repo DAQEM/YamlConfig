@@ -1,29 +1,31 @@
-package com.daqem.yamlconfig.api.entry;
+package com.daqem.yamlconfig.api.entry.numeric;
 
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
-public interface IDoubleConfigEntry extends INumericConfigEntry<Double> {
+public interface IFloatConfigEntry extends INumericConfigEntry<Float> {
 
-    StreamCodec<IDoubleConfigEntry, NodeTuple> CODEC = StreamCodec.of(
-            (doubleConfigEntry, node) -> {
+    StreamCodec<IFloatConfigEntry, NodeTuple> CODEC = StreamCodec.of(
+            (floatConfigEntry, node) -> {
                 if (node.getValueNode() instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT))) {
-                    doubleConfigEntry.setValue(Double.parseDouble(scalarNode.getValue()));
+                    floatConfigEntry.setValue(Float.parseFloat(scalarNode.getValue()));
                 }
             },
             integerConfigEntry -> {
                 ScalarNode keyNode = integerConfigEntry.createKeyNode();
-                ScalarNode valueNode = new ScalarNode(Tag.FLOAT, Double.toString(integerConfigEntry.getValue()), ScalarStyle.PLAIN);
+                ScalarNode valueNode = new ScalarNode(Tag.FLOAT, Float.toString(integerConfigEntry.getValue()), ScalarStyle.PLAIN);
                 return new NodeTuple(keyNode, valueNode);
             }
     );
 
     @Override
-    default <B extends IConfigEntry<Double>> StreamCodec<B, NodeTuple> getCodec() {
+    default <B extends IConfigEntry<Float>> StreamCodec<B, NodeTuple> getCodec() {
         //noinspection unchecked
         return (StreamCodec<B, NodeTuple>) CODEC;
     }
+
 }

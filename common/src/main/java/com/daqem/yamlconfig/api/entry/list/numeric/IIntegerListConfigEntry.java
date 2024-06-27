@@ -1,5 +1,7 @@
-package com.daqem.yamlconfig.api.entry;
+package com.daqem.yamlconfig.api.entry.list.numeric;
 
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.IListConfigEntry;
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;

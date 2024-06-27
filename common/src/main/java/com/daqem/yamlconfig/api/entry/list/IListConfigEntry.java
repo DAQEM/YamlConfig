@@ -1,4 +1,6 @@
-package com.daqem.yamlconfig.api.entry;
+package com.daqem.yamlconfig.api.entry.list;
+
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
 
 import java.util.List;
 

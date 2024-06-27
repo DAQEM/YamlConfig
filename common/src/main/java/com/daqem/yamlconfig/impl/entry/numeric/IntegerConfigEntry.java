@@ -1,6 +1,7 @@
-package com.daqem.yamlconfig.impl.entry;
+package com.daqem.yamlconfig.impl.entry.numeric;
 
-import com.daqem.yamlconfig.api.entry.IIntegerConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
+import com.daqem.yamlconfig.impl.entry.numeric.BaseNumericConfigEntry;
 
 public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implements IIntegerConfigEntry {
 

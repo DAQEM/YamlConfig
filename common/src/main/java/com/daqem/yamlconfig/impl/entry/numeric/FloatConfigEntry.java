@@ -1,6 +1,7 @@
-package com.daqem.yamlconfig.impl.entry;
+package com.daqem.yamlconfig.impl.entry.numeric;
 
-import com.daqem.yamlconfig.api.entry.IFloatConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
+import com.daqem.yamlconfig.impl.entry.numeric.BaseNumericConfigEntry;
 
 public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements IFloatConfigEntry {
 

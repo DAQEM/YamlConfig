@@ -1,12 +1,11 @@
-package com.daqem.yamlconfig.api.entry;
+package com.daqem.yamlconfig.api.entry.numeric;
 
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
-
-import java.util.List;
 
 public interface IIntegerConfigEntry extends INumericConfigEntry<Integer> {
 

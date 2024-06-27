@@ -10,6 +10,7 @@ import net.minecraft.world.Difficulty;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TestConfig {
 
@@ -24,6 +25,7 @@ public class TestConfig {
     public static IConfigEntry<Float> testFloat;
     public static IConfigEntry<Double> testDouble;
     public static IConfigEntry<Difficulty> testEnum;
+    public static IConfigEntry<Map<String, Integer>> testIntegerMap;
 
     public static void init() {
         ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML);
@@ -49,6 +51,8 @@ public class TestConfig {
         testDouble = builder.defineDouble("testDouble", 1.0D);
 
         testEnum = builder.defineEnum("testEnum", Difficulty.NORMAL, Difficulty.class);
+
+        testIntegerMap = builder.defineIntegerMap("testIntegerMap", Map.of("test1", 1, "test2", 2, "test3", 3));
 
         config = builder.build();
     }

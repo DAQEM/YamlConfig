@@ -4,7 +4,6 @@ import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IEnumConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> implements IEnumConfigEntry<E> {

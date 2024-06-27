@@ -1,19 +1,12 @@
-package com.daqem.yamlconfig.impl.entry;
+package com.daqem.yamlconfig.impl.entry.list;
 
 import com.daqem.yamlconfig.api.IComments;
-import com.daqem.yamlconfig.api.entry.IStringListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.IStringListConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
-import com.mojang.serialization.Codec;
-import net.minecraft.network.codec.StreamCodec;
+import com.daqem.yamlconfig.impl.entry.list.BaseListConfigEntry;
 import org.jetbrains.annotations.Nullable;
-import org.snakeyaml.engine.v2.comments.CommentLine;
-import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.nodes.AnchorNode;
-import org.snakeyaml.engine.v2.nodes.Node;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
 
 import java.util.List;
-import java.util.Optional;
 
 public class StringListConfigEntry extends BaseListConfigEntry<String> implements IStringListConfigEntry {
 

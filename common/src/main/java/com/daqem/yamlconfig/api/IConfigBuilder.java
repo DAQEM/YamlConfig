@@ -1,7 +1,12 @@
 package com.daqem.yamlconfig.api;
 
 import com.daqem.yamlconfig.api.entry.*;
-import com.daqem.yamlconfig.api.exception.YamlConfigException;
+import com.daqem.yamlconfig.api.entry.list.IStringListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IIntegerListConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IIntegerMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IDoubleConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -42,6 +47,8 @@ public interface IConfigBuilder {
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue);
 
     IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength);
+
+    IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue);
 
     <E extends Enum<E>> IEnumConfigEntry<E> defineEnum(String key, E defaultValue, Class<E> enumClass);
 

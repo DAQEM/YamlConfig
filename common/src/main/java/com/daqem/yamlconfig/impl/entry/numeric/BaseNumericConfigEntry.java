@@ -1,8 +1,9 @@
-package com.daqem.yamlconfig.impl.entry;
+package com.daqem.yamlconfig.impl.entry.numeric;
 
 import com.daqem.yamlconfig.api.IComments;
-import com.daqem.yamlconfig.api.entry.INumericConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.INumericConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.impl.entry.BaseConfigEntry;
 
 public abstract class BaseNumericConfigEntry<T extends Number & Comparable<T>> extends BaseConfigEntry<T> implements INumericConfigEntry<T> {
 

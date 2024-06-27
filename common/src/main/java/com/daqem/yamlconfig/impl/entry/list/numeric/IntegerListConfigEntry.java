@@ -1,8 +1,9 @@
-package com.daqem.yamlconfig.impl.entry;
+package com.daqem.yamlconfig.impl.entry.list.numeric;
 
 import com.daqem.yamlconfig.api.IComments;
-import com.daqem.yamlconfig.api.entry.IIntegerListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IIntegerListConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.impl.entry.list.BaseListConfigEntry;
 
 import java.util.List;
 

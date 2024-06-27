@@ -5,8 +5,20 @@ import com.daqem.yamlconfig.api.ConfigExtension;
 import com.daqem.yamlconfig.api.IConfig;
 import com.daqem.yamlconfig.api.IConfigBuilder;
 import com.daqem.yamlconfig.api.entry.*;
+import com.daqem.yamlconfig.api.entry.list.IStringListConfigEntry;
+import com.daqem.yamlconfig.api.entry.list.numeric.IIntegerListConfigEntry;
+import com.daqem.yamlconfig.api.entry.map.numeric.IIntegerMapConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IDoubleConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IFloatConfigEntry;
+import com.daqem.yamlconfig.api.entry.numeric.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.exception.YamlConfigException;
 import com.daqem.yamlconfig.impl.entry.*;
+import com.daqem.yamlconfig.impl.entry.list.StringListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.list.numeric.IntegerListConfigEntry;
+import com.daqem.yamlconfig.impl.entry.map.numeric.IntegerMapConfigEntry;
+import com.daqem.yamlconfig.impl.entry.numeric.DoubleConfigEntry;
+import com.daqem.yamlconfig.impl.entry.numeric.FloatConfigEntry;
+import com.daqem.yamlconfig.impl.entry.numeric.IntegerConfigEntry;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -135,6 +147,11 @@ public class ConfigBuilder implements IConfigBuilder {
     @Override
     public IIntegerListConfigEntry defineIntegerList(String key, List<Integer> defaultValue, int minValue, int maxValue, int minLength, int maxLength) {
         return define(new IntegerListConfigEntry(key, defaultValue, minValue, maxValue, minLength, maxLength));
+    }
+
+    @Override
+    public IIntegerMapConfigEntry defineIntegerMap(String key, Map<String, Integer> defaultValue) {
+        return define(new IntegerMapConfigEntry(key, defaultValue));
     }
 
     @Override
