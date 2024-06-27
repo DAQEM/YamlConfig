@@ -6,4 +6,7 @@ import java.util.Map;
 
 public interface IMapConfigEntry<T> extends IConfigEntry<Map<String, T>> {
 
+    int getMinLength();
+
+    int getMaxLength();
 }
