@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.api.entry;
 
 import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.comments.CommentLine;
 import org.snakeyaml.engine.v2.comments.CommentType;

@@ -3,6 +3,7 @@ package com.daqem.yamlconfig.impl.entry;
 import com.daqem.yamlconfig.api.IComments;
 import com.daqem.yamlconfig.api.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;

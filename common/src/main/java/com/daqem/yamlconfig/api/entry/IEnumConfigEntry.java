@@ -1,5 +1,7 @@
 package com.daqem.yamlconfig.api.entry;
 
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;

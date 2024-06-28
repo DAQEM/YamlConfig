@@ -3,6 +3,7 @@ package com.daqem.yamlconfig.impl;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.ConfigExtension;
 import com.daqem.yamlconfig.api.IConfig;
+import com.daqem.yamlconfig.api.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.yaml.YamlFileWriter;
 import org.snakeyaml.engine.v2.api.Dump;
@@ -19,6 +20,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 public class Config implements IConfig {
 
@@ -94,5 +97,10 @@ public class Config implements IConfig {
     @Override
     public IStackConfigEntry getContext() {
         return context;
+    }
+
+    @Override
+    public Map<String, IConfigEntry<?>> getEntries() {
+        return context.getEntries();
     }
 }

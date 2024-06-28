@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl;
 
+import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.ConfigExtension;
 import com.daqem.yamlconfig.api.IConfig;
@@ -101,7 +102,12 @@ public class ConfigBuilder implements IConfigBuilder {
         config.save();
 
         this.isBuilt = true;
+        initializeConfig(config);
         return config;
+    }
+
+    private void initializeConfig(IConfig config) {
+        YamlConfig.CONFIGS.computeIfAbsent(config.getModId(), k -> new HashMap<>()).put(config.getName(), config);
     }
 
     @Override

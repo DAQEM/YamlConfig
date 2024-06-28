@@ -16,7 +16,7 @@ public interface YamlConfigNetworking {
     }
 
     static void initServer() {
-
+        NetworkManager.registerS2CPayloadType(CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC);
     }
 
     static void init() {
