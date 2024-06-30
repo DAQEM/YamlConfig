@@ -8,8 +8,10 @@ import dev.architectury.networking.NetworkManager;
 public class PlayerJoinEvent {
 
     public static void registerEvent() {
-        PlayerEvent.PLAYER_JOIN.register(player -> {
-            NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(YamlConfig.CONFIGS.get("test").get("test-common")));
-        });
+        PlayerEvent.PLAYER_JOIN.register(player ->
+                YamlConfig.CONFIG_MANAGER.getAllConfigs().forEach(iConfig ->
+                        NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(iConfig))
+                )
+        );
     }
 }

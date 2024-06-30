@@ -1,6 +1,6 @@
 package com.daqem.yamlconfig.yaml;
 
-import com.daqem.yamlconfig.api.IConfig;
+import com.daqem.yamlconfig.api.config.IConfig;
 import org.snakeyaml.engine.v2.api.YamlOutputStreamWriter;
 
 import java.io.*;
