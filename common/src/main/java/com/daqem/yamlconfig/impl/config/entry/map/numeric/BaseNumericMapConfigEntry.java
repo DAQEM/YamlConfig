@@ -12,12 +12,8 @@ public abstract class BaseNumericMapConfigEntry<T extends Number & Comparable<T>
     private final T minValue;
     private final T maxValue;
 
-    public BaseNumericMapConfigEntry(String key, Map<String, T> defaultValue) {
-        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-
-    public BaseNumericMapConfigEntry(String key, Map<String, T> defaultValue, int minLength, int maxLength) {
-        this(key, defaultValue, minLength, maxLength, null, null);
+    public BaseNumericMapConfigEntry(String key, Map<String, T> defaultValue, T minValue, T maxValue) {
+        this(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, minValue, maxValue);
     }
 
     public BaseNumericMapConfigEntry(String key, Map<String, T> defaultValue, int minLength, int maxLength, T minValue, T maxValue) {

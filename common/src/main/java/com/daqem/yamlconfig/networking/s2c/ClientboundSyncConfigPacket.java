@@ -70,7 +70,7 @@ public class ClientboundSyncConfigPacket implements CustomPacketPayload {
     }
 
     @Environment(EnvType.CLIENT)
-    public static void handleClientSide(ClientboundSyncConfigPacket packet, NetworkManager.PacketContext context) {
-        packet.config.sync(packet.data);
+    public void handleClientSide(NetworkManager.PacketContext packetContext) {
+        config.sync(data);
     }
 }

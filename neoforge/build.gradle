@@ -43,6 +43,8 @@ dependencies {
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+
+    modImplementation "curse.maven:ui-933200:${project.ui_library_file_neoforge}"
 }
 
 processResources {

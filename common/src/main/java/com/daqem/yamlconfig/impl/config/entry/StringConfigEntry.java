@@ -6,6 +6,8 @@ import com.daqem.yamlconfig.api.config.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.StringConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
@@ -110,6 +112,11 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
     public IConfigEntryType<IConfigEntry<String>, String> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<String>, String>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STRING;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new StringConfigEntryComponent(key, this);
     }
 
 

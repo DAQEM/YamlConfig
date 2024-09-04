@@ -2,10 +2,15 @@ package com.daqem.yamlconfig.impl.config;
 
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
+import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.yaml.YamlFileWriter;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.StreamCodec;
 import org.snakeyaml.engine.v2.api.Dump;
 import org.snakeyaml.engine.v2.api.DumpSettings;
 import org.snakeyaml.engine.v2.api.LoadSettings;
@@ -18,24 +23,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Config implements IConfig {
+public abstract class BaseConfig implements IConfig {
 
     private final String modId;
     private final String name;
     private final ConfigExtension extension;
+    private final ConfigType type;
     private final Path path;
     private final IStackConfigEntry context;
     private boolean isSynced = false;
 
-    public Config(String modId, String name, ConfigExtension extension, Path path, IStackConfigEntry context) {
+    public BaseConfig(String modId, String name, ConfigExtension extension, ConfigType type, Path path, IStackConfigEntry context) {
         this.modId = modId;
         this.name = name;
         this.extension = extension;
+        this.type = type;
         this.path = path;
         this.context = context;
     }
@@ -45,13 +51,16 @@ public class Config implements IConfig {
         LoadSettings settings = LoadSettings.builder()
                 .setParseComments(true)
                 .build();
+
         try (FileInputStream inputStream = new FileInputStream(new File(path.toFile(), name + extension.getExtension()))) {
-            Node node = new Compose(settings).composeInputStream(inputStream)
-                    .orElseThrow(() -> new IOException("Failed to load config file: " + name + extension.getExtension()));
+            Compose compose = new Compose(settings);
+            Node node = compose.composeInputStream(inputStream).orElseThrow();
             if (node instanceof MappingNode mappingNode) {
-                context.getType().getSerializer().encodeNode(context, new NodeTuple(new ScalarNode(Tag.STR, "parent", ScalarStyle.PLAIN), mappingNode));
+                ScalarNode keyNode = new ScalarNode(Tag.STR, "parent", ScalarStyle.PLAIN);
+                NodeTuple nodeTuple = new NodeTuple(keyNode, mappingNode);
+                context.getType().getSerializer().encodeNode(context, nodeTuple);
             }
-            this.isSynced = false;
+            setSynced(false);
             YamlConfig.LOGGER.info("Loaded config file: " + name + extension.getExtension());
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
@@ -68,12 +77,27 @@ public class Config implements IConfig {
                 .setDefaultFlowStyle(FlowStyle.BLOCK)
                 .setDumpComments(true)
                 .build();
-        Dump dumper = new Dump(settings);
+
         try {
-            dumper.dumpNode(context.getType().getSerializer().decodeNode(context).getValueNode(), new YamlFileWriter(this, StandardCharsets.UTF_8));
+            Dump dumper = new Dump(settings);
+            YamlFileWriter streamDataWriter = new YamlFileWriter(this);
+            dumper.dumpNode(context.getType().getSerializer().decodeNode(context).getValueNode(), streamDataWriter);
         } catch (FileNotFoundException e) {
             YamlConfig.LOGGER.error("Failed to save config file: " + name + "." + extension.getExtension(), e);
         }
+    }
+
+    @Override
+    public void sync(Map<String, ?> data) {
+        if (data == null) return;
+        for (Map.Entry<String, IConfigEntry<?>> entry : this.getSyncEntries().entrySet()) {
+            IConfigEntry<?> configEntry = entry.getValue();
+            if (data.containsKey(entry.getKey())) {
+                //noinspection unchecked
+                ((IConfigEntry<Object>) configEntry).setValue(data.get(entry.getKey()));
+            }
+        }
+        setSynced(true);
     }
 
     @Override
@@ -89,6 +113,11 @@ public class Config implements IConfig {
     @Override
     public ConfigExtension getExtension() {
         return extension;
+    }
+
+    @Override
+    public ConfigType getType() {
+        return type;
     }
 
     @Override
@@ -114,19 +143,6 @@ public class Config implements IConfig {
     }
 
     @Override
-    public void sync(Map<String, ?> data) {
-        if (data == null) return;
-        for (Map.Entry<String, IConfigEntry<?>> entry : this.getSyncEntries().entrySet()) {
-            IConfigEntry<?> configEntry = entry.getValue();
-            if (data.containsKey(entry.getKey())) {
-                //noinspection unchecked
-                ((IConfigEntry<Object>) configEntry).setValue(data.get(entry.getKey()));
-            }
-        }
-        isSynced = true;
-    }
-
-    @Override
     public boolean isSynced() {
         return isSynced;
     }
@@ -135,4 +151,39 @@ public class Config implements IConfig {
     public void setSynced(boolean synced) {
         isSynced = synced;
     }
+
+    @Override
+    public Component getDisplayName() {
+        return YamlConfig.translatable(modId + "." + name);
+    }
+
+    @Override
+    public Component getModName() {
+        return YamlConfig.translatable(modId);
+    }
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, BaseConfig> STREAM_CODEC = StreamCodec.of(
+            (buf, config) -> {
+                buf.writeEnum(config.getType());
+
+                buf.writeUtf(config.getModId());
+                buf.writeUtf(config.getName());
+                buf.writeEnum(config.getExtension());
+                buf.writeUtf(config.getPath().toString());
+            },
+            buf -> {
+                ConfigType type = buf.readEnum(ConfigType.class);
+
+                String modId = buf.readUtf();
+                String name = buf.readUtf();
+                ConfigExtension extension = buf.readEnum(ConfigExtension.class);
+                Path path = Path.of(buf.readUtf());
+
+                return switch (type) {
+                    case CLIENT -> new ClientConfig(modId, name, extension, path, null);
+                    case COMMON -> new CommonConfig(modId, name, extension, path, null);
+                    case SERVER -> new ServerConfig(modId, name, extension, path, null);
+                };
+            }
+    );
 }

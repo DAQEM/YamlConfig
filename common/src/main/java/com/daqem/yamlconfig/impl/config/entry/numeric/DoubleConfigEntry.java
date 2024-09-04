@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -14,7 +16,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements IDoubleConfigEntry {
 
     public DoubleConfigEntry(String key, Double defaultValue) {
-        super(key, defaultValue);
+        super(key, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     public DoubleConfigEntry(String key, Double defaultValue, Double minValue, Double maxValue) {
@@ -25,6 +27,11 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
     public IConfigEntryType<IConfigEntry<Double>, Double> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Double>, Double>) (IConfigEntryType<?, ?>) ConfigEntryTypes.DOUBLE;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new DoubleConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleConfigEntry, Double> {

@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IDoubleListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.DoubleListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,11 +18,11 @@ import java.util.List;
 public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> implements IDoubleListConfigEntry {
 
     public DoubleListConfigEntry(String key, List<Double> value) {
-        super(key, value);
+        super(key, value, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     public DoubleListConfigEntry(String key, List<Double> value, int minLength, int maxLength) {
-        super(key, value, minLength, maxLength);
+        super(key, value, minLength, maxLength, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     public DoubleListConfigEntry(String key, List<Double> value, int minLength, int maxLength, Double minValue, Double maxValue) {
@@ -31,6 +33,11 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
     public IConfigEntryType<IConfigEntry<List<Double>>, List<Double>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<List<Double>>, List<Double>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.DOUBLE_LIST;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new DoubleListConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleListConfigEntry, List<Double>> {

@@ -12,7 +12,6 @@ public class SideProxyNeoForge {
 
     public SideProxyNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         //Run common code
-        LOGGER.info("Running common code");
     }
 
     public static class Client extends SideProxyNeoForge {
@@ -21,7 +20,6 @@ public class SideProxyNeoForge {
             super(modEventBus, modContainer);
             YamlConfigClient.init();
             //Run client code
-            LOGGER.info("Running client code");
         }
 
     }
@@ -31,7 +29,6 @@ public class SideProxyNeoForge {
         public Server(IEventBus modEventBus, ModContainer modContainer) {
             super(modEventBus, modContainer);
             //Run server code
-            LOGGER.info("Running server code");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.daqem.yamlconfig.impl.config;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
+import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.IConfigBuilder;
 import com.daqem.yamlconfig.api.config.entry.*;
@@ -15,6 +16,7 @@ import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
@@ -29,10 +31,12 @@ import com.daqem.yamlconfig.impl.config.entry.map.numeric.DoubleMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.IntegerMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -43,6 +47,7 @@ public class ConfigBuilder implements IConfigBuilder {
     private final String modId;
     private final String name;
     private final ConfigExtension extension;
+    private final ConfigType type;
     private final Path path;
     private boolean isBuilt = false;
 
@@ -57,13 +62,30 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension) {
-        this(modId, name, extension, YamlConfigExpectPlatform.getConfigDirectory());
+        this(modId, name, extension, ConfigType.COMMON, YamlConfigExpectPlatform.getConfigDirectory());
+    }
+
+    public ConfigBuilder(String modId, String name, ConfigType type) {
+        this(modId, name, ConfigExtension.YAML, type, YamlConfigExpectPlatform.getConfigDirectory());
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension, Path path) {
+        this(modId, name, extension, ConfigType.COMMON, path);
+    }
+
+    public ConfigBuilder(String modId, String name, ConfigType type, Path path) {
+        this(modId, name, ConfigExtension.YAML, type, path);
+    }
+
+    public ConfigBuilder(String modId, String name, ConfigExtension extension, ConfigType type) {
+        this(modId, name, extension, type, YamlConfigExpectPlatform.getConfigDirectory());
+    }
+
+    public ConfigBuilder(String modId, String name, ConfigExtension extension, ConfigType type, Path path) {
         this.modId = modId;
         this.name = name;
         this.extension = extension;
+        this.type = type;
         this.path = path;
     }
 
@@ -97,7 +119,13 @@ public class ConfigBuilder implements IConfigBuilder {
         if (isBuilt) {
             throw new IllegalStateException("Config has already been built");
         }
-        IConfig config = new Config(this.modId, this.name, this.extension, this.path, contextStack.getFirst());
+
+        IConfig config = switch (this.type) {
+            case CLIENT -> new ClientConfig(this.modId, this.name, this.extension, this.path, contextStack.peek());
+            case COMMON -> new CommonConfig(this.modId, this.name, this.extension, this.path, contextStack.peek());
+            case SERVER -> new ServerConfig(this.modId, this.name, this.extension, this.path, contextStack.peek());
+        };
+
         config.load();
         config.save();
 
@@ -348,6 +376,16 @@ public class ConfigBuilder implements IConfigBuilder {
     @Override
     public <T> IRegistryConfigEntry<T> defineRegistry(String key, T defaultValue, Registry<T> registry) {
         return define(new RegistryConfigEntry<>(key, defaultValue, registry));
+    }
+
+    @Override
+    public IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue) {
+        return define(new ResourceLocationConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue, String pattern) {
+        return define(new ResourceLocationConfigEntry(key, defaultValue, pattern));
     }
 
     @Override

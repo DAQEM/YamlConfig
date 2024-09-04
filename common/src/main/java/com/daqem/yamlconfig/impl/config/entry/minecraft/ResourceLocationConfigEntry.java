@@ -6,6 +6,9 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEn
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocationConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,6 +42,11 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
     public IConfigEntryType<IConfigEntry<ResourceLocation>, ResourceLocation> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<ResourceLocation>, ResourceLocation>) (IConfigEntryType<?, ?>) ConfigEntryTypes.RESOURCE_LOCATION;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new ResourceLocationConfigEntryComponent(key, this);
     }
 
     @Override

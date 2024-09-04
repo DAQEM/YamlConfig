@@ -6,6 +6,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.BooleanConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -27,6 +29,11 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
     public IConfigEntryType<IConfigEntry<Boolean>, Boolean> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Boolean>, Boolean>) (IConfigEntryType<?, ?>) ConfigEntryTypes.BOOLEAN;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new BooleanConfigEntryComponent(key, this);
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IIntegerListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.IntegerListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -16,11 +18,11 @@ import java.util.List;
 public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> implements IIntegerListConfigEntry {
 
     public IntegerListConfigEntry(String key, List<Integer> value) {
-        super(key, value);
+        super(key, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public IntegerListConfigEntry(String key, List<Integer> value, int minLength, int maxLength) {
-        super(key, value, minLength, maxLength);
+        super(key, value, minLength, maxLength, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public IntegerListConfigEntry(String key, List<Integer> value, int minLength, int maxLength, Integer minValue, Integer maxValue) {
@@ -31,6 +33,11 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
     public IConfigEntryType<IConfigEntry<List<Integer>>, List<Integer>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<List<Integer>>, List<Integer>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.INTEGER_LIST;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new IntegerListConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IIntegerListConfigEntry, List<Integer>> {

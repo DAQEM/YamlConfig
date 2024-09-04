@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.FloatMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,11 +22,11 @@ import java.util.stream.Collectors;
 public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implements IFloatMapConfigEntry {
 
     public FloatMapConfigEntry(String key, Map<String, Float> defaultValue) {
-        super(key, defaultValue);
+        super(key, defaultValue, Float.MIN_VALUE, Float.MAX_VALUE);
     }
 
     public FloatMapConfigEntry(String key, Map<String, Float> defaultValue, int minLength, int maxLength) {
-        super(key, defaultValue, minLength, maxLength);
+        super(key, defaultValue, minLength, maxLength, Float.MIN_VALUE, Float.MAX_VALUE);
     }
 
     public FloatMapConfigEntry(String key, Map<String, Float> defaultValue, int minLength, int maxLength, Float minValue, Float maxValue) {
@@ -35,6 +37,11 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
     public IConfigEntryType<IConfigEntry<Map<String, Float>>, Map<String, Float>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, Float>>, Map<String, Float>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.FLOAT_MAP;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new FloatMapConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IFloatMapConfigEntry, Map<String, Float>> {

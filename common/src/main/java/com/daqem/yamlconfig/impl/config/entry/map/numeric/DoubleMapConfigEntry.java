@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.DoubleMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,11 +22,11 @@ import java.util.stream.Collectors;
 public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> implements IDoubleMapConfigEntry {
 
     public DoubleMapConfigEntry(String key, Map<String, Double> defaultValue) {
-        super(key, defaultValue);
+        super(key, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     public DoubleMapConfigEntry(String key, Map<String, Double> defaultValue, int minLength, int maxLength) {
-        super(key, defaultValue, minLength, maxLength);
+        super(key, defaultValue, minLength, maxLength, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
     public DoubleMapConfigEntry(String key, Map<String, Double> defaultValue, int minLength, int maxLength, Double minValue, Double maxValue) {
@@ -35,6 +37,11 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
     public IConfigEntryType<IConfigEntry<Map<String, Double>>, Map<String, Double>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, Double>>, Map<String, Double>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.DOUBLE_MAP;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new DoubleMapConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleMapConfigEntry, Map<String, Double>> {

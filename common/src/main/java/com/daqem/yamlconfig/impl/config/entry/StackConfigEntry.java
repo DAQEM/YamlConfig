@@ -4,6 +4,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -28,6 +29,11 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
     public IConfigEntryType<IConfigEntry<Map<String, IConfigEntry<?>>>, Map<String, IConfigEntry<?>>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, IConfigEntry<?>>>, Map<String, IConfigEntry<?>>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STACK;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        throw new UnsupportedOperationException("StackConfigEntry does not support components");
     }
 
     public static class Serializer implements IConfigEntrySerializer<IStackConfigEntry, Map<String, IConfigEntry<?>>> {

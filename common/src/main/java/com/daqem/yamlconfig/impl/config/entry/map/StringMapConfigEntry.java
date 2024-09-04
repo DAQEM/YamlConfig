@@ -6,6 +6,8 @@ import com.daqem.yamlconfig.api.config.entry.map.IStringMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.StringMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -30,11 +32,11 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
     }
 
     public StringMapConfigEntry(String key, Map<String, String> defaultValue, int minLength, int maxLength) {
-        this(key, defaultValue, minLength, maxLength, null, null);
+        this(key, defaultValue, minLength, maxLength, null, List.of());
     }
 
     public StringMapConfigEntry(String key, Map<String, String> defaultValue, int minLength, int maxLength, String pattern) {
-        this(key, defaultValue, minLength, maxLength, pattern, null);
+        this(key, defaultValue, minLength, maxLength, pattern, List.of());
     }
 
     public StringMapConfigEntry(String key, Map<String, String> defaultValue, int minLength, int maxLength, List<String> validValues) {
@@ -64,7 +66,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
             if (pattern != null && !entry.getValue().matches(pattern)) {
                 throw new ConfigEntryValidationException(getKey(), "Value '" + entry.getValue() + "' does not match pattern '" + pattern + "'");
             }
-            if (validValues != null && !validValues.contains(entry.getValue())) {
+            if (!validValues.isEmpty() && !validValues.contains(entry.getValue())) {
                 throw new ConfigEntryValidationException(getKey(), "Value '" + entry.getValue() + "' is not a valid value");
             }
         }
@@ -74,6 +76,11 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
     public IConfigEntryType<IConfigEntry<Map<String, String>>, Map<String, String>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, String>>, Map<String, String>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STRING_MAP;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new StringMapConfigEntryComponent(key, this);
     }
 
     @Override

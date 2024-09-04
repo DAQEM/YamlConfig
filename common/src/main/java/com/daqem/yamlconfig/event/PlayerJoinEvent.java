@@ -9,7 +9,7 @@ public class PlayerJoinEvent {
 
     public static void registerEvent() {
         PlayerEvent.PLAYER_JOIN.register(player ->
-                YamlConfig.CONFIG_MANAGER.getAllConfigs().forEach(iConfig ->
+                YamlConfig.CONFIG_MANAGER.getAllCommonConfigs().forEach(iConfig ->
                         NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(iConfig))
                 )
         );

@@ -6,6 +6,12 @@ public interface IConfigManager {
 
     List<IConfig> getAllConfigs();
 
+    List<IConfig> getAllCommonConfigs();
+
+    List<IConfig> getAllServerAndCommonConfigs();
+
+    List<IConfig> getAllClientConfigs();
+
     List<IConfig> getConfigs(String modId);
 
     IConfig getConfig(String modId, String configName);

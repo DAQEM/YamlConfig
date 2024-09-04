@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.api.config;
 
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import net.minecraft.network.chat.Component;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -18,6 +19,8 @@ public interface IConfig {
 
     ConfigExtension getExtension();
 
+    ConfigType getType();
+
     Path getPath();
 
     IStackConfigEntry getContext();
@@ -31,4 +34,8 @@ public interface IConfig {
     boolean isSynced();
 
     void setSynced(boolean synced);
+
+    Component getDisplayName();
+
+    Component getModName();
 }

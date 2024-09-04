@@ -4,17 +4,14 @@ import com.daqem.yamlconfig.api.config.entry.comment.IComments;
 import com.daqem.yamlconfig.api.config.entry.numeric.INumericConfigEntry;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseNumericConfigEntry<T extends Number & Comparable<T>> extends BaseConfigEntry<T> implements INumericConfigEntry<T> {
 
     private final T minValue;
     private final T maxValue;
 
-    public BaseNumericConfigEntry(String key, T defaultValue) {
-        this(key, defaultValue, null, null);
-    }
-
-    public BaseNumericConfigEntry(String key, T defaultValue, T minValue, T maxValue) {
+    public BaseNumericConfigEntry(String key, @NotNull T defaultValue, @NotNull T minValue, @NotNull T maxValue) {
         super(key, defaultValue);
         this.minValue = minValue;
         this.maxValue = maxValue;

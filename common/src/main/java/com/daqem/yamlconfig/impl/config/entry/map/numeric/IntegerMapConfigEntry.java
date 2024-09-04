@@ -4,6 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.IntegerMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -20,11 +22,11 @@ import java.util.stream.Collectors;
 public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> implements IIntegerMapConfigEntry {
 
     public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue) {
-        super(key, defaultValue);
+        super(key, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue, int minLength, int maxLength) {
-        super(key, defaultValue, minLength, maxLength);
+        super(key, defaultValue, minLength, maxLength, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public IntegerMapConfigEntry(String key, Map<String, Integer> defaultValue, int minLength, int maxLength, Integer minValue, Integer maxValue) {
@@ -35,6 +37,11 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
     public IConfigEntryType<IConfigEntry<Map<String, Integer>>, Map<String, Integer>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, Integer>>, Map<String, Integer>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.INTEGER_MAP;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new IntegerMapConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IIntegerMapConfigEntry, Map<String, Integer>> {

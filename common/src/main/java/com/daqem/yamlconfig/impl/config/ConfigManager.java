@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.impl.config;
 
+import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.IConfigManager;
 
@@ -14,6 +15,27 @@ public class ConfigManager implements IConfigManager {
     @Override
     public List<IConfig> getAllConfigs() {
         return configs.values().stream().flatMap(m -> m.values().stream()).toList();
+    }
+
+    @Override
+    public List<IConfig> getAllCommonConfigs() {
+        return getAllConfigs().stream()
+                .filter(c -> c.getType() == ConfigType.COMMON)
+                .toList();
+    }
+
+    @Override
+    public List<IConfig> getAllServerAndCommonConfigs() {
+        return getAllConfigs().stream()
+                .filter(c -> c.getType() == ConfigType.COMMON || c.getType() == ConfigType.SERVER)
+                .toList();
+    }
+
+    @Override
+    public List<IConfig> getAllClientConfigs() {
+        return getAllConfigs().stream()
+                .filter(c -> c.getType() == ConfigType.CLIENT)
+                .toList();
     }
 
     @Override
@@ -43,7 +65,7 @@ public class ConfigManager implements IConfigManager {
 
     @Override
     public void reloadSyncedConfigs() {
-        getAllConfigs().stream()
+        getAllCommonConfigs().stream()
                 .filter(IConfig::isSynced)
                 .forEach(IConfig::load);
     }

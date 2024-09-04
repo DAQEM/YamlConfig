@@ -10,10 +10,12 @@ import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -129,6 +131,10 @@ public interface IConfigBuilder {
     IDateTimeConfigEntry defineDateTime(String key, LocalDateTime defaultValue, LocalDateTime minDateTime, LocalDateTime maxDateTime);
 
     <T> IRegistryConfigEntry<T> defineRegistry(String key, T defaultValue, Registry<T> registry);
+
+    IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue);
+
+    IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue, String pattern);
 
     void pop();
 

@@ -6,6 +6,8 @@ import com.daqem.yamlconfig.api.config.entry.IDateTimeConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.DateTimeConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -44,6 +46,11 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
     public IConfigEntryType<IConfigEntry<LocalDateTime>, LocalDateTime> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<LocalDateTime>, LocalDateTime>) (IConfigEntryType<?, ?>) ConfigEntryTypes.DATE_TIME;
+    }
+
+    @Override
+    public IConfigEntryComponent<?, ?> createComponent(String key) {
+        return new DateTimeConfigEntryComponent(key, this);
     }
 
     @Override

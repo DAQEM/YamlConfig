@@ -12,12 +12,8 @@ public abstract class BaseNumericListConfigEntry<T extends Number & Comparable<T
     private final T minValue;
     private final T maxValue;
 
-    public BaseNumericListConfigEntry(String key, List<T> value) {
-        this(key, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
-    }
-
-    public BaseNumericListConfigEntry(String key, List<T> value, int minLength, int maxLength) {
-        this(key, value, minLength, maxLength, null, null);
+    public BaseNumericListConfigEntry(String key, List<T> value, T minValue, T maxValue) {
+        this(key, value, Integer.MIN_VALUE, Integer.MAX_VALUE, minValue, maxValue);
     }
 
     public BaseNumericListConfigEntry(String key, List<T> value, int minLength, int maxLength, T minValue, T maxValue) {
