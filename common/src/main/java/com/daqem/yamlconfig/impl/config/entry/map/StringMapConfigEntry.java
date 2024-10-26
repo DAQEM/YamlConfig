@@ -131,13 +131,36 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry, Map<String, String> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry, Map<String, String> value) {
             buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
         }
 
         @Override
-        public Map<String, String> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Map<String, String> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
+            buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
+        }
+
+        @Override
+        public IStringMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            Map<String, String> value = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            String pattern = buf.readUtf();
+            List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
+            StringMapConfigEntry configEntry = new StringMapConfigEntry(key, value, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

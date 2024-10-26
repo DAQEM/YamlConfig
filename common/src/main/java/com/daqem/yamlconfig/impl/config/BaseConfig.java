@@ -6,7 +6,11 @@ import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
+import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.yaml.YamlFileWriter;
+import com.mojang.datafixers.util.Function5;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -53,7 +57,7 @@ public abstract class BaseConfig implements IConfig {
 
         try (FileInputStream inputStream = new FileInputStream(new File(path.toFile(), name + extension.getExtension()))) {
             Compose compose = new Compose(settings);
-            Node node = compose.composeInputStream(inputStream).orElseThrow();
+            Node node = compose.composeInputStream(inputStream).orElseThrow(FileNotFoundException::new);
             if (node instanceof MappingNode mappingNode) {
                 ScalarNode keyNode = new ScalarNode(Tag.STR, "parent", ScalarStyle.PLAIN);
                 NodeTuple nodeTuple = new NodeTuple(keyNode, mappingNode);
@@ -185,4 +189,37 @@ public abstract class BaseConfig implements IConfig {
                 };
             }
     );
+
+    public static class BaseConfigSerializer<T extends IConfig> implements IConfigSerializer<T> {
+
+        private final Function5<String, String, ConfigExtension, Path, IStackConfigEntry, T> configConstructor;
+
+        public BaseConfigSerializer(Function5<String, String, ConfigExtension, Path, IStackConfigEntry, T> configConstructor) {
+            this.configConstructor = configConstructor;
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, T config) {
+            buf.writeUtf(config.getModId());
+            buf.writeUtf(config.getName());
+            buf.writeEnum(config.getExtension());
+            buf.writeUtf(config.getPath().toString());
+
+            IConfigEntryType<IStackConfigEntry, Map<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
+            type.getSerializer().toNetwork(buf, config.getContext());
+        }
+
+        @Override
+        public T fromNetwork(RegistryFriendlyByteBuf buf) {
+            String modId = buf.readUtf();
+            String name = buf.readUtf();
+            ConfigExtension extension = buf.readEnum(ConfigExtension.class);
+            Path path = Path.of(buf.readUtf());
+
+            IConfigEntryType<IStackConfigEntry, Map<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
+            IStackConfigEntry context = type.getSerializer().fromNetwork(buf);
+
+            return configConstructor.apply(modId, name, extension, path, context);
+        }
+    }
 }

@@ -62,13 +62,36 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleListConfigEntry configEntry, List<Double> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IDoubleListConfigEntry configEntry, List<Double> value) {
             buf.writeCollection(value, FriendlyByteBuf::writeDouble);
         }
 
         @Override
-        public List<Double> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public List<Double> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readList(FriendlyByteBuf::readDouble);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleListConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeDouble);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeDouble(configEntry.getMinValue());
+            buf.writeDouble(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IDoubleListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            List<Double> value = buf.readList(FriendlyByteBuf::readDouble);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            double minValue = buf.readDouble();
+            double maxValue = buf.readDouble();
+            DoubleListConfigEntry configEntry = new DoubleListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

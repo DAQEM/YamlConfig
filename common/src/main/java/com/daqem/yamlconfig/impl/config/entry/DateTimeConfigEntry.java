@@ -97,13 +97,32 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IDateTimeConfigEntry configEntry, LocalDateTime value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IDateTimeConfigEntry configEntry, LocalDateTime value) {
             buf.writeLong(value.toEpochSecond(ZoneOffset.UTC));
         }
 
         @Override
-        public LocalDateTime fromNetwork(RegistryFriendlyByteBuf buf) {
+        public LocalDateTime valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IDateTimeConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeLong(configEntry.get().toEpochSecond(ZoneOffset.UTC));
+            buf.writeLong(configEntry.getMinDateTime() != null ? configEntry.getMinDateTime().toEpochSecond(ZoneOffset.UTC) : Long.MIN_VALUE);
+            buf.writeLong(configEntry.getMaxDateTime() != null ? configEntry.getMaxDateTime().toEpochSecond(ZoneOffset.UTC) : Long.MAX_VALUE);
+        }
+
+        @Override
+        public IDateTimeConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            LocalDateTime value = LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC);
+            LocalDateTime minDateTime = buf.readLong() != Long.MIN_VALUE ? LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC) : null;
+            LocalDateTime maxDateTime = buf.readLong() != Long.MAX_VALUE ? LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC) : null;
+            DateTimeConfigEntry configEntry = new DateTimeConfigEntry(key, value, minDateTime, maxDateTime);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

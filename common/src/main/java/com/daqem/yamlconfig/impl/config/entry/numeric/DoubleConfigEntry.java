@@ -51,13 +51,33 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleConfigEntry configEntry, Double value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IDoubleConfigEntry configEntry, Double value) {
             buf.writeDouble(value);
         }
 
         @Override
-        public Double fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Double valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readDouble();
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeDouble(configEntry.get());
+            buf.writeDouble(configEntry.getMinValue());
+            buf.writeDouble(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IDoubleConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            DoubleConfigEntry configEntry = new DoubleConfigEntry(
+                    buf.readUtf(),
+                    buf.readDouble(),
+                    buf.readDouble(),
+                    buf.readDouble()
+            );
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

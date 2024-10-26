@@ -78,17 +78,40 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IEnumConfigEntry<E> configEntry, E value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IEnumConfigEntry<E> configEntry, E value) {
             buf.writeUtf(configEntry.getEnumClass().getName());
             buf.writeEnum(value);
         }
 
         @Override
-        public E fromNetwork(RegistryFriendlyByteBuf buf) {
+        public E valueFromNetwork(RegistryFriendlyByteBuf buf) {
             try {
                 //noinspection unchecked
                 Class<E> enumClass = (Class<E>) Class.forName(buf.readUtf());
                 return buf.readEnum(enumClass);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IEnumConfigEntry<E> configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeUtf(configEntry.getEnumClass().getName());
+            buf.writeUtf(configEntry.get().name());
+        }
+
+        @Override
+        public IEnumConfigEntry<E> fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            String enumClassName = buf.readUtf();
+            String enumValue = buf.readUtf();
+            try {
+                //noinspection unchecked
+                Class<E> enumClass = (Class<E>) Class.forName(enumClassName);
+                EnumConfigEntry<E> configEntry = new EnumConfigEntry<>(key, Enum.valueOf(enumClass, enumValue), enumClass);
+                configEntry.setValue(configEntry.getDefaultValue());
+                return configEntry;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }

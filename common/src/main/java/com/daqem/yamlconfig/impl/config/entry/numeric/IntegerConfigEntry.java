@@ -51,13 +51,33 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerConfigEntry configEntry, Integer value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IIntegerConfigEntry configEntry, Integer value) {
             buf.writeInt(value);
         }
 
         @Override
-        public Integer fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Integer valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readInt();
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeInt(configEntry.get());
+            buf.writeInt(configEntry.getMinValue());
+            buf.writeInt(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IIntegerConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            IntegerConfigEntry configEntry = new IntegerConfigEntry(
+                    buf.readUtf(),
+                    buf.readInt(),
+                    buf.readInt(),
+                    buf.readInt()
+            );
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

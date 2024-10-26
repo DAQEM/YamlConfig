@@ -46,7 +46,7 @@ public class ConfigsCategoryComponent extends AbstractComponent<ConfigsCategoryC
                             ConfigType type = config.getType();
                             switch (type) {
                                 case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
-                                case COMMON -> Minecraft.getInstance().setScreen(new ConfigScreen(screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
+                                case COMMON -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                                 case SERVER -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
                             return true;

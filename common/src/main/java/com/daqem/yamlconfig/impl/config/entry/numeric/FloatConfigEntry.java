@@ -51,13 +51,34 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatConfigEntry configEntry, Float value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IFloatConfigEntry configEntry, Float value) {
             buf.writeFloat(value);
         }
 
         @Override
-        public Float fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Float valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readFloat();
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeFloat(configEntry.get());
+            buf.writeFloat(configEntry.getMinValue());
+            buf.writeFloat(configEntry.getMaxValue());
+
+        }
+
+        @Override
+        public IFloatConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            FloatConfigEntry configEntry = new FloatConfigEntry(
+                    buf.readUtf(),
+                    buf.readFloat(),
+                    buf.readFloat(),
+                    buf.readFloat()
+            );
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

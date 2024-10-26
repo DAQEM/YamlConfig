@@ -62,13 +62,36 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatListConfigEntry configEntry, List<Float> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IFloatListConfigEntry configEntry, List<Float> value) {
             buf.writeCollection(value, FriendlyByteBuf::writeFloat);
         }
 
         @Override
-        public List<Float> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public List<Float> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readList(FriendlyByteBuf::readFloat);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatListConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeFloat);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeFloat(configEntry.getMinValue());
+            buf.writeFloat(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IFloatListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            List<Float> value = buf.readList(FriendlyByteBuf::readFloat);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            float minValue = buf.readFloat();
+            float maxValue = buf.readFloat();
+            FloatListConfigEntry configEntry = new FloatListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

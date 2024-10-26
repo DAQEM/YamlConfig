@@ -62,13 +62,26 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IBooleanConfigEntry configEntry, Boolean value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IBooleanConfigEntry configEntry, Boolean value) {
             buf.writeBoolean(value);
         }
 
         @Override
-        public Boolean fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Boolean valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readBoolean();
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IBooleanConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeBoolean(configEntry.get());
+        }
+
+        @Override
+        public IBooleanConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            BooleanConfigEntry configEntry = new BooleanConfigEntry(buf.readUtf(), buf.readBoolean());
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

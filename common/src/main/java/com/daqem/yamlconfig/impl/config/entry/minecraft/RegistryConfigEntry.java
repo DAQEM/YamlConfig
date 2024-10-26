@@ -86,7 +86,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry, T value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry, T value) {
             buf.writeResourceKey(configEntry.getRegistry().key());
             buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(value)));
 
@@ -94,11 +94,30 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
 
         @Override
         @SuppressWarnings("unchecked")
-        public T fromNetwork(RegistryFriendlyByteBuf buf) {
+        public T valueFromNetwork(RegistryFriendlyByteBuf buf) {
             ResourceKey<Registry<Object>> key = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
             ResourceLocation resourceLocation = buf.readResourceLocation();
             Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(key);
             return (T) Objects.requireNonNull(registry).get(resourceLocation);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeResourceKey(configEntry.getRegistry().key());
+            buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public IRegistryConfigEntry<T> fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            ResourceKey<Registry<Object>> registryKey = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
+            ResourceLocation resourceLocation = buf.readResourceLocation();
+            Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
+            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, registry.get(resourceLocation), registry);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return (IRegistryConfigEntry<T>) configEntry;
         }
     }
 }

@@ -130,13 +130,36 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IStringListConfigEntry configEntry, List<String> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IStringListConfigEntry configEntry, List<String> value) {
             buf.writeCollection(value, FriendlyByteBuf::writeUtf);
         }
 
         @Override
-        public List<String> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public List<String> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readList(FriendlyByteBuf::readUtf);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IStringListConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeUtf);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
+            buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
+        }
+
+        @Override
+        public IStringListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            String key = buf.readUtf();
+            List<String> value = buf.readList(FriendlyByteBuf::readUtf);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            String pattern = buf.readUtf();
+            List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
+            StringListConfigEntry configEntry = new StringListConfigEntry(key, value, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

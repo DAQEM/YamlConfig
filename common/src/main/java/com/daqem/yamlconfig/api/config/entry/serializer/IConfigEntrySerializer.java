@@ -10,7 +10,11 @@ public interface IConfigEntrySerializer<C extends IConfigEntry<T>, T> {
 
     NodeTuple decodeNode(C configEntry);
 
-    void toNetwork(RegistryFriendlyByteBuf buf, C configEntry, T value);
+    void valueToNetwork(RegistryFriendlyByteBuf buf, C configEntry, T value);
 
-    T fromNetwork(RegistryFriendlyByteBuf buf);
+    T valueFromNetwork(RegistryFriendlyByteBuf buf);
+
+    void toNetwork(RegistryFriendlyByteBuf buf, C configEntry);
+
+    C fromNetwork(RegistryFriendlyByteBuf buf);
 }

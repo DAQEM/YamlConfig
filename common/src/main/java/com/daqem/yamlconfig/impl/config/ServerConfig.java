@@ -3,9 +3,14 @@ package com.daqem.yamlconfig.impl.config;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
 import com.daqem.yamlconfig.api.config.ConfigType;
+import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
+import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import dev.architectury.utils.EnvExecutor;
 import net.fabricmc.api.EnvType;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -34,5 +39,12 @@ public class ServerConfig extends BaseConfig {
     @Override
     public void setSynced(boolean synced) {
         super.setSynced(false);
+    }
+
+    public static class Serializer extends BaseConfigSerializer<ServerConfig> {
+
+        public Serializer() {
+            super(ServerConfig::new);
+        }
     }
 }

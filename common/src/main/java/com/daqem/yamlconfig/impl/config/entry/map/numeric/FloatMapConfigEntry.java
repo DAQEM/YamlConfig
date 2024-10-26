@@ -75,13 +75,37 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatMapConfigEntry configEntry, Map<String, Float> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IFloatMapConfigEntry configEntry, Map<String, Float> value) {
             buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
         }
 
         @Override
-        public Map<String, Float> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Map<String, Float> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readFloat);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IFloatMapConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeFloat(configEntry.getMinValue());
+            buf.writeFloat(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IFloatMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            FloatMapConfigEntry configEntry = new FloatMapConfigEntry(
+                    buf.readUtf(),
+                    buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readFloat),
+                    buf.readInt(),
+                    buf.readInt(),
+                    buf.readFloat(),
+                    buf.readFloat()
+            );
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }

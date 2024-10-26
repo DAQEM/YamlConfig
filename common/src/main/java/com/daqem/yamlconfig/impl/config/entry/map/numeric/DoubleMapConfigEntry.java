@@ -74,13 +74,37 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry, Map<String, Double> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry, Map<String, Double> value) {
             buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
         }
 
         @Override
-        public Map<String, Double> fromNetwork(RegistryFriendlyByteBuf buf) {
+        public Map<String, Double> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble);
+        }
+
+        @Override
+        public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry) {
+            buf.writeUtf(configEntry.getKey());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
+            buf.writeInt(configEntry.getMinLength());
+            buf.writeInt(configEntry.getMaxLength());
+            buf.writeDouble(configEntry.getMinValue());
+            buf.writeDouble(configEntry.getMaxValue());
+        }
+
+        @Override
+        public IDoubleMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+            DoubleMapConfigEntry configEntry = new DoubleMapConfigEntry(
+                    buf.readUtf(),
+                    buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble),
+                    buf.readInt(),
+                    buf.readInt(),
+                    buf.readDouble(),
+                    buf.readDouble()
+            );
+            configEntry.setValue(configEntry.getDefaultValue());
+            return configEntry;
         }
     }
 }
