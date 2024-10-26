@@ -13,4 +13,4 @@ include("fabric")
 //include("forge")
 include("neoforge")
 
-rootProject.name = "minecraft-template"
+rootProject.name = "YAML Config 1.21"

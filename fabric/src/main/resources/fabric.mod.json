@@ -12,18 +12,21 @@
     "sources": "${mod_repository}"
   },
   "license": "${mod_license}",
-  "icon": "assets/template/icon.png",
+  "icon": "assets/yamlconfig/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.daqem.template.fabric.TemplateCommonFabric"
+      "com.daqem.yamlconfig.fabric.YamlConfigCommonFabric"
     ],
     "client": [
-      "com.daqem.template.fabric.TemplateClientFabric"
+      "com.daqem.yamlconfig.fabric.YamlConfigClientFabric"
+    ],
+    "server": [
+      "com.daqem.yamlconfig.fabric.YamlConfigServerFabric"
     ]
   },
   "mixins": [
-    "template-common.mixins.json"
+    "yamlconfig-common.mixins.json"
   ],
   "depends": {
     "fabric": "*",

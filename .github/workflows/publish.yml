@@ -2,7 +2,7 @@ name: Publish
 
 on:
   push:
-    branches: [ "1.20.1" ]
+    branches: [ "1.21" ]
 
 permissions:
   contents: write
@@ -58,6 +58,6 @@ jobs:
         with:
           artifacts: |
             fabric/build/libs/*.jar
-            forge/build/libs/*.jar
+            neoforge/build/libs/*.jar
           name: ${{ steps.gradle_version.outputs.VERSION_NAME }}
           tag: ${{ steps.gradle_version.outputs.VERSION_NAME }}

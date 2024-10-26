@@ -34,4 +34,4 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "template-common.mixins.json"
+config = "yamlconfig-common.mixins.json"
