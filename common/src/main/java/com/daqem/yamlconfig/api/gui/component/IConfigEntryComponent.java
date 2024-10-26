@@ -6,4 +6,6 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 public interface IConfigEntryComponent<T extends IComponent<T>, C extends IConfigEntry<?>> extends IComponent<T> {
 
     C getConfigEntry();
+
+    void applyValue();
 }

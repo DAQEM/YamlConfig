@@ -49,4 +49,10 @@ public class StringConfigEntryComponent extends BaseConfigEntryComponent<StringC
     public void resetValue() {
         this.textBoxComponent.setValue(this.getConfigEntry().get());
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(this.textBoxComponent.getValue());
+    }
 }

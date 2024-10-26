@@ -3,6 +3,7 @@ package com.daqem.yamlconfig.networking;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigsScreenPacket;
+import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigsScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
@@ -19,6 +20,7 @@ public interface YamlConfigNetworking {
 
     CustomPacketPayload.Type<ServerboundOpenConfigsScreenPacket> SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET = new CustomPacketPayload.Type<>(YamlConfig.getId("serverbound_open_configs_screen_packet"));
     CustomPacketPayload.Type<ServerboundOpenConfigScreenPacket> SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET = new CustomPacketPayload.Type<>(YamlConfig.getId("serverbound_open_config_screen_packet"));
+    CustomPacketPayload.Type<ServerboundSaveConfigPacket> SERVERBOUND_SAVE_CONFIG_PACKET = new CustomPacketPayload.Type<>(YamlConfig.getId("serverbound_save_config_packet"));
 
     static void initClient() {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC, ClientboundSyncConfigPacket::handleClientSide);
@@ -38,5 +40,6 @@ public interface YamlConfigNetworking {
 
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC, ServerboundOpenConfigsScreenPacket::handleServerSide);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, ServerboundOpenConfigScreenPacket.STREAM_CODEC, ServerboundOpenConfigScreenPacket::handleServerSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_SAVE_CONFIG_PACKET, ServerboundSaveConfigPacket.STREAM_CODEC, ServerboundSaveConfigPacket::handleServerSide);
     }
 }

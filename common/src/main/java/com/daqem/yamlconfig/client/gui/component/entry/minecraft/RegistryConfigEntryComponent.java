@@ -51,4 +51,10 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<Re
     public void resetValue() {
         this.textBoxComponent.setValue(Objects.requireNonNull(getConfigEntry().getRegistry().getKey(getConfigEntry().get())).toString());
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        getConfigEntry().setValue(getConfigEntry().getRegistry().get(ResourceLocation.parse(this.textBoxComponent.getValue())));
+    }
 }

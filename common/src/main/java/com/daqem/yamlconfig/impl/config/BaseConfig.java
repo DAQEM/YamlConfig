@@ -84,7 +84,8 @@ public abstract class BaseConfig implements IConfig {
         try {
             Dump dumper = new Dump(settings);
             YamlFileWriter streamDataWriter = new YamlFileWriter(this);
-            dumper.dumpNode(context.getType().getSerializer().decodeNode(context).getValueNode(), streamDataWriter);
+            Node node = context.getType().getSerializer().decodeNode(context).getValueNode();
+            dumper.dumpNode(node, streamDataWriter);
         } catch (FileNotFoundException e) {
             YamlConfig.LOGGER.error("Failed to save config file: " + name + "." + extension.getExtension(), e);
         }
@@ -189,6 +190,20 @@ public abstract class BaseConfig implements IConfig {
                 };
             }
     );
+
+    @Override
+    public void updateEntries(Map<String, IConfigEntry<?>> entries) {
+        var existingEntries = context.getEntries();
+        for (Map.Entry<String, IConfigEntry<?>> entry : entries.entrySet()) {
+            if (existingEntries.containsKey(entry.getKey())) {
+                IConfigEntry<?> existingEntry = existingEntries.get(entry.getKey());
+                if (existingEntry.getType().equals(entry.getValue().getType())) {
+                    //noinspection unchecked
+                    ((IConfigEntry<Object>) existingEntry).setValue(entry.getValue().get());
+                }
+            }
+        }
+    }
 
     public static class BaseConfigSerializer<T extends IConfig> implements IConfigSerializer<T> {
 

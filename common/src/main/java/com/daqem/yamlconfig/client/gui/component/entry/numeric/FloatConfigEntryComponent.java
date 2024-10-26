@@ -26,4 +26,10 @@ public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<F
             return list;
         });
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(Float.parseFloat(this.textBoxComponent.getValue()));
+    }
 }

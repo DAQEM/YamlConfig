@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.networking.s2c;
 
+import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.screen.ConfigsScreen;
 import com.daqem.yamlconfig.impl.config.BaseConfig;
@@ -14,6 +15,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +52,15 @@ public class ClientboundOpenConfigsScreenPacket implements CustomPacketPayload {
 
     @Environment(EnvType.CLIENT)
     public void handleClientSide(NetworkManager.PacketContext packetContext) {
+        List<IConfig> clientConfigs = YamlConfig.CONFIG_MANAGER.getAllClientConfigs();
+
+        for (IConfig clientConfig : clientConfigs) {
+            if (configs.containsKey(clientConfig.getModId())) {
+                configs.get(clientConfig.getModId()).add(clientConfig);
+            } else {
+                configs.put(clientConfig.getModId(), new ArrayList<>(List.of(clientConfig)));
+            }
+        }
         Minecraft.getInstance().setScreen(new ConfigsScreen(configs));
     }
 }

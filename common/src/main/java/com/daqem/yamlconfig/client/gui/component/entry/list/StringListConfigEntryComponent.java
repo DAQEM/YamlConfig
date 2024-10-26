@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list;
 
+import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -20,5 +21,15 @@ public class StringListConfigEntryComponent extends BaseListConfigEntryComponent
             }
             return list;
         });
+    }
+
+    @Override
+    public void applyValue() {
+        if (hasInputValidationErrors()) return;
+
+        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+                .map(TextBoxComponent::getValue)
+                .toList()
+        );
     }
 }

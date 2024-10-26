@@ -26,4 +26,10 @@ public class IntegerConfigEntryComponent extends BaseNumericConfigEntryComponent
             return list;
         });
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(Integer.parseInt(this.textBoxComponent.getValue()));
+    }
 }

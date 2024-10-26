@@ -38,4 +38,9 @@ public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntry
     public void resetValue() {
         this.cycleButtonComponent.setValue(this.getConfigEntry().get());
     }
+
+    @Override
+    public void applyValue() {
+        this.getConfigEntry().setValue(this.cycleButtonComponent.getValue());
+    }
 }

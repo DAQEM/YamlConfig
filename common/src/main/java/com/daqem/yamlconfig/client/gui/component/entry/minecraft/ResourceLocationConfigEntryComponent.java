@@ -66,4 +66,10 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
     public void resetValue() {
         this.textBoxComponent.setValue(this.getConfigEntry().get().toString());
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(ResourceLocation.tryParse(this.textBoxComponent.getValue()));
+    }
 }

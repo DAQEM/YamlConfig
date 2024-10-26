@@ -6,6 +6,7 @@ import com.daqem.yamlconfig.api.config.entry.IDateTimeConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.DateTimeConfigEntry;
 import net.minecraft.network.chat.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<DateTimeConfigEntryComponent, DateTimeConfigEntry> {
@@ -45,5 +46,11 @@ public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<DateT
     @Override
     public void resetValue() {
         this.textBoxComponent.setValue(this.getConfigEntry().get().format(IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+    }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(LocalDateTime.parse(this.textBoxComponent.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
     }
 }

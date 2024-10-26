@@ -26,4 +26,10 @@ public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<
             return list;
         });
     }
+
+    @Override
+    public void applyValue() {
+        if (this.textBoxComponent.hasInputValidationErrors()) return;
+        this.getConfigEntry().setValue(Double.parseDouble(this.textBoxComponent.getValue()));
+    }
 }

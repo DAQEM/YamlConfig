@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list;
 
+import com.daqem.uilib.api.client.gui.component.io.IInputValidatable;
 import com.daqem.uilib.client.gui.component.io.ButtonComponent;
 import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
 import com.daqem.yamlconfig.YamlConfig;
@@ -179,5 +180,10 @@ public abstract class BaseListConfigEntryComponent<T extends BaseListConfigEntry
             components.put(textBox, crossButton);
         }
         return components;
+    }
+
+    public boolean hasInputValidationErrors() {
+        return this.textBoxComponents.keySet().stream()
+                .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
 }

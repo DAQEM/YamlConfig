@@ -18,7 +18,7 @@ public class Comments implements IComments {
 
     @Override
     public List<String> getComments() {
-        if (validationParameters != null) {
+        if (validationParameters != null && !comments.contains(validationParameters)) {
             comments.add(validationParameters);
         }
         return comments;
@@ -76,5 +76,10 @@ public class Comments implements IComments {
         } else {
             validationParameters += ", " + defaultValue;
         }
+    }
+
+    @Override
+    public void resetValidationParameters() {
+        validationParameters = null;
     }
 }

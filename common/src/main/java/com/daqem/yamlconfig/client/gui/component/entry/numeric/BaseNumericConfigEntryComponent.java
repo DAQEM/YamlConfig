@@ -10,7 +10,7 @@ import java.util.List;
 
 public abstract class BaseNumericConfigEntryComponent<T extends BaseNumericConfigEntryComponent<T, C, N>, C extends INumericConfigEntry<N>, N extends Number & Comparable<N>> extends BaseConfigEntryComponent<T, C> {
 
-    private final TextBoxComponent textBoxComponent;
+    protected final TextBoxComponent textBoxComponent;
 
     public BaseNumericConfigEntryComponent(String key, C configEntry, N defaultValue, IComponentValidator validator) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);

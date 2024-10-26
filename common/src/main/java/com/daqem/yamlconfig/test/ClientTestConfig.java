@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-public class TestConfig {
+public class ClientTestConfig {
 
     public static IConfig config;
 
@@ -37,7 +37,7 @@ public class TestConfig {
     public static IConfigEntry<ResourceLocation> testResourceLocation;
 
     public static void init() {
-        ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML, ConfigType.COMMON);
+        ConfigBuilder builder = new ConfigBuilder("test", "test-client", ConfigExtension.YAML, ConfigType.CLIENT);
 
         debug = builder.defineBoolean("debug", false)
                 .withComments("Whether debug mode is enabled for the mod.")
@@ -84,16 +84,7 @@ public class TestConfig {
 
         config = builder.build();
 
-//        ConfigBuilder builder1 = new ConfigBuilder("test", "test-server", ConfigExtension.YAML, ConfigType.SERVER);
-//        builder1.build();
-//
-//        ConfigBuilder builder2 = new ConfigBuilder("test", "test-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder2.build();
-//
-//        ConfigBuilder builder3 = new ConfigBuilder("test1", "test1-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder3.build();
-
-        ConfigBuilder builder4 = new ConfigBuilder("test1", "test1-common", ConfigExtension.YAML, ConfigType.COMMON);
+        ConfigBuilder builder4 = new ConfigBuilder("test1", "test1-client", ConfigExtension.YAML, ConfigType.CLIENT);
 
         builder4.push("mod_config");
 
@@ -128,106 +119,14 @@ public class TestConfig {
         builder4.pop();
 
         builder4.push("test");
-        builder4.push("test1");
-        builder4.push("test2");
-        builder4.push("test3");
-        builder4.push("test4");
-        builder4.push("test5");
-        builder4.push("test6");
-        builder4.push("test7");
-        builder4.push("test8");
-        builder4.push("test9");
-        builder4.push("test10");
-        builder4.push("test11");
-        builder4.push("test12");
-        builder4.push("test13");
-        builder4.push("test14");
-        builder4.push("test15");
-        builder4.push("test16");
-        builder4.push("test17");
-        builder4.push("test18");
-        builder4.push("test19");
-        builder4.push("test20");
-        builder4.push("test21");
-        builder4.push("test22");
-        builder4.push("test23");
-        builder4.push("test24");
-        builder4.push("test25");
-        builder4.push("test26");
-        builder4.push("test27");
-        builder4.push("test28");
-        builder4.push("test29");
-        builder4.push("test30");
-
         builder4.push("maps");
         builder4.defineStringMap("string_map", Map.of("test1", "1", "test2", "2", "test3", "3"), 3, 10);
         builder4.defineIntegerMap("integer_map", Map.of("test1", 1, "test2", 2, "test3", 3), 3, 10);
         builder4.defineFloatMap("float_map", Map.of("test1", 1.0F, "test2", 2.0F, "test3", 3.0F), 3, 10);
         builder4.defineDoubleMap("double_map", Map.of("test1", 1.0D, "test2", 2.0D, "test3", 3.0D), 3, 10);
         builder4.pop();
-
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
-        builder4.pop();
         builder4.pop();
 
         builder4.build();
-
-//        ConfigBuilder builder5 = new ConfigBuilder("test2", "test2-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder5.build();
-//
-//        ConfigBuilder builder6 = new ConfigBuilder("test2", "test2-common", ConfigExtension.YAML, ConfigType.COMMON);
-//        builder6.build();
-//
-//        ConfigBuilder builder7 = new ConfigBuilder("test2", "test2-server", ConfigExtension.YAML, ConfigType.SERVER);
-//        builder7.build();
-//
-//        ConfigBuilder builder8 = new ConfigBuilder("test3", "test3-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder8.build();
-//
-//        ConfigBuilder builder9 = new ConfigBuilder("test3", "test3-common", ConfigExtension.YAML, ConfigType.COMMON);
-//        builder9.build();
-//
-//        ConfigBuilder builder10 = new ConfigBuilder("test3", "test3-server", ConfigExtension.YAML, ConfigType.SERVER);
-//        builder10.build();
-//
-//        ConfigBuilder builder11 = new ConfigBuilder("test4", "test4-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder11.build();
-//
-//        ConfigBuilder builder12 = new ConfigBuilder("test4", "test4-common", ConfigExtension.YAML, ConfigType.COMMON);
-//        builder12.build();
-//
-//        ConfigBuilder builder13 = new ConfigBuilder("test4", "test4-server", ConfigExtension.YAML, ConfigType.SERVER);
-//        builder13.build();
-//
-//        ConfigBuilder builder14 = new ConfigBuilder("test5", "test5-client", ConfigExtension.YAML, ConfigType.CLIENT);
-//        builder14.build();
     }
 }

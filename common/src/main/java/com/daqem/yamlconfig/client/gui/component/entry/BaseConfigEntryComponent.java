@@ -55,6 +55,4 @@ public abstract class BaseConfigEntryComponent<T extends BaseConfigEntryComponen
     public abstract boolean isOriginalValue();
 
     public abstract void resetValue();
-
-//    public abstract C createConfigEntryCopy();
 }

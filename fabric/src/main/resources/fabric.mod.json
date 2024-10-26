@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.daqem.yamlconfig.fabric.YamlConfigClientFabric"
+    ],
+    "server": [
+      "com.daqem.yamlconfig.fabric.YamlConfigServerFabric"
     ]
   },
   "mixins": [

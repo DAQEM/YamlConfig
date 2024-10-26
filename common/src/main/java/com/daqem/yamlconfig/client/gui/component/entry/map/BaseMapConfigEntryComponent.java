@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.map;
 
+import com.daqem.uilib.api.client.gui.component.io.IInputValidatable;
 import com.daqem.uilib.client.gui.component.io.ButtonComponent;
 import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
 import com.daqem.yamlconfig.YamlConfig;
@@ -22,7 +23,7 @@ public abstract class BaseMapConfigEntryComponent<T extends BaseMapConfigEntryCo
     protected final Map<Tuple<TextBoxComponent, TextBoxComponent>, CrossButtonComponent> textBoxComponents;
     protected final ButtonComponent addEntryButton;
 
-    private final IComponentValidator validator;
+    protected final IComponentValidator validator;
 
     public BaseMapConfigEntryComponent(String key, C configEntry, IComponentValidator validator) {
         super(key, configEntry, 0, 0, calculateInitialHeight(configEntry), WIDTH);
@@ -266,5 +267,11 @@ public abstract class BaseMapConfigEntryComponent<T extends BaseMapConfigEntryCo
             components.put(tuple, crossButton);
         }
         return components;
+    }
+
+    public boolean hasInputValidationErrors() {
+        return this.textBoxComponents.keySet().stream()
+                .flatMap(key -> Stream.of(key.getA(), key.getB()))
+                .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
 }

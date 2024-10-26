@@ -52,6 +52,7 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
 
     @Override
     public IComments getComments() {
+        comments.resetValidationParameters();
         return comments;
     }
 

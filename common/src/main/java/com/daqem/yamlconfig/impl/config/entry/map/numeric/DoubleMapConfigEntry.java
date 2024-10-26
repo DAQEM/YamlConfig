@@ -66,7 +66,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
             ScalarNode keyNode = configEntry.createKeyNode();
             MappingNode valueNode = new MappingNode(Tag.MAP, configEntry.get().entrySet().stream()
                     .map(e -> new NodeTuple(
-                            new ScalarNode(Tag.STR, e.getKey(), ScalarStyle.SINGLE_QUOTED),
+                            new ScalarNode(Tag.STR, e.getKey(), ScalarStyle.PLAIN),
                             new ScalarNode(Tag.FLOAT, e.getValue().toString(), ScalarStyle.PLAIN)
                     ))
                     .toList(), FlowStyle.BLOCK);

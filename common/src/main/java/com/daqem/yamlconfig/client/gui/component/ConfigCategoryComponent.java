@@ -77,13 +77,6 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
 
     @Override
     public void preformOnHoverEvent(double mouseX, double mouseY, float delta) {
-        if (this.keyText != null && this.keyText.getText() != null) {
-            if (isTotalHovered(mouseX, mouseY)) {
-                this.keyText.getText().setTextColor(0xFFE0E0E0);
-            } else {
-                this.keyText.getText().setTextColor(0xFFFFFFFF);
-            }
-        }
         if (getOnHoverEvent() != null) {
             if (this.isTotalHovered(mouseX, mouseY)) {
                 getOnHoverEvent().onHover(getHoverState(), Minecraft.getInstance().screen, mouseX, mouseY, delta);
@@ -147,9 +140,9 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
         return false;
     }
 
-//    public StackConfigEntry createConfigEntryCopy() {
-//        return new StackConfigEntry(
-//
-//        );
-//    }
+    public List<IConfigEntryComponent<?, ?>> getAllConfigEntryComponents() {
+        List<IConfigEntryComponent<?, ?>> allConfigEntryComponents = new ArrayList<>(this.configEntryComponents);
+        this.subCategories.forEach(subCategory -> allConfigEntryComponents.addAll(subCategory.getAllConfigEntryComponents()));
+        return allConfigEntryComponents;
+    }
 }

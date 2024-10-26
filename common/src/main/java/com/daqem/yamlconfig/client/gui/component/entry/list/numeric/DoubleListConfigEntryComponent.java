@@ -27,4 +27,14 @@ public class DoubleListConfigEntryComponent extends BaseListConfigEntryComponent
             return list;
         });
     }
+
+    @Override
+    public void applyValue() {
+        if (hasInputValidationErrors()) return;
+
+        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+                .map(input -> Double.parseDouble(input.getValue()))
+                .toList()
+        );
+    }
 }

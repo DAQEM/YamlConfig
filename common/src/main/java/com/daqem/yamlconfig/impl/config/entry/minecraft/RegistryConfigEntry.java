@@ -59,10 +59,10 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
     public IComments getComments() {
         IComments comments = super.getComments();
         if (comments.showValidationParameters()) {
-            comments.addValidationParameter("Registry: " + getRegistry().key().registry());
+            comments.addValidationParameter("Registry: " + getRegistry().key().location());
         }
         if (comments.showDefaultValues()) {
-            comments.addDefaultValues("'" + getDefaultValue() + "'");
+            comments.addDefaultValues("'" + getRegistry().getKey(getDefaultValue()) + "'");
         }
         return comments;
     }

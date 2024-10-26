@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<DoubleMapConfigEntryComponent, DoubleMapConfigEntry> {
 
@@ -26,5 +28,18 @@ public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<D
             }
             return list;
         });
+    }
+
+    @Override
+    public void applyValue() {
+        if (hasInputValidationErrors()) return;
+
+        Map<String, Double> map = this.textBoxComponents.keySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getA().getValue(),
+                        entry -> Double.parseDouble(entry.getB().getValue())
+                ));
+
+        this.getConfigEntry().setValue(map);
     }
 }

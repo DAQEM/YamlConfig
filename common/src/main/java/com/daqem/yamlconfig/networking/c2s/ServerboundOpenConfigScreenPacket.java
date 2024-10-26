@@ -45,9 +45,11 @@ public class ServerboundOpenConfigScreenPacket implements CustomPacketPayload {
 
     public void handleServerSide(NetworkManager.PacketContext packetContext) {
 
-        NetworkManager.sendToPlayer(
-                (ServerPlayer) packetContext.getPlayer(),
-                new ClientboundOpenConfigScreenPacket(this.config)
-        );
+        if (packetContext.getPlayer().hasPermissions(2)) {
+            NetworkManager.sendToPlayer(
+                    (ServerPlayer) packetContext.getPlayer(),
+                    new ClientboundOpenConfigScreenPacket(this.config)
+            );
+        }
     }
 }

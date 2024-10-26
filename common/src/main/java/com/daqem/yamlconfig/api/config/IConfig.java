@@ -38,4 +38,6 @@ public interface IConfig {
     Component getDisplayName();
 
     Component getModName();
+
+    void updateEntries(Map<String, IConfigEntry<?>> entries);
 }

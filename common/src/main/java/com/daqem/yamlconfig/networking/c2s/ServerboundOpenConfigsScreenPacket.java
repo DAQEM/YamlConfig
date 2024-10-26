@@ -12,6 +12,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,9 +33,12 @@ public class ServerboundOpenConfigsScreenPacket implements CustomPacketPayload {
     }
 
     public void handleServerSide(NetworkManager.PacketContext packetContext) {
-        List<IConfig> configs = YamlConfig.CONFIG_MANAGER.getAllServerAndCommonConfigs();
-        Map<String, List<IConfig>> configMap = YamlConfig.CONFIG_MANAGER.getAllConfigs().stream()
-                .collect(Collectors.groupingBy(IConfig::getModId));
+        Map<String, List<IConfig>> configMap = new HashMap<>();
+
+        if (packetContext.getPlayer().hasPermissions(2)) {
+            configMap.putAll(YamlConfig.CONFIG_MANAGER.getAllServerAndCommonConfigs().stream()
+                    .collect(Collectors.groupingBy(IConfig::getModId)));
+        }
 
         NetworkManager.sendToPlayer(
                 (ServerPlayer) packetContext.getPlayer(),

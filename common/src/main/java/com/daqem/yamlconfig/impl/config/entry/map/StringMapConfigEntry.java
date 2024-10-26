@@ -123,7 +123,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
             ScalarNode keyNode = configEntry.createKeyNode();
             MappingNode valueNode = new MappingNode(Tag.MAP, configEntry.get().entrySet().stream()
                     .map(e -> new NodeTuple(
-                            new ScalarNode(Tag.STR, e.getKey(), ScalarStyle.SINGLE_QUOTED),
+                            new ScalarNode(Tag.STR, e.getKey(), ScalarStyle.PLAIN),
                             new ScalarNode(Tag.STR, e.getValue(), ScalarStyle.SINGLE_QUOTED)
                     ))
                     .toList(), FlowStyle.BLOCK);

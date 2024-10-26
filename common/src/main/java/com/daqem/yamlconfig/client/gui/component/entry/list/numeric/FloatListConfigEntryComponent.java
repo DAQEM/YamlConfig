@@ -27,4 +27,14 @@ public class FloatListConfigEntryComponent extends BaseListConfigEntryComponent<
             return list;
         });
     }
+
+    @Override
+    public void applyValue() {
+        if (hasInputValidationErrors()) return;
+
+        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+                .map(input -> Float.parseFloat(input.getValue()))
+                .toList()
+        );
+    }
 }
