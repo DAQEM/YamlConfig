@@ -50,7 +50,11 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
         public void encodeNode(IFloatMapConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
                 configEntry.setValue(mappingNode.getValue().stream()
-                        .filter(n -> n.getKeyNode() instanceof ScalarNode keyNode && (keyNode.getTag().equals(Tag.FLOAT) || keyNode.getTag().equals(Tag.INT)))
+                        .filter(n ->
+                                n.getKeyNode() instanceof ScalarNode keyNode
+                                        && n.getValueNode() instanceof ScalarNode valueNode
+                                        && keyNode.getTag().equals(Tag.STR)
+                                        && (valueNode.getTag().equals(Tag.FLOAT) || valueNode.getTag().equals(Tag.INT)))
                         .collect(Collectors.toMap(
                                 n -> ((ScalarNode) n.getKeyNode()).getValue(),
                                 n -> Float.parseFloat(((ScalarNode) n.getValueNode()).getValue())

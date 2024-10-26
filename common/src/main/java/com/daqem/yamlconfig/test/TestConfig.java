@@ -84,14 +84,14 @@ public class TestConfig {
 
         config = builder.build();
 
-        ConfigBuilder builder1 = new ConfigBuilder("test", "test-server", ConfigExtension.YAML, ConfigType.SERVER);
-        builder1.build();
-
-        ConfigBuilder builder2 = new ConfigBuilder("test", "test-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder2.build();
-
-        ConfigBuilder builder3 = new ConfigBuilder("test1", "test1-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder3.build();
+//        ConfigBuilder builder1 = new ConfigBuilder("test", "test-server", ConfigExtension.YAML, ConfigType.SERVER);
+//        builder1.build();
+//
+//        ConfigBuilder builder2 = new ConfigBuilder("test", "test-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder2.build();
+//
+//        ConfigBuilder builder3 = new ConfigBuilder("test1", "test1-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder3.build();
 
         ConfigBuilder builder4 = new ConfigBuilder("test1", "test1-common", ConfigExtension.YAML, ConfigType.COMMON);
 
@@ -200,34 +200,34 @@ public class TestConfig {
 
         builder4.build();
 
-        ConfigBuilder builder5 = new ConfigBuilder("test2", "test2-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder5.build();
-
-        ConfigBuilder builder6 = new ConfigBuilder("test2", "test2-common", ConfigExtension.YAML, ConfigType.COMMON);
-        builder6.build();
-
-        ConfigBuilder builder7 = new ConfigBuilder("test2", "test2-server", ConfigExtension.YAML, ConfigType.SERVER);
-        builder7.build();
-
-        ConfigBuilder builder8 = new ConfigBuilder("test3", "test3-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder8.build();
-
-        ConfigBuilder builder9 = new ConfigBuilder("test3", "test3-common", ConfigExtension.YAML, ConfigType.COMMON);
-        builder9.build();
-
-        ConfigBuilder builder10 = new ConfigBuilder("test3", "test3-server", ConfigExtension.YAML, ConfigType.SERVER);
-        builder10.build();
-
-        ConfigBuilder builder11 = new ConfigBuilder("test4", "test4-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder11.build();
-
-        ConfigBuilder builder12 = new ConfigBuilder("test4", "test4-common", ConfigExtension.YAML, ConfigType.COMMON);
-        builder12.build();
-
-        ConfigBuilder builder13 = new ConfigBuilder("test4", "test4-server", ConfigExtension.YAML, ConfigType.SERVER);
-        builder13.build();
-
-        ConfigBuilder builder14 = new ConfigBuilder("test5", "test5-client", ConfigExtension.YAML, ConfigType.CLIENT);
-        builder14.build();
+//        ConfigBuilder builder5 = new ConfigBuilder("test2", "test2-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder5.build();
+//
+//        ConfigBuilder builder6 = new ConfigBuilder("test2", "test2-common", ConfigExtension.YAML, ConfigType.COMMON);
+//        builder6.build();
+//
+//        ConfigBuilder builder7 = new ConfigBuilder("test2", "test2-server", ConfigExtension.YAML, ConfigType.SERVER);
+//        builder7.build();
+//
+//        ConfigBuilder builder8 = new ConfigBuilder("test3", "test3-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder8.build();
+//
+//        ConfigBuilder builder9 = new ConfigBuilder("test3", "test3-common", ConfigExtension.YAML, ConfigType.COMMON);
+//        builder9.build();
+//
+//        ConfigBuilder builder10 = new ConfigBuilder("test3", "test3-server", ConfigExtension.YAML, ConfigType.SERVER);
+//        builder10.build();
+//
+//        ConfigBuilder builder11 = new ConfigBuilder("test4", "test4-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder11.build();
+//
+//        ConfigBuilder builder12 = new ConfigBuilder("test4", "test4-common", ConfigExtension.YAML, ConfigType.COMMON);
+//        builder12.build();
+//
+//        ConfigBuilder builder13 = new ConfigBuilder("test4", "test4-server", ConfigExtension.YAML, ConfigType.SERVER);
+//        builder13.build();
+//
+//        ConfigBuilder builder14 = new ConfigBuilder("test5", "test5-client", ConfigExtension.YAML, ConfigType.CLIENT);
+//        builder14.build();
     }
 }

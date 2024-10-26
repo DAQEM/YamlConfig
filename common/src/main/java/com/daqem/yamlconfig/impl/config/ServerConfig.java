@@ -1,8 +1,11 @@
 package com.daqem.yamlconfig.impl.config;
 
+import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import dev.architectury.utils.EnvExecutor;
+import net.fabricmc.api.EnvType;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -11,6 +14,11 @@ public class ServerConfig extends BaseConfig {
 
     public ServerConfig(String modId, String name, ConfigExtension extension, Path path, IStackConfigEntry context) {
         super(modId, name, extension, ConfigType.SERVER, path, context);
+        EnvExecutor.runInEnv(EnvType.CLIENT, () -> {
+            YamlConfig.LOGGER.error("Server config cannot be created on the client side. Contact the author of the mod: " + modId + ", to fix this issue.");
+            System.exit(1);
+            return null;
+        });
     }
 
     @Override

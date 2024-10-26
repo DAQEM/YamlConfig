@@ -50,8 +50,11 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
         public void encodeNode(IDoubleMapConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
                 configEntry.setValue(mappingNode.getValue().stream()
-                        .filter(n -> n.getKeyNode() instanceof ScalarNode keyNode && (keyNode.getTag().equals(Tag.FLOAT) || keyNode.getTag().equals(Tag.INT)))
-                        .collect(Collectors.toMap(
+                        .filter(n ->
+                                n.getKeyNode() instanceof ScalarNode keyNode
+                                        && n.getValueNode() instanceof ScalarNode valueNode
+                                        && keyNode.getTag().equals(Tag.STR)
+                                        && (valueNode.getTag().equals(Tag.FLOAT) || valueNode.getTag().equals(Tag.INT)))                        .collect(Collectors.toMap(
                                 n -> ((ScalarNode) n.getKeyNode()).getValue(),
                                 n -> Double.parseDouble(((ScalarNode) n.getValueNode()).getValue())
                         )));

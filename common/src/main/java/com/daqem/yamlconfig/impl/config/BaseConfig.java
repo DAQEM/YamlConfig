@@ -6,7 +6,6 @@ import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
-import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.yaml.YamlFileWriter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
