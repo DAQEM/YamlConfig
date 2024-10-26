@@ -113,7 +113,7 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
         @Override
         public void encodeNode(IStringListConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.setValue(sequenceNode.getValue().stream()
+                configEntry.set(sequenceNode.getValue().stream()
                         .filter(n -> n instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR))
                         .map(n -> ((ScalarNode) n).getValue())
                         .toList());
@@ -158,7 +158,7 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
             String pattern = buf.readUtf();
             List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
             StringListConfigEntry configEntry = new StringListConfigEntry(key, value, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

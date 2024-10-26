@@ -45,7 +45,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
         @Override
         public void encodeNode(IIntegerListConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.setValue(sequenceNode.getValue().stream()
+                configEntry.set(sequenceNode.getValue().stream()
                         .filter(n -> n instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.INT))
                         .map(n -> Integer.parseInt(((ScalarNode) n).getValue()))
                         .toList());
@@ -90,7 +90,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
             int minValue = buf.readInt();
             int maxValue = buf.readInt();
             IntegerListConfigEntry configEntry = new IntegerListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

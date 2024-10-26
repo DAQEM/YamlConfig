@@ -27,7 +27,7 @@ public class StringListConfigEntryComponent extends BaseListConfigEntryComponent
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+        this.getConfigEntry().set(this.textBoxComponents.keySet().stream()
                 .map(TextBoxComponent::getValue)
                 .toList()
         );

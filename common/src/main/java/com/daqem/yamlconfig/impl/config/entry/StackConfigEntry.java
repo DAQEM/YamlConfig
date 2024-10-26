@@ -102,7 +102,7 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
                 value.put(entryKey, entry);
             }
             StackConfigEntry configEntry = new StackConfigEntry(key, value);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

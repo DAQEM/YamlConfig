@@ -14,7 +14,7 @@ public interface IResourceLocationConfigEntry extends IConfigEntry<ResourceLocat
         return StreamCodec.of(
                 (resourceLocationConfigEntry, node) -> {
                     if (node.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                        resourceLocationConfigEntry.setValue(ResourceLocation.parse(scalarNode.getValue()));
+                        resourceLocationConfigEntry.set(ResourceLocation.parse(scalarNode.getValue()));
                     }
                 },
                 resourceLocationConfigEntry -> {

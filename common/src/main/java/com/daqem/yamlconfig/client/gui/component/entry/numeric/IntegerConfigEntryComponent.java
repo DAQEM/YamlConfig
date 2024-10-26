@@ -30,6 +30,6 @@ public class IntegerConfigEntryComponent extends BaseNumericConfigEntryComponent
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().setValue(Integer.parseInt(this.textBoxComponent.getValue()));
+        this.getConfigEntry().set(Integer.parseInt(this.textBoxComponent.getValue()));
     }
 }

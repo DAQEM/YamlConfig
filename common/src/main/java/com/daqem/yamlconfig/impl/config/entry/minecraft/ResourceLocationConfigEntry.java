@@ -7,7 +7,6 @@ import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocationConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
@@ -73,7 +72,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
         @Override
         public void encodeNode(IResourceLocationConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.setValue(ResourceLocation.tryParse(scalarNode.getValue()));
+                configEntry.set(ResourceLocation.tryParse(scalarNode.getValue()));
             }
         }
 
@@ -107,7 +106,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
             ResourceLocation value = buf.readResourceLocation();
             String pattern = buf.readUtf();
             ResourceLocationConfigEntry configEntry = new ResourceLocationConfigEntry(key, value, pattern.isEmpty() ? null : pattern);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

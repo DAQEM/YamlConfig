@@ -45,7 +45,7 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
         @Override
         public void encodeNode(IDoubleListConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.setValue(sequenceNode.getValue().stream()
+                configEntry.set(sequenceNode.getValue().stream()
                         .filter(n -> n instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT)))
                         .map(n -> Double.parseDouble(((ScalarNode) n).getValue()))
                         .toList());
@@ -90,7 +90,7 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
             double minValue = buf.readDouble();
             double maxValue = buf.readDouble();
             DoubleListConfigEntry configEntry = new DoubleListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

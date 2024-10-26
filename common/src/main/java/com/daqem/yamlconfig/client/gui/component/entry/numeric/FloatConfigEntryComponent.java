@@ -30,6 +30,6 @@ public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<F
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().setValue(Float.parseFloat(this.textBoxComponent.getValue()));
+        this.getConfigEntry().set(Float.parseFloat(this.textBoxComponent.getValue()));
     }
 }

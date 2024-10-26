@@ -39,7 +39,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
         @Override
         public void encodeNode(IFloatConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.FLOAT)) {
-                configEntry.setValue(Float.parseFloat(scalarNode.getValue()));
+                configEntry.set(Float.parseFloat(scalarNode.getValue()));
             }
         }
 
@@ -77,7 +77,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
                     buf.readFloat(),
                     buf.readFloat()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

@@ -125,7 +125,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
         @Override
         public void encodeNode(IStringConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.setValue(scalarNode.getValue());
+                configEntry.set(scalarNode.getValue());
             }
         }
 
@@ -162,7 +162,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
                     buf.readInt(),
                     buf.readInt()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

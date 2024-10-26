@@ -55,6 +55,6 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<Re
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        getConfigEntry().setValue(getConfigEntry().getRegistry().get(ResourceLocation.parse(this.textBoxComponent.getValue())));
+        getConfigEntry().set(getConfigEntry().getRegistry().get(ResourceLocation.parse(this.textBoxComponent.getValue())));
     }
 }

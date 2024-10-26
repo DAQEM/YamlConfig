@@ -86,6 +86,7 @@ public abstract class BaseConfig implements IConfig {
             YamlFileWriter streamDataWriter = new YamlFileWriter(this);
             Node node = context.getType().getSerializer().decodeNode(context).getValueNode();
             dumper.dumpNode(node, streamDataWriter);
+            YamlConfig.LOGGER.info("Saved config file: " + name + extension.getExtension());
         } catch (FileNotFoundException e) {
             YamlConfig.LOGGER.error("Failed to save config file: " + name + "." + extension.getExtension(), e);
         }
@@ -98,7 +99,7 @@ public abstract class BaseConfig implements IConfig {
             IConfigEntry<?> configEntry = entry.getValue();
             if (data.containsKey(entry.getKey())) {
                 //noinspection unchecked
-                ((IConfigEntry<Object>) configEntry).setValue(data.get(entry.getKey()));
+                ((IConfigEntry<Object>) configEntry).set(data.get(entry.getKey()));
             }
         }
         setSynced(true);
@@ -199,7 +200,7 @@ public abstract class BaseConfig implements IConfig {
                 IConfigEntry<?> existingEntry = existingEntries.get(entry.getKey());
                 if (existingEntry.getType().equals(entry.getValue().getType())) {
                     //noinspection unchecked
-                    ((IConfigEntry<Object>) existingEntry).setValue(entry.getValue().get());
+                    ((IConfigEntry<Object>) existingEntry).set(entry.getValue().get());
                 }
             }
         }

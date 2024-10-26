@@ -40,6 +40,6 @@ public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<Fl
                         entry -> Float.parseFloat(entry.getB().getValue())
                 ));
 
-        this.getConfigEntry().setValue(map);
+        this.getConfigEntry().set(map);
     }
 }

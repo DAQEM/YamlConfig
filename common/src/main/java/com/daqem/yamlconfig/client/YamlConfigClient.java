@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 public class YamlConfigClient {
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_C, "category.yamlconfig");
+    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_F12, "category.yamlconfig");
 
     public static void init() {
         KeyMappingRegistry.register(CONFIGS_KEY);

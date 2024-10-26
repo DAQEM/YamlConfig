@@ -105,7 +105,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
         @Override
         public void encodeNode(IStringMapConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
-                configEntry.setValue(mappingNode.getValue().stream()
+                configEntry.set(mappingNode.getValue().stream()
                         .filter(n ->
                                 n.getKeyNode() instanceof ScalarNode keyNode
                                         && n.getValueNode() instanceof ScalarNode valueNode
@@ -159,7 +159,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
             String pattern = buf.readUtf();
             List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
             StringMapConfigEntry configEntry = new StringMapConfigEntry(key, value, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

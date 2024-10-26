@@ -6,11 +6,14 @@ import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
+import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class ServerboundSaveConfigPacket implements CustomPacketPayload {
 
@@ -43,6 +46,13 @@ public class ServerboundSaveConfigPacket implements CustomPacketPayload {
             IConfig existingConfig = YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName());
             existingConfig.updateEntries(config.getEntries());
             existingConfig.save();
+
+            if (existingConfig.getType() == ConfigType.COMMON) {
+                //Sync the config to the players on the server
+                Objects.requireNonNull(packetContext.getPlayer().getServer()).getPlayerList().getPlayers().forEach(player -> {
+                    NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig));
+                });
+            }
         }
     }
 }

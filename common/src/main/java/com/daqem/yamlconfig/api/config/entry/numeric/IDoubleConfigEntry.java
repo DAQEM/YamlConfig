@@ -12,7 +12,7 @@ public interface IDoubleConfigEntry extends INumericConfigEntry<Double> {
         return StreamCodec.of(
                 (doubleConfigEntry, node) -> {
                     if (node.getValueNode() instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT))) {
-                        doubleConfigEntry.setValue(Double.parseDouble(scalarNode.getValue()));
+                        doubleConfigEntry.set(Double.parseDouble(scalarNode.getValue()));
                     }
                 },
                 integerConfigEntry -> {

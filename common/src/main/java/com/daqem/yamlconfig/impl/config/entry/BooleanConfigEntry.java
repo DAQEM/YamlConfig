@@ -50,7 +50,7 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
         @Override
         public void encodeNode(IBooleanConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.BOOL)) {
-                configEntry.setValue(Boolean.parseBoolean(scalarNode.getValue()));
+                configEntry.set(Boolean.parseBoolean(scalarNode.getValue()));
             }
         }
 
@@ -80,7 +80,7 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
         @Override
         public IBooleanConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             BooleanConfigEntry configEntry = new BooleanConfigEntry(buf.readUtf(), buf.readBoolean());
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

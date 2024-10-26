@@ -39,7 +39,7 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     }
 
     @Override
-    public void setValue(T value) {
+    public void set(T value) {
         try {
             validate(value);
             this.value = value;

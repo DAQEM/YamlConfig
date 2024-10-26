@@ -32,7 +32,7 @@ public class IntegerListConfigEntryComponent extends BaseListConfigEntryComponen
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+        this.getConfigEntry().set(this.textBoxComponents.keySet().stream()
                 .map(input -> Integer.parseInt(input.getValue()))
                 .toList()
         );

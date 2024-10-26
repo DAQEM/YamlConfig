@@ -15,18 +15,17 @@ import org.slf4j.Logger;
 public class YamlConfig {
     public static final String MOD_ID = "yamlconfig";
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static final boolean isDevelopment = false;
 
     public static final IConfigManager CONFIG_MANAGER = new ConfigManager();
 
     public static void init() {
-        CommonTestConfig.init();
+        if (isDevelopment) {
+            CommonTestConfig.init();
+        }
         YamlConfigNetworking.init();
         YamlConfigRegistry.init();
         registerEvents();
-
-        if (CommonTestConfig.debug.get()) {
-            LOGGER.warn("Debug mode is enabled.");
-        }
     }
 
     public static void registerEvents() {

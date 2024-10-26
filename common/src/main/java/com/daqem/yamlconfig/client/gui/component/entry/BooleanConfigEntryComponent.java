@@ -42,6 +42,6 @@ public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<Boolea
 
     @Override
     public void applyValue() {
-        this.getConfigEntry().setValue(this.cycleButtonComponent.getValue());
+        this.getConfigEntry().set(this.cycleButtonComponent.getValue());
     }
 }

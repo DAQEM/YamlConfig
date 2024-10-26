@@ -49,7 +49,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
         @Override
         public void encodeNode(IFloatMapConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
-                configEntry.setValue(mappingNode.getValue().stream()
+                configEntry.set(mappingNode.getValue().stream()
                         .filter(n ->
                                 n.getKeyNode() instanceof ScalarNode keyNode
                                         && n.getValueNode() instanceof ScalarNode valueNode
@@ -104,7 +104,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
                     buf.readFloat(),
                     buf.readFloat()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

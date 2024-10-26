@@ -1,7 +1,5 @@
 package com.daqem.yamlconfig.client.gui.component.entry.map;
 
-import com.daqem.uilib.api.client.gui.component.io.IInputValidatable;
-import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.impl.config.entry.map.StringMapConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -10,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class StringMapConfigEntryComponent extends BaseMapConfigEntryComponent<StringMapConfigEntryComponent, StringMapConfigEntry>{
 
@@ -37,6 +34,6 @@ public class StringMapConfigEntryComponent extends BaseMapConfigEntryComponent<S
                     entry -> entry.getB().getValue()
             ));
 
-        this.getConfigEntry().setValue(map);
+        this.getConfigEntry().set(map);
     }
 }

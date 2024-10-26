@@ -45,7 +45,7 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
         @Override
         public void encodeNode(IFloatListConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.setValue(sequenceNode.getValue().stream()
+                configEntry.set(sequenceNode.getValue().stream()
                         .filter(n -> n instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT)))
                         .map(n -> Float.parseFloat(((ScalarNode) n).getValue()))
                         .toList());
@@ -90,7 +90,7 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
             float minValue = buf.readFloat();
             float maxValue = buf.readFloat();
             FloatListConfigEntry configEntry = new FloatListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

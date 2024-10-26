@@ -12,7 +12,7 @@ public interface IFloatConfigEntry extends INumericConfigEntry<Float> {
         return StreamCodec.of(
                 (floatConfigEntry, node) -> {
                     if (node.getValueNode() instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT))) {
-                        floatConfigEntry.setValue(Float.parseFloat(scalarNode.getValue()));
+                        floatConfigEntry.set(Float.parseFloat(scalarNode.getValue()));
                     }
                 },
                 integerConfigEntry -> {

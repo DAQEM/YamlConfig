@@ -39,7 +39,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
         @Override
         public void encodeNode(IDoubleConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.FLOAT)) {
-                configEntry.setValue(Double.parseDouble(scalarNode.getValue()));
+                configEntry.set(Double.parseDouble(scalarNode.getValue()));
             }
         }
 
@@ -76,7 +76,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
                     buf.readDouble(),
                     buf.readDouble()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

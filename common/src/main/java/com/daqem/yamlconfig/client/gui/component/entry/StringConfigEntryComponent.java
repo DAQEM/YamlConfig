@@ -53,6 +53,6 @@ public class StringConfigEntryComponent extends BaseConfigEntryComponent<StringC
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().setValue(this.textBoxComponent.getValue());
+        this.getConfigEntry().set(this.textBoxComponent.getValue());
     }
 }

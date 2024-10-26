@@ -66,7 +66,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
         @Override
         public void encodeNode(IEnumConfigEntry<E> configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.setValue(Enum.valueOf(configEntry.getEnumClass(), scalarNode.getValue()));
+                configEntry.set(Enum.valueOf(configEntry.getEnumClass(), scalarNode.getValue()));
             }
         }
 
@@ -110,7 +110,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
                 //noinspection unchecked
                 Class<E> enumClass = (Class<E>) Class.forName(enumClassName);
                 EnumConfigEntry<E> configEntry = new EnumConfigEntry<>(key, Enum.valueOf(enumClass, enumValue), enumClass);
-                configEntry.setValue(configEntry.getDefaultValue());
+                configEntry.set(configEntry.getDefaultValue());
                 return configEntry;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);

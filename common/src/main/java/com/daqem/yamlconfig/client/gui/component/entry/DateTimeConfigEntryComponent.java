@@ -51,6 +51,6 @@ public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<DateT
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().setValue(LocalDateTime.parse(this.textBoxComponent.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+        this.getConfigEntry().set(LocalDateTime.parse(this.textBoxComponent.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
     }
 }

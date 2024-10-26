@@ -40,6 +40,6 @@ public class IntegerMapConfigEntryComponent extends BaseMapConfigEntryComponent<
                         entry -> Integer.parseInt(entry.getB().getValue())
                 ));
 
-        this.getConfigEntry().setValue(map);
+        this.getConfigEntry().set(map);
     }
 }

@@ -85,7 +85,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
         @Override
         public void encodeNode(IDateTimeConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.setValue(LocalDateTime.parse(scalarNode.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+                configEntry.set(LocalDateTime.parse(scalarNode.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
             }
         }
 
@@ -121,7 +121,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
             LocalDateTime minDateTime = buf.readLong() != Long.MIN_VALUE ? LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC) : null;
             LocalDateTime maxDateTime = buf.readLong() != Long.MAX_VALUE ? LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC) : null;
             DateTimeConfigEntry configEntry = new DateTimeConfigEntry(key, value, minDateTime, maxDateTime);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

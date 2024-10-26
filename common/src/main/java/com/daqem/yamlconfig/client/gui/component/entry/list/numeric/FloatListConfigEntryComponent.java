@@ -32,7 +32,7 @@ public class FloatListConfigEntryComponent extends BaseListConfigEntryComponent<
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        this.getConfigEntry().setValue(this.textBoxComponents.keySet().stream()
+        this.getConfigEntry().set(this.textBoxComponents.keySet().stream()
                 .map(input -> Float.parseFloat(input.getValue()))
                 .toList()
         );

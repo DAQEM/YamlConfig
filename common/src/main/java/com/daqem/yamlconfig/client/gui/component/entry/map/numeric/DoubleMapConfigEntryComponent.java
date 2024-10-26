@@ -40,6 +40,6 @@ public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<D
                         entry -> Double.parseDouble(entry.getB().getValue())
                 ));
 
-        this.getConfigEntry().setValue(map);
+        this.getConfigEntry().set(map);
     }
 }

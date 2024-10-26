@@ -73,7 +73,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public void encodeNode(IRegistryConfigEntry<T> configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
                 ResourceLocation resourceLocation = ResourceLocation.parse(scalarNode.getValue());
-                configEntry.setValue(configEntry.getRegistry().get(resourceLocation));
+                configEntry.set(configEntry.getRegistry().get(resourceLocation));
             }
         }
 
@@ -116,7 +116,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             ResourceLocation resourceLocation = buf.readResourceLocation();
             Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
             RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, registry.get(resourceLocation), registry);
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return (IRegistryConfigEntry<T>) configEntry;
         }
     }

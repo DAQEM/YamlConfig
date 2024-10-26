@@ -49,7 +49,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
         @Override
         public void encodeNode(IDoubleMapConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
-                configEntry.setValue(mappingNode.getValue().stream()
+                configEntry.set(mappingNode.getValue().stream()
                         .filter(n ->
                                 n.getKeyNode() instanceof ScalarNode keyNode
                                         && n.getValueNode() instanceof ScalarNode valueNode
@@ -103,7 +103,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
                     buf.readDouble(),
                     buf.readDouble()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

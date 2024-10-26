@@ -39,7 +39,7 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
         @Override
         public void encodeNode(IIntegerConfigEntry configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.INT)) {
-                configEntry.setValue(Integer.parseInt(scalarNode.getValue()));
+                configEntry.set(Integer.parseInt(scalarNode.getValue()));
             }
         }
 
@@ -76,7 +76,7 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
                     buf.readInt(),
                     buf.readInt()
             );
-            configEntry.setValue(configEntry.getDefaultValue());
+            configEntry.set(configEntry.getDefaultValue());
             return configEntry;
         }
     }

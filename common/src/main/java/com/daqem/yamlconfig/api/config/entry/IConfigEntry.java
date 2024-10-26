@@ -19,7 +19,7 @@ public interface IConfigEntry<T> extends Supplier<T> {
 
     T getDefaultValue();
 
-    void setValue(T value);
+    void set(T value);
 
     IComments getComments();
 
