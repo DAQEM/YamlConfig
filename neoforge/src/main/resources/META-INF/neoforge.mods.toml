@@ -33,5 +33,12 @@ versionRange = "[${architectury_version},)"
 ordering = "AFTER"
 side = "BOTH"
 
+[[dependencies."${mod_id}"]]
+modId = "uilib"
+type = "required"
+versionRange = "[${ui_library_version},)"
+ordering = "AFTER"
+side = "CLIENT"
+
 [[mixins]]
 config = "yamlconfig-common.mixins.json"
