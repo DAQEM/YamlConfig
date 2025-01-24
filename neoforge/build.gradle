@@ -44,6 +44,7 @@ dependencies {
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
+    shadowBundle "org.snakeyaml:snakeyaml-engine:2.7"
     modImplementation "curse.maven:ui-933200:${project.ui_library_file_neoforge}"
 }
 
@@ -60,8 +61,7 @@ processResources {
             "neoforge_loader_version": project.neoforge_loader_version,
             "minecraft_version": project.minecraft_version,
             "architectury_version": project.architectury_version,
-//                "config_library_version": project.config_library_version,
-//                "ui_library_version": project.ui_library_version
+            "ui_library_version": project.ui_library_version
     ]
     inputs.properties replaceProperties
 
@@ -73,6 +73,7 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
+    relocate "org.snakeyaml", "com.daqem.snakeyaml"
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = "neoforge-dev-shadow"
 }
