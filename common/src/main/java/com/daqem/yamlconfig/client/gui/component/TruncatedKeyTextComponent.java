@@ -24,7 +24,7 @@ public class TruncatedKeyTextComponent extends AbstractComponent<TruncatedKeyTex
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
     }
 
     @Override

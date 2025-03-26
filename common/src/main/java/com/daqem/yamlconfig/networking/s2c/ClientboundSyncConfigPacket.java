@@ -9,16 +9,13 @@ import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import dev.architectury.networking.NetworkManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class ClientboundSyncConfigPacket implements CustomPacketPayload {
 
@@ -49,10 +46,9 @@ public class ClientboundSyncConfigPacket implements CustomPacketPayload {
 
                 Map<String, ?> data = buf.readMap(FriendlyByteBuf::readUtf,
                         entryBuf -> {
-                            Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
-                            IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
-                            return Objects.requireNonNull(type).getSerializer().valueFromNetwork((RegistryFriendlyByteBuf) entryBuf);
-                        });
+                    IConfigEntryType<? extends IConfigEntry<?>, ?> type = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                    return Objects.requireNonNull(type).getSerializer().valueFromNetwork((RegistryFriendlyByteBuf) entryBuf);
+                });
 
                 return new ClientboundSyncConfigPacket(YamlConfig.CONFIG_MANAGER.getConfig(modId, name), data);
             }

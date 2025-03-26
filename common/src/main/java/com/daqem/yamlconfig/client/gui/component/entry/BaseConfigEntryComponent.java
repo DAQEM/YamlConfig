@@ -43,7 +43,7 @@ public abstract class BaseConfigEntryComponent<T extends BaseConfigEntryComponen
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
         this.resetValueButton.setEnabled(!isOriginalValue());
     }
 

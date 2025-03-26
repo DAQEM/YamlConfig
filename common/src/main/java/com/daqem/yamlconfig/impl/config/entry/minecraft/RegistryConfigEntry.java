@@ -10,7 +10,6 @@ import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -22,7 +21,6 @@ import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegistryConfigEntry<T> {
 
@@ -75,8 +73,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public void encodeNode(IRegistryConfigEntry<T> configEntry, NodeTuple nodeTuple) {
             if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
                 ResourceLocation resourceLocation = ResourceLocation.parse(scalarNode.getValue());
-                Optional<Holder.Reference<T>> reference = configEntry.getRegistry().get(resourceLocation);
-                reference.ifPresent(tReference -> configEntry.set(tReference.value()));
+                configEntry.set(configEntry.getRegistry().get(resourceLocation));
             }
         }
 
@@ -100,8 +97,8 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public T valueFromNetwork(RegistryFriendlyByteBuf buf) {
             ResourceKey<Registry<Object>> key = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
             ResourceLocation resourceLocation = buf.readResourceLocation();
-            Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(key);
-            return (T) reference.map(registry -> registry.value().get(resourceLocation)).orElse(null);
+            Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(key);
+            return (T) Objects.requireNonNull(registry).get(resourceLocation);
         }
 
         @Override
@@ -117,8 +114,8 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             String key = buf.readUtf();
             ResourceKey<Registry<Object>> registryKey = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
             ResourceLocation resourceLocation = buf.readResourceLocation();
-            Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
-            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(resourceLocation)).orElse(null), reference.map(Holder.Reference::value).orElse(null));
+            Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
+            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, registry.get(resourceLocation), registry);
             configEntry.set(configEntry.getDefaultValue());
             return (IRegistryConfigEntry<T>) configEntry;
         }

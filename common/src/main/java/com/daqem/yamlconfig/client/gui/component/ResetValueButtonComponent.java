@@ -7,7 +7,6 @@ import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 public class ResetValueButtonComponent extends ButtonComponent {
@@ -17,12 +16,12 @@ public class ResetValueButtonComponent extends ButtonComponent {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
-        super.render(graphics, mouseX, mouseY, delta,color);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        super.render(graphics, mouseX, mouseY, delta);
         if (!isEnabled()) {
             RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
         }
-        graphics.blitSprite(RenderType::guiTextured, YamlConfig.getId("widget/reload"), 3, 3, 14, 14, color);
+        graphics.blitSprite(YamlConfig.getId("widget/reload"), 3, 3, 20, 14, 14);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
