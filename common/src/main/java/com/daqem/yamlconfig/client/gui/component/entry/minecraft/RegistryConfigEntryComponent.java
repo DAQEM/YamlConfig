@@ -4,11 +4,13 @@ import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<RegistryConfigEntryComponent<T>, RegistryConfigEntry<T>> {
 
@@ -55,6 +57,7 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<Re
     @Override
     public void applyValue() {
         if (this.textBoxComponent.hasInputValidationErrors()) return;
-        getConfigEntry().set(getConfigEntry().getRegistry().get(ResourceLocation.parse(this.textBoxComponent.getValue())));
+        Optional<Holder.Reference<T>> reference = getConfigEntry().getRegistry().get(ResourceLocation.parse(this.textBoxComponent.getValue()));
+        reference.ifPresent(tReference -> getConfigEntry().set(tReference.value()));
     }
 }

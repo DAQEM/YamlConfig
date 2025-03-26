@@ -63,7 +63,7 @@ public class ConfigsCategoryComponent extends AbstractComponent<ConfigsCategoryC
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
         graphics.fill(0, TOP_MARGIN + TITLE_HEIGHT, getWidth(), TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
         this.configButtons.forEach(button -> {
             button.setX(3 + (this.configButtons.indexOf(button) % 2) * 150);

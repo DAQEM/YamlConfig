@@ -134,11 +134,9 @@ public class ConfigScreen extends AbstractScreen {
 
     @Override
     public void renderComponents(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        this.renderBlurredBackground(delta);
-        RenderSystem.enableBlend();
+        this.renderBlurredBackground();
         this.headerBackground.renderBase(guiGraphics, mouseX, mouseY, delta);
         this.footerBackground.renderBase(guiGraphics, mouseX, mouseY, delta);
-        RenderSystem.disableBlend();
         this.contentBackground.renderBase(guiGraphics, mouseX, mouseY, delta);
         super.renderComponents(guiGraphics, mouseX, mouseY, delta);
     }

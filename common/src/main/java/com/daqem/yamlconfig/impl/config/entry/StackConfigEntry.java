@@ -7,6 +7,7 @@ import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
@@ -17,6 +18,7 @@ import org.snakeyaml.engine.v2.nodes.Tag;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?>>> implements IStackConfigEntry {
 
@@ -97,7 +99,8 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
             Map<String, IConfigEntry<?>> value = new HashMap<>();
             for (int i = 0; i < size; i++) {
                 String entryKey = buf.readUtf();
-                IConfigEntryType<? extends IConfigEntry<?>, ?> type = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
                 IConfigEntry<?> entry = Objects.requireNonNull(type).getSerializer().fromNetwork(buf);
                 value.put(entryKey, entry);
             }
