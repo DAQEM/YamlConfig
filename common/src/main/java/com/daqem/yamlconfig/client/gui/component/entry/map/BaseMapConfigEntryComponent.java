@@ -200,8 +200,8 @@ public abstract class BaseMapConfigEntryComponent<T extends BaseMapConfigEntryCo
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
+        super.render(graphics, mouseX, mouseY, delta, color);
         renderHorizontalLines(graphics);
         this.addEntryButton.setEnabled(getConfigEntry().getMaxLength() > this.textBoxComponents.size());
         this.textBoxComponents.values().forEach(crossButtonComponent -> crossButtonComponent.setEnabled(getConfigEntry().getMinLength() < this.textBoxComponents.size()));

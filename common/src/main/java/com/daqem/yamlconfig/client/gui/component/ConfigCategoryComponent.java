@@ -53,8 +53,8 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        super.render(graphics, mouseX, mouseY, delta);
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
+        super.render(graphics, mouseX, mouseY, delta, color);
         renderHorizontalLines(graphics);
     }
 
@@ -79,7 +79,7 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
     public void preformOnHoverEvent(double mouseX, double mouseY, float delta) {
         if (getOnHoverEvent() != null) {
             if (this.isTotalHovered(mouseX, mouseY)) {
-                getOnHoverEvent().onHover(getHoverState(), Minecraft.getInstance().screen, mouseX, mouseY, delta);
+                getOnHoverEvent().onHover(this, Minecraft.getInstance().screen, mouseX, mouseY, delta);
             }
         }
     }
