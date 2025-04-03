@@ -7,6 +7,8 @@ import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.FloatMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -40,6 +42,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         return new FloatMapConfigEntryComponent(key, this);
     }

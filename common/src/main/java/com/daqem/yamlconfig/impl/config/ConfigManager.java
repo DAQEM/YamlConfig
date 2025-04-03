@@ -4,13 +4,13 @@ import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.IConfigManager;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ConfigManager implements IConfigManager {
 
-    Map<String, Map<String, IConfig>> configs = new HashMap<>();
+    Map<String, Map<String, IConfig>> configs = new ConcurrentHashMap<>();
 
     @Override
     public List<IConfig> getAllConfigs() {
@@ -40,22 +40,22 @@ public class ConfigManager implements IConfigManager {
 
     @Override
     public List<IConfig> getConfigs(String modId) {
-        return configs.getOrDefault(modId, new HashMap<>()).values().stream().toList();
+        return configs.getOrDefault(modId, new ConcurrentHashMap<>()).values().stream().toList();
     }
 
     @Override
     public IConfig getConfig(String modId, String configName) {
-        return configs.getOrDefault(modId, new HashMap<>()).get(configName);
+        return configs.getOrDefault(modId, new ConcurrentHashMap<>()).get(configName);
     }
 
     @Override
     public void registerConfig(IConfig config) {
-        configs.computeIfAbsent(config.getModId(), k -> new HashMap<>()).put(config.getName(), config);
+        configs.computeIfAbsent(config.getModId(), k -> new ConcurrentHashMap<>()).put(config.getName(), config);
     }
 
     @Override
     public void unregisterConfig(String modId, String configName) {
-        configs.getOrDefault(modId, new HashMap<>()).remove(configName);
+        configs.getOrDefault(modId, new ConcurrentHashMap<>()).remove(configName);
     }
 
     @Override

@@ -9,6 +9,8 @@ import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.map.StringMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -79,6 +81,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         return new StringMapConfigEntryComponent(key, this);
     }

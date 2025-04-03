@@ -10,6 +10,8 @@ import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,6 +50,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         return new RegistryConfigEntryComponent<>(key, this);
     }

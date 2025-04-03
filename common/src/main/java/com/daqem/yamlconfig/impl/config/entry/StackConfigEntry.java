@@ -7,6 +7,8 @@ import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -37,6 +39,7 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         throw new UnsupportedOperationException("StackConfigEntry does not support components");
     }
