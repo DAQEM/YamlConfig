@@ -1,6 +1,5 @@
 package com.daqem.yamlconfig.client.gui.screen;
 
-import com.daqem.uilib.api.client.gui.component.IComponent;
 import com.daqem.uilib.api.client.gui.component.scroll.ScrollOrientation;
 import com.daqem.uilib.client.gui.AbstractScreen;
 import com.daqem.uilib.client.gui.background.GradientBackground;
@@ -31,9 +30,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ConfigScreen extends AbstractScreen {
 
