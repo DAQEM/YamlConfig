@@ -7,6 +7,8 @@ import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
@@ -30,6 +32,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         return new DoubleConfigEntryComponent(key, this);
     }

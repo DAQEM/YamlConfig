@@ -10,6 +10,8 @@ import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocationConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -44,6 +46,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public IConfigEntryComponent<?, ?> createComponent(String key) {
         return new ResourceLocationConfigEntryComponent(key, this);
     }
