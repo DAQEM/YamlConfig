@@ -1,23 +1,9 @@
 package com.daqem.yamlconfig.client.gui.screen;
 
-import com.daqem.uilib.api.client.gui.component.scroll.ScrollOrientation;
-import com.daqem.uilib.client.gui.AbstractScreen;
-import com.daqem.uilib.client.gui.background.GradientBackground;
-import com.daqem.uilib.client.gui.component.SolidColorComponent;
-import com.daqem.uilib.client.gui.component.TextComponent;
-import com.daqem.uilib.client.gui.component.io.ButtonComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollBarComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollContentComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollPanelComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollWheelComponent;
-import com.daqem.uilib.client.gui.component.texture.TextureComponent;
-import com.daqem.uilib.client.gui.text.Text;
-import com.daqem.uilib.client.gui.texture.Texture;
-import com.daqem.uilib.client.gui.texture.Textures;
+import com.daqem.uilib.gui.AbstractScreen;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.component.ConfigsCategoryComponent;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 

@@ -39,7 +39,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new IntegerListConfigEntryComponent(key, this);
     }
 

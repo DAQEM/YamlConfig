@@ -43,7 +43,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new FloatMapConfigEntryComponent(key, this);
     }
 

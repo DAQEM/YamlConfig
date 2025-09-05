@@ -1,16 +1,15 @@
 package com.daqem.yamlconfig.client.gui.component.entry;
 
-import com.daqem.uilib.client.gui.component.io.CycleButtonComponent;
-import com.daqem.uilib.client.gui.component.io.IOComponentEntry;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.impl.config.entry.BooleanConfigEntry;
+import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 
-public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<BooleanConfigEntryComponent, BooleanConfigEntry> {
+public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<BooleanConfigEntry> {
 
-    private final CycleButtonComponent<Boolean> cycleButtonComponent;
+    private final CycleButton<Boolean> cycleButtonComponent;
 
     public BooleanConfigEntryComponent(String key, BooleanConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
@@ -22,12 +21,8 @@ public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<Boolea
                 ),
                 configEntry.get(),
                 Component.empty());
-    }
 
-    @Override
-    public void startRenderable() {
-        this.addChild(this.cycleButtonComponent);
-        super.startRenderable();
+        this.addWidget(this.cycleButtonComponent);
     }
 
     @Override

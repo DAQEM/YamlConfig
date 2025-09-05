@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<FloatConfigEntryComponent, FloatConfigEntry, Float>{
+public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<FloatConfigEntry, Float>{
 
     public FloatConfigEntryComponent(String key, FloatConfigEntry configEntry) {
         super(key, configEntry, configEntry.get(), input -> {
@@ -29,7 +29,7 @@ public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<F
 
     @Override
     public void applyValue() {
-        if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().set(Float.parseFloat(this.textBoxComponent.getValue()));
+//        if (this.editBoxWidget.hasInputValidationErrors()) return; TODO
+        this.getConfigEntry().set(Float.parseFloat(this.editBoxWidget.getValue()));
     }
 }

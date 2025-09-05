@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class IntegerMapConfigEntryComponent extends BaseMapConfigEntryComponent<IntegerMapConfigEntryComponent, IntegerMapConfigEntry> {
+public class IntegerMapConfigEntryComponent extends BaseMapConfigEntryComponent<IntegerMapConfigEntry> {
 
     public IntegerMapConfigEntryComponent(String key, IntegerMapConfigEntry configEntry) {
         super(key, configEntry, input -> {
@@ -34,7 +34,7 @@ public class IntegerMapConfigEntryComponent extends BaseMapConfigEntryComponent<
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        Map<String, Integer> map = this.textBoxComponents.keySet().stream()
+        Map<String, Integer> map = this.editBoxWidgets.keySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getA().getValue(),
                         entry -> Integer.parseInt(entry.getB().getValue())

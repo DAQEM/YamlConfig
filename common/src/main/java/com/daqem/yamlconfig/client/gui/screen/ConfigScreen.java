@@ -1,20 +1,6 @@
 package com.daqem.yamlconfig.client.gui.screen;
 
-import com.daqem.uilib.api.client.gui.component.IComponent;
-import com.daqem.uilib.api.client.gui.component.scroll.ScrollOrientation;
-import com.daqem.uilib.client.gui.AbstractScreen;
-import com.daqem.uilib.client.gui.background.GradientBackground;
-import com.daqem.uilib.client.gui.component.SolidColorComponent;
-import com.daqem.uilib.client.gui.component.TextComponent;
-import com.daqem.uilib.client.gui.component.io.ButtonComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollBarComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollContentComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollPanelComponent;
-import com.daqem.uilib.client.gui.component.scroll.ScrollWheelComponent;
-import com.daqem.uilib.client.gui.component.texture.TextureComponent;
-import com.daqem.uilib.client.gui.text.Text;
-import com.daqem.uilib.client.gui.texture.Texture;
-import com.daqem.uilib.client.gui.texture.Textures;
+import com.daqem.uilib.gui.AbstractScreen;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
@@ -24,16 +10,13 @@ import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
 import com.daqem.yamlconfig.client.gui.component.MarginComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
-import com.mojang.blaze3d.systems.RenderSystem;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ConfigScreen extends AbstractScreen {
 
@@ -78,7 +61,7 @@ public class ConfigScreen extends AbstractScreen {
         ConfigCategoryComponent configCategoryComponent = new ConfigEntryComponentBuilder(this.config).build();
 
         this.saveChangesButton = new ButtonComponent(width / 2 + 2, height - 27, 150, 20, YamlConfig.translatable("screen.config.save"), (clickedObject, screen, mouseX, mouseY, button) -> {
-            List<IConfigEntryComponent<?, ?>> configEntryComponents = configCategoryComponent.getAllConfigEntryComponents();
+            List<IConfigEntryComponent<?>> configEntryComponents = configCategoryComponent.getAllConfigEntryComponents();
             configEntryComponents.forEach(IConfigEntryComponent::applyValue);
             if (this.config.getType() == ConfigType.CLIENT) {
                 this.config.save();

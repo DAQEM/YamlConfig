@@ -1,6 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list;
 
-import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
+import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringListConfigEntryComponent extends BaseListConfigEntryComponent<StringListConfigEntryComponent, StringListConfigEntry> {
+public class StringListConfigEntryComponent extends BaseListConfigEntryComponent<StringListConfigEntry> {
 
     public StringListConfigEntryComponent(String key, StringListConfigEntry configEntry) {
         super(key, configEntry, input -> {
@@ -27,8 +27,8 @@ public class StringListConfigEntryComponent extends BaseListConfigEntryComponent
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        this.getConfigEntry().set(this.textBoxComponents.keySet().stream()
-                .map(TextBoxComponent::getValue)
+        this.getConfigEntry().set(this.editBoxWidgets.keySet().stream()
+                .map(EditBoxWidget::getValue)
                 .toList()
         );
     }

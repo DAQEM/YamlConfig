@@ -51,7 +51,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new RegistryConfigEntryComponent<>(key, this);
     }
 

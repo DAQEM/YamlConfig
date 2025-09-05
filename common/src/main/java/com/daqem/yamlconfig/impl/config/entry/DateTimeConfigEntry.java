@@ -52,7 +52,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new DateTimeConfigEntryComponent(key, this);
     }
 

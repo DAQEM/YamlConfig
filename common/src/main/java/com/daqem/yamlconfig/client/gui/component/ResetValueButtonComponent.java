@@ -1,35 +1,15 @@
 package com.daqem.yamlconfig.client.gui.component;
 
-import com.daqem.uilib.api.client.gui.component.event.OnClickEvent;
-import com.daqem.uilib.client.gui.component.io.ButtonComponent;
+import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
-public class ResetValueButtonComponent extends ButtonComponent {
+public class ResetValueButtonComponent extends ButtonWidget {
 
-    public ResetValueButtonComponent(int x, int y, OnClickEvent<ButtonComponent> onClickEvent) {
-        super(x, y, BaseConfigEntryComponent.RELOAD_WIDTH, BaseConfigEntryComponent.DEFAULT_HEIGHT, Component.empty(), onClickEvent);
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
-        super.render(graphics, mouseX, mouseY, delta,color);
-        if (!isEnabled()) {
-            RenderSystem.setShaderColor(0.8F, 0.8F, 0.8F, 1.0F);
-        }
-        graphics.blitSprite(RenderType::guiTextured, YamlConfig.getId("widget/reload"), 3, 3, 14, 14, color);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-    }
-
-    @Override
-    public void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        if (isTotalHovered(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, YamlConfig.translatable("gui.tooltip.reset_value"), mouseX, mouseY);
-        }
+    public ResetValueButtonComponent(int x, int y, OnPress onPress) {
+        super(x, y, BaseConfigEntryComponent.RELOAD_WIDTH, BaseConfigEntryComponent.DEFAULT_HEIGHT, Component.empty(), onPress);
+        setTooltip(Tooltip.create(YamlConfig.translatable("gui.tooltip.reset_value")));
     }
 }

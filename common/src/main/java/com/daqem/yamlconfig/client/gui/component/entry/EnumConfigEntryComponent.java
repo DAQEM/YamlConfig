@@ -1,14 +1,12 @@
 package com.daqem.yamlconfig.client.gui.component.entry;
 
-import com.daqem.uilib.client.gui.component.io.CycleButtonComponent;
-import com.daqem.uilib.client.gui.component.io.IOComponentEntry;
 import com.daqem.yamlconfig.impl.config.entry.EnumConfigEntry;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntryComponent<EnumConfigEntryComponent<E>, EnumConfigEntry<E>>{
+public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntryComponent<EnumConfigEntry<E>>{
 
     private final CycleButtonComponent<E> cycleButtonComponent;
 

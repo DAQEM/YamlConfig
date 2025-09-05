@@ -82,7 +82,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new StringMapConfigEntryComponent(key, this);
     }
 

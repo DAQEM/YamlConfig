@@ -39,7 +39,7 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new DoubleListConfigEntryComponent(key, this);
     }
 

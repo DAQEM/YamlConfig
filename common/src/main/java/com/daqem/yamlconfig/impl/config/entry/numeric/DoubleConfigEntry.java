@@ -33,7 +33,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new DoubleConfigEntryComponent(key, this);
     }
 

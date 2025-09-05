@@ -1,7 +1,5 @@
 package com.daqem.yamlconfig.client.gui.component;
 
-import com.daqem.uilib.api.client.gui.component.scroll.ScrollOrientation;
-import com.daqem.uilib.client.gui.component.scroll.ScrollContentComponent;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
@@ -14,23 +12,23 @@ import java.util.Objects;
 
 public class ConfigCategoryComponent extends ScrollContentComponent {
 
-    private final List<IConfigEntryComponent<?, ?>> configEntryComponents;
+    private final List<IConfigEntryComponent<?>> configEntryComponents;
     private final List<ConfigCategoryComponent> subCategories;
 
     private final @Nullable TruncatedKeyTextComponent keyText;
 
-    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?, ?>> configEntryComponents) {
+    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents) {
         this(key, configEntryComponents, new ArrayList<>());
     }
 
-    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?, ?>> configEntryComponents, List<ConfigCategoryComponent> subCategories) {
+    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents, List<ConfigCategoryComponent> subCategories) {
         super(0, 0, BaseConfigEntryComponent.GAP_WIDTH, ScrollOrientation.VERTICAL);
         this.configEntryComponents = configEntryComponents;
         this.subCategories = subCategories;
         if (key == null) {
             this.keyText = null;
         } else {
-            this.keyText = new TruncatedKeyTextComponent(key, getWidth(), BaseConfigEntryComponent.DEFAULT_HEIGHT);
+            this.keyText = new TruncatedKeyTextComponent(key, getWidth());
             if (this.keyText.getText() != null) {
                 this.keyText.getText().setBold(true);
             }
@@ -140,8 +138,8 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
         return false;
     }
 
-    public List<IConfigEntryComponent<?, ?>> getAllConfigEntryComponents() {
-        List<IConfigEntryComponent<?, ?>> allConfigEntryComponents = new ArrayList<>(this.configEntryComponents);
+    public List<IConfigEntryComponent<?>> getAllConfigEntryComponents() {
+        List<IConfigEntryComponent<?>> allConfigEntryComponents = new ArrayList<>(this.configEntryComponents);
         this.subCategories.forEach(subCategory -> allConfigEntryComponents.addAll(subCategory.getAllConfigEntryComponents()));
         return allConfigEntryComponents;
     }

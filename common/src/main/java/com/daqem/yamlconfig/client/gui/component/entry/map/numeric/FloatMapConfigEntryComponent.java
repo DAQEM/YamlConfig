@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<FloatMapConfigEntryComponent, FloatMapConfigEntry> {
+public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<FloatMapConfigEntry> {
 
     public FloatMapConfigEntryComponent(String key, FloatMapConfigEntry configEntry) {
         super(key, configEntry, input -> {
@@ -34,7 +34,7 @@ public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<Fl
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        Map<String, Float> map = this.textBoxComponents.keySet().stream()
+        Map<String, Float> map = this.editBoxWidgets.keySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getA().getValue(),
                         entry -> Float.parseFloat(entry.getB().getValue())

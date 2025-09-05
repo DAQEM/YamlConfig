@@ -43,7 +43,7 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new IntegerMapConfigEntryComponent(key, this);
     }
 

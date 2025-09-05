@@ -43,7 +43,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new DoubleMapConfigEntryComponent(key, this);
     }
 

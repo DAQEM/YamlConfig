@@ -1,13 +1,13 @@
 package com.daqem.yamlconfig.client.gui.component.entry;
 
-import com.daqem.uilib.client.gui.component.AbstractComponent;
+import com.daqem.uilib.gui.component.AbstractComponent;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.ResetValueButtonComponent;
 import com.daqem.yamlconfig.client.gui.component.TruncatedKeyTextComponent;
 import net.minecraft.client.gui.GuiGraphics;
 
-public abstract class BaseConfigEntryComponent<T extends BaseConfigEntryComponent<T, C>, C extends IConfigEntry<?>> extends AbstractComponent<T> implements IConfigEntryComponent<T, C> {
+public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extends AbstractComponent implements IConfigEntryComponent<C> {
 
     public static final int KEY_WIDTH = 136;
     public static final int VALUE_WIDTH = 150;
@@ -26,25 +26,20 @@ public abstract class BaseConfigEntryComponent<T extends BaseConfigEntryComponen
     }
 
     public BaseConfigEntryComponent(String key, C configEntry, int x, int y, int height, int textWidth) {
-        super(null, x, y, TOTAL_WIDTH, height);
+        super(x, y, TOTAL_WIDTH, height);
         this.configEntry = configEntry;
 
-        this.keyText = new TruncatedKeyTextComponent(key, textWidth, DEFAULT_HEIGHT);
-        this.resetValueButton = new ResetValueButtonComponent(TOTAL_WIDTH - RELOAD_WIDTH, 0, (clickedObject, screen, mouseX, mouseY, button) -> {
-            resetValue();
-            return true;
-        });
+        this.keyText = new TruncatedKeyTextComponent(key, textWidth);
+        this.resetValueButton = new ResetValueButtonComponent(TOTAL_WIDTH - RELOAD_WIDTH, 0, button -> resetValue());
+
+        this.addComponent(this.keyText);
+        this.addWidget(this.resetValueButton);
     }
 
     @Override
-    public void startRenderable() {
-        this.addChildren(this.keyText, this.resetValueButton);
-        super.startRenderable();
-    }
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        this.resetValueButton.active = !isOriginalValue();
 
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
-        this.resetValueButton.setEnabled(!isOriginalValue());
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<DoubleMapConfigEntryComponent, DoubleMapConfigEntry> {
+public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<DoubleMapConfigEntry> {
 
     public DoubleMapConfigEntryComponent(String key, DoubleMapConfigEntry configEntry) {
         super(key, configEntry, input -> {
@@ -34,7 +34,7 @@ public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<D
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        Map<String, Double> map = this.textBoxComponents.keySet().stream()
+        Map<String, Double> map = this.editBoxWidgets.keySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getA().getValue(),
                         entry -> Double.parseDouble(entry.getB().getValue())

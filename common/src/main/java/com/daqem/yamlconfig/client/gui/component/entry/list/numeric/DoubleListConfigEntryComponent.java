@@ -8,7 +8,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoubleListConfigEntryComponent extends BaseListConfigEntryComponent<DoubleListConfigEntryComponent, DoubleListConfigEntry> {
+public class DoubleListConfigEntryComponent extends BaseListConfigEntryComponent<DoubleListConfigEntry> {
 
     public DoubleListConfigEntryComponent(String key, DoubleListConfigEntry configEntry) {
         super(key, configEntry, input -> {
@@ -32,7 +32,7 @@ public class DoubleListConfigEntryComponent extends BaseListConfigEntryComponent
     public void applyValue() {
         if (hasInputValidationErrors()) return;
 
-        this.getConfigEntry().set(this.textBoxComponents.keySet().stream()
+        this.getConfigEntry().set(this.editBoxWidgets.keySet().stream()
                 .map(input -> Double.parseDouble(input.getValue()))
                 .toList()
         );

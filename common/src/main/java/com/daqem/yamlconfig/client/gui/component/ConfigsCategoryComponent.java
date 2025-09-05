@@ -1,9 +1,9 @@
 package com.daqem.yamlconfig.client.gui.component;
 
-import com.daqem.uilib.client.gui.component.AbstractComponent;
-import com.daqem.uilib.client.gui.component.TextComponent;
-import com.daqem.uilib.client.gui.component.io.ButtonComponent;
-import com.daqem.uilib.client.gui.text.TruncatedText;
+import com.daqem.uilib.gui.component.AbstractComponent;
+import com.daqem.uilib.gui.component.text.TextComponent;
+import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
+import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
@@ -13,10 +13,11 @@ import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
-public class ConfigsCategoryComponent extends AbstractComponent<ConfigsCategoryComponent> {
+public class ConfigsCategoryComponent extends AbstractComponent {
 
     private static final int WIDTH = 300;
     private static final int TOP_MARGIN = 12;
@@ -25,11 +26,11 @@ public class ConfigsCategoryComponent extends AbstractComponent<ConfigsCategoryC
     private final List<IConfig> configs;
     private final Font font;
 
-    private final TextComponent title;
-    private final List<ButtonComponent> configButtons;
+    private final TruncatedTextComponent title;
+    private final List<ButtonWidget> configButtons;
 
     public ConfigsCategoryComponent(int x, int y, Font font, List<IConfig> configs) {
-        super(null, x, y, WIDTH, calculateHeight(configs));
+        super(x, y, WIDTH, calculateHeight(configs));
         this.configs = configs;
         this.font = font;
 
@@ -38,33 +39,27 @@ public class ConfigsCategoryComponent extends AbstractComponent<ConfigsCategoryC
         }
 
         IConfig firstConfig = configs.getFirst();
-        this.title = new TextComponent(new TruncatedText(this.font, firstConfig.getModName(), 4, TOP_MARGIN, WIDTH, TITLE_HEIGHT));
+        this.title = new TruncatedTextComponent(4, TOP_MARGIN, WIDTH, firstConfig.getModName());
 
         this.configButtons = configs.stream()
-                .map(config -> new ButtonComponent(0, 0, 144, 20, config.getDisplayName(),
-                        (clickedObject, screen, mouseX, mouseY, button) -> {
+                .map(config -> new ButtonWidget(0, 0, 144, 20, config.getDisplayName(),
+                        button -> {
                             ConfigType type = config.getType();
+                            Screen currentScreen = Minecraft.getInstance().screen;
                             switch (type) {
-                                case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
+                                case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(currentScreen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
                                 case COMMON -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                                 case SERVER -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
-                            return true;
                         }))
                 .toList();
 
-        this.addChild(this.title);
+        this.addComponent(this.title);
     }
 
     @Override
-    public void startRenderable() {
-        this.configButtons.forEach(this::addChild);
-        super.startRenderable();
-    }
-
-    @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
-        graphics.fill(0, TOP_MARGIN + TITLE_HEIGHT, getWidth(), TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        guiGraphics.fill(0, TOP_MARGIN + TITLE_HEIGHT, getWidth(), TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
         this.configButtons.forEach(button -> {
             button.setX(3 + (this.configButtons.indexOf(button) % 2) * 150);
             button.setY((TOP_MARGIN + TITLE_HEIGHT + 3 + (this.configButtons.indexOf(button) / 2) * 24));

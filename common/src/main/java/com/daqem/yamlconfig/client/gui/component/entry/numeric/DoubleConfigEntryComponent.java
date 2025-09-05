@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<DoubleConfigEntryComponent, DoubleConfigEntry, Double>{
+public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<DoubleConfigEntry, Double>{
 
     public DoubleConfigEntryComponent(String key, DoubleConfigEntry configEntry) {
         super(key, configEntry, configEntry.get(), input -> {
@@ -29,7 +29,7 @@ public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<
 
     @Override
     public void applyValue() {
-        if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().set(Double.parseDouble(this.textBoxComponent.getValue()));
+//        if (this.editBoxWidget.hasInputValidationErrors()) return; TODO
+        this.getConfigEntry().set(Double.parseDouble(this.editBoxWidget.getValue()));
     }
 }

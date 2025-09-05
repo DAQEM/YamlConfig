@@ -16,7 +16,7 @@ public class ConfigEntryComponentBuilder {
     }
 
     public ConfigCategoryComponent build() {
-        List<IConfigEntryComponent<?, ?>> components = createComponents("");
+        List<IConfigEntryComponent<?>> components = createComponents("");
         List<ConfigCategoryComponent> categoryComponents = createCategories();
 
         return new ConfigCategoryComponent(null, components, categoryComponents);
@@ -45,7 +45,7 @@ public class ConfigEntryComponentBuilder {
         return new ArrayList<>(categoriesSet);
     }
 
-    private List<IConfigEntryComponent<?, ?>> createComponents(String category) {
+    private List<IConfigEntryComponent<?>> createComponents(String category) {
         return config.getEntries().entrySet().stream()
                 .filter(entry -> {
                     String key = entry.getKey();
@@ -71,7 +71,7 @@ public class ConfigEntryComponentBuilder {
         Map<String, ConfigCategoryComponent> categoryComponents = new HashMap<>();
 
         for (String category : getCategories()) {
-            List<IConfigEntryComponent<?, ?>> components = createComponents(category);
+            List<IConfigEntryComponent<?>> components = createComponents(category);
             categoryComponents.put(category, new ConfigCategoryComponent(getConfigPrefix() + category, components));
         }
 

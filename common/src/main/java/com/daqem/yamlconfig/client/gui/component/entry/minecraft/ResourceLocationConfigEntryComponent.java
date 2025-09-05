@@ -1,6 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.minecraft;
 
-import com.daqem.uilib.client.gui.component.io.TextBoxComponent;
+import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
@@ -11,65 +11,68 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<ResourceLocationConfigEntryComponent, ResourceLocationConfigEntry> {
+public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<ResourceLocationConfigEntry> {
 
-    private final TextBoxComponent textBoxComponent;
+    private final EditBoxWidget editBoxWidget;
 
     public ResourceLocationConfigEntryComponent(String key, ResourceLocationConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
-        this.textBoxComponent = new TextBoxComponent(KEY_WIDTH + GAP_WIDTH, 0, VALUE_WIDTH, DEFAULT_HEIGHT, this.getConfigEntry().get().toString()) {
-            @Override
-            public List<Component> validateInput(String input) {
-                List<Component> list = super.validateInput(input);
-                ResourceLocation value = ResourceLocation.tryParse(input);
-                if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
-                    list.add(YamlConfig.translatable("gui.validation_error.invalid_resource_location"));
-                } else {
-                    if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
-                        list.add(YamlConfig.translatable("gui.validation_error.pattern", configEntry.getPattern()));
-                    }
-                }
-                return list;
-            }
+        this.editBoxWidget = new EditBoxWidget(
+                Minecraft.getInstance().font,
+                KEY_WIDTH + GAP_WIDTH,
+                0,
+                VALUE_WIDTH,
+                DEFAULT_HEIGHT,
+                Component.empty()
+        ) {
+//            @Override
+//            public List<Component> validateInput(String input) {
+//                List<Component> list = super.validateInput(input);
+//                ResourceLocation value = ResourceLocation.tryParse(input);
+//                if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
+//                    list.add(YamlConfig.translatable("gui.validation_error.invalid_resource_location"));
+//                } else {
+//                    if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
+//                        list.add(YamlConfig.translatable("gui.validation_error.pattern", configEntry.getPattern()));
+//                    }
+//                }
+//                return list;
+//            } // TODO
         };
 
-        textBoxComponent.setMaxLength(Integer.MAX_VALUE);
+        editBoxWidget.setMaxLength(Integer.MAX_VALUE);
+
+        this.addWidget(editBoxWidget);
     }
 
-    @Override
-    public void startRenderable() {
-        this.addChild(this.textBoxComponent);
-        super.startRenderable();
-    }
-
-    @Override
-    public void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        if (isTotalHovered(mouseX, mouseY)) {
-            if (!this.textBoxComponent.hasInputValidationErrors() && !this.textBoxComponent.getValue().contains(":")) {
-                ResourceLocation resourceLocation = ResourceLocation.tryParse(this.textBoxComponent.getValue());
-                guiGraphics.renderTooltip(Minecraft.getInstance().font,
-                        Component.literal(resourceLocation == null
-                                ? "Invalid Resource Location"
-                                : resourceLocation.toString()),
-                        mouseX, mouseY);
-            }
-        }
-    }
+//    @Override
+//    public void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+//        if (isTotalHovered(mouseX, mouseY)) {
+//            if (!this.editBoxWidget.hasInputValidationErrors() && !this.editBoxWidget.getValue().contains(":")) {
+//                ResourceLocation resourceLocation = ResourceLocation.tryParse(this.editBoxWidget.getValue());
+//                guiGraphics.renderTooltip(Minecraft.getInstance().font,
+//                        Component.literal(resourceLocation == null
+//                                ? "Invalid Resource Location"
+//                                : resourceLocation.toString()),
+//                        mouseX, mouseY);
+//            }
+//        }
+//    } //TODO
 
     @Override
     public boolean isOriginalValue() {
-        return this.getConfigEntry().get().equals(ResourceLocation.tryParse(this.textBoxComponent.getValue()));
+        return this.getConfigEntry().get().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override
     public void resetValue() {
-        this.textBoxComponent.setValue(this.getConfigEntry().get().toString());
+        this.editBoxWidget.setValue(this.getConfigEntry().get().toString());
     }
 
     @Override
     public void applyValue() {
-        if (this.textBoxComponent.hasInputValidationErrors()) return;
-        this.getConfigEntry().set(ResourceLocation.tryParse(this.textBoxComponent.getValue()));
+//        if (this.editBoxWidget.hasInputValidationErrors()) return; //TODO
+        this.getConfigEntry().set(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 }

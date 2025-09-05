@@ -47,7 +47,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new ResourceLocationConfigEntryComponent(key, this);
     }
 

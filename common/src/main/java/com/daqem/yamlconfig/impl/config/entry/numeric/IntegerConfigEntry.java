@@ -33,7 +33,7 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new IntegerConfigEntryComponent(key, this);
     }
 

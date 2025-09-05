@@ -35,7 +35,7 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new BooleanConfigEntryComponent(key, this);
     }
 

@@ -33,7 +33,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new FloatConfigEntryComponent(key, this);
     }
 

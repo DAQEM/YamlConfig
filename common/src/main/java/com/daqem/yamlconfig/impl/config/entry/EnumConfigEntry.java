@@ -43,7 +43,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
 
     @Override
     @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?, ?> createComponent(String key) {
+    public IConfigEntryComponent<?> createComponent(String key) {
         return new EnumConfigEntryComponent<>(key, this);
     }
 
