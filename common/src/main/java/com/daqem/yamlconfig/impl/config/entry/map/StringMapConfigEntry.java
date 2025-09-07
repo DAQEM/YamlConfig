@@ -147,6 +147,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
         public void toNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
             buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
@@ -157,12 +158,13 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
         public IStringMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
             Map<String, String> value = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            Map<String, String> defaultValue = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             String pattern = buf.readUtf();
             List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
-            StringMapConfigEntry configEntry = new StringMapConfigEntry(key, value, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
-            configEntry.set(configEntry.getDefaultValue());
+            StringMapConfigEntry configEntry = new StringMapConfigEntry(key, defaultValue, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
+            configEntry.set(value);
             return configEntry;
         }
     }

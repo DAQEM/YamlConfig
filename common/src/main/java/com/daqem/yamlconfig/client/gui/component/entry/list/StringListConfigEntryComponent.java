@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list;
 
 import com.daqem.uilib.gui.widget.EditBoxWidget;
-import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
 import net.minecraft.network.chat.Component;
 
@@ -14,10 +14,10 @@ public class StringListConfigEntryComponent extends BaseListConfigEntryComponent
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
-                list.add(YamlConfig.translatable("gui.validation_error.pattern", configEntry.getPattern()));
+                list.add(ValidationErrors.pattern(configEntry.getPattern()));
             }
             if (!configEntry.getValidValues().isEmpty() && !configEntry.getValidValues().contains(input)) {
-                list.add(YamlConfig.translatable("gui.validation_error.valid_values", configEntry.getValidValues()));
+                list.add(ValidationErrors.validValues(configEntry.getValidValues()));
             }
             return list;
         });

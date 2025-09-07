@@ -1,7 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component;
 
 import com.daqem.uilib.gui.component.AbstractComponent;
-import com.daqem.uilib.gui.component.text.TextComponent;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
@@ -45,21 +44,20 @@ public class ConfigsCategoryComponent extends AbstractComponent {
                 .map(config -> new ButtonWidget(0, 0, 144, 20, config.getDisplayName(),
                         button -> {
                             ConfigType type = config.getType();
-                            Screen currentScreen = Minecraft.getInstance().screen;
                             switch (type) {
-                                case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(currentScreen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
-                                case COMMON -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
-                                case SERVER -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
+                                case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
+                                case COMMON, SERVER -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
                         }))
                 .toList();
 
         this.addComponent(this.title);
+        this.configButtons.forEach(this::addWidget);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        guiGraphics.fill(0, TOP_MARGIN + TITLE_HEIGHT, getWidth(), TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
+        guiGraphics.fill(getTotalX(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT, getTotalX() + getWidth(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
         this.configButtons.forEach(button -> {
             button.setX(3 + (this.configButtons.indexOf(button) % 2) * 150);
             button.setY((TOP_MARGIN + TITLE_HEIGHT + 3 + (this.configButtons.indexOf(button) / 2) * 24));

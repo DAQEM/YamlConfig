@@ -78,6 +78,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
         public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerListConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
             buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeInt);
+            buf.writeCollection(configEntry.getDefaultValue(), FriendlyByteBuf::writeInt);
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeInt(configEntry.getMinValue());
@@ -88,12 +89,13 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
         public IIntegerListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
             List<Integer> value = buf.readList(FriendlyByteBuf::readInt);
+            List<Integer> defaultValue = buf.readList(FriendlyByteBuf::readInt);
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             int minValue = buf.readInt();
             int maxValue = buf.readInt();
-            IntegerListConfigEntry configEntry = new IntegerListConfigEntry(key, value, minLength, maxLength, minValue, maxValue);
-            configEntry.set(configEntry.getDefaultValue());
+            IntegerListConfigEntry configEntry = new IntegerListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
+            configEntry.set(value);
             return configEntry;
         }
     }

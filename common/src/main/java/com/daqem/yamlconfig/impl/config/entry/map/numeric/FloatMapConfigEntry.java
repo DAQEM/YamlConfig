@@ -90,11 +90,12 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IFloatMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
+            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeFloat(configEntry.getMinValue());
             buf.writeFloat(configEntry.getMaxValue());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
         }
 
         @Override
@@ -107,7 +108,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
                     buf.readFloat(),
                     buf.readFloat()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readFloat));
             return configEntry;
         }
     }

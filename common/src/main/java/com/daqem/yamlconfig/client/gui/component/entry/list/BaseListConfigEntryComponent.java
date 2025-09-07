@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list;
 
+import com.daqem.uilib.api.widget.IInputValidatable;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.yamlconfig.YamlConfig;
@@ -21,24 +22,31 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     protected final Map<EditBoxWidget, CrossButtonComponent> editBoxWidgets;
     protected final ButtonWidget addEntryButton;
 
-    private final IComponentValidator validator; // TODO
+    private final IComponentValidator validator;
 
     public BaseListConfigEntryComponent(String key, C configEntry, IComponentValidator validator) {
         super(key, configEntry, 0, 0, calculateInitialHeight(configEntry), WIDTH);
         this.validator = validator;
-        this.editBoxWidgets = createEditBoxWidgets();
+        this.editBoxWidgets = createEditBoxWidgets(getConfigEntry().get());
         this.addEntryButton = createAddEntryButton();
+
+        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet()));
+        this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
+        this.addWidget(this.addEntryButton);
     }
 
     private static int calculateInitialHeight(IListConfigEntry<?> configEntry) {
         int entryCount = configEntry.get().size();
-        return entryCount * (DEFAULT_HEIGHT + GAP_WIDTH) + DEFAULT_HEIGHT * 3 + GAP_WIDTH;
+        return DEFAULT_HEIGHT // Title
+                + GAP_WIDTH // Gap between title and first entry or add button
+                + DEFAULT_HEIGHT // Add an entry button
+                + (entryCount * (DEFAULT_HEIGHT + GAP_WIDTH)); // Entries with gaps
     }
 
     private ButtonWidget createAddEntryButton() {
         return new ButtonWidget(
                 0,
-                editBoxWidgets.size() * (DEFAULT_HEIGHT + GAP_WIDTH) + DEFAULT_HEIGHT + GAP_WIDTH,
+                this.getHeight() - DEFAULT_HEIGHT,
                 WIDTH,
                 DEFAULT_HEIGHT,
                 YamlConfig.translatable("gui.add_entry"),
@@ -66,11 +74,10 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
                 DEFAULT_HEIGHT,
                 Component.empty()
         ) {
-//            @Override
-//            public List<Component> validateInput(String input) {
-//                return validator.validate(input);
-//            }
-            //TODO
+            @Override
+            public List<Component> validateInput(String input) {
+                return validator.validate(input);
+            }
         };
     }
 
@@ -95,12 +102,12 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
 
     private void adjustLayoutForNewEntry(Button addEntryButton) {
         this.setHeight(this.getHeight() + DEFAULT_HEIGHT + GAP_WIDTH);
-        addEntryButton.setY(addEntryButton.getY() + DEFAULT_HEIGHT + GAP_WIDTH);
+        addEntryButton.setY(this.getHeight() - DEFAULT_HEIGHT);
     }
 
     private void adjustLayoutForRemovedEntry() {
         this.setHeight(this.getHeight() - DEFAULT_HEIGHT - GAP_WIDTH);
-        this.addEntryButton.setY(this.addEntryButton.getY() - DEFAULT_HEIGHT - GAP_WIDTH);
+        this.addEntryButton.setY(this.getHeight() - DEFAULT_HEIGHT);
 
         // Update positions of remaining components
         updateComponentPositions();
@@ -117,14 +124,6 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     }
 
     @Override
-    public void startRenderable() {
-        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet()));
-        this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
-        this.addWidget(this.addEntryButton);
-        super.startRenderable();
-    }
-
-    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         renderHorizontalLines(guiGraphics);
@@ -134,9 +133,7 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
 
     private void renderHorizontalLines(GuiGraphics graphics) {
         int lineYStart = Minecraft.getInstance().font.lineHeight + 6;
-        int lineYEnd = getHeight() - DEFAULT_HEIGHT + 6;
-        graphics.fill(0, lineYStart, WIDTH, lineYStart + 1, 0xFFFFFFFF);
-        graphics.fill(0, lineYEnd, WIDTH, lineYEnd + 1, 0xFFFFFFFF);
+        graphics.fill(getTotalX(), getTotalY() + lineYStart, getTotalX() + WIDTH,  getTotalY() + lineYStart + 1, 0xFFFFFFFF);
     }
 
     @Override
@@ -144,7 +141,7 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
         List<String> currentValues = this.editBoxWidgets.keySet().stream()
                 .map(EditBoxWidget::getValue)
                 .toList();
-        List<String> originalValues = this.getConfigEntry().get().stream()
+        List<String> originalValues = this.getConfigEntry().getDefaultValue().stream()
                 .map(Object::toString)
                 .toList();
         return currentValues.equals(originalValues);
@@ -153,7 +150,7 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     @Override
     public void resetValue() {
         clearEntries();
-        this.editBoxWidgets.putAll(createEditBoxWidgets());
+        this.editBoxWidgets.putAll(createEditBoxWidgets(getConfigEntry().getDefaultValue()));
         this.addWidgets(new ArrayList<>(editBoxWidgets.keySet()));
         this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
         resetLayout();
@@ -168,12 +165,11 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     private void resetLayout() {
         int newHeight = calculateInitialHeight(this.getConfigEntry());
         this.setHeight(newHeight);
-        this.addEntryButton.setY(newHeight - DEFAULT_HEIGHT * 2);
+        this.addEntryButton.setY(newHeight - DEFAULT_HEIGHT);
     }
 
-    private Map<EditBoxWidget, CrossButtonComponent> createEditBoxWidgets() {
+    private Map<EditBoxWidget, CrossButtonComponent> createEditBoxWidgets(List<?> configValues) {
         Map<EditBoxWidget, CrossButtonComponent> components = new LinkedHashMap<>();
-        List<?> configValues = configEntry.get();
         for (int i = 0; i < configValues.size(); i++) {
             EditBoxWidget textBox = createEditBoxWidget(i);
             textBox.setValue(configValues.get(i).toString());
@@ -184,9 +180,7 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     }
 
     public boolean hasInputValidationErrors() {
-//        return this.editBoxWidgets.keySet().stream()
-//                .anyMatch(IInputValidatable::hasInputValidationErrors);
-        //TODO
-        return false;
+        return this.editBoxWidgets.keySet().stream()
+                .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
 }

@@ -66,9 +66,10 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeDouble(configEntry.get());
+            buf.writeDouble(configEntry.getDefaultValue());
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
+            buf.writeDouble(configEntry.get());
         }
 
         @Override
@@ -79,7 +80,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
                     buf.readDouble(),
                     buf.readDouble()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readDouble());
             return configEntry;
         }
     }

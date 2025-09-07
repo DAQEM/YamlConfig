@@ -89,11 +89,12 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
+            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
         }
 
         @Override
@@ -106,7 +107,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
                     buf.readDouble(),
                     buf.readDouble()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble));
             return configEntry;
         }
     }

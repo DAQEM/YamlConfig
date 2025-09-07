@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 public class YamlConfig {
     public static final String MOD_ID = "yamlconfig";
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static final boolean isDevelopment = false;
+    public static final boolean isDevelopment = true; //TODO: Change to false before release
 
     public static final IConfigManager CONFIG_MANAGER = new ConfigManager();
 

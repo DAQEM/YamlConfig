@@ -17,25 +17,22 @@ import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
-public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?>>> implements IStackConfigEntry {
+public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, IConfigEntry<?>>> implements IStackConfigEntry {
 
-    public StackConfigEntry(String key, Map<String, IConfigEntry<?>> defaultValue) {
+    public StackConfigEntry(String key, LinkedHashMap<String, IConfigEntry<?>> defaultValue) {
         super(key, defaultValue);
     }
 
     @Override
-    public void validate(Map<String, IConfigEntry<?>> value) {
+    public void validate(LinkedHashMap<String, IConfigEntry<?>> value) {
     }
 
     @Override
-    public IConfigEntryType<IConfigEntry<Map<String, IConfigEntry<?>>>, Map<String, IConfigEntry<?>>> getType() {
+    public IConfigEntryType<IConfigEntry<LinkedHashMap<String, IConfigEntry<?>>>, LinkedHashMap<String, IConfigEntry<?>>> getType() {
         //noinspection unchecked
-        return (IConfigEntryType<IConfigEntry<Map<String, IConfigEntry<?>>>, Map<String, IConfigEntry<?>>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STACK;
+        return (IConfigEntryType<IConfigEntry<LinkedHashMap<String, IConfigEntry<?>>>, LinkedHashMap<String, IConfigEntry<?>>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STACK;
     }
 
     @Override
@@ -44,7 +41,7 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
         throw new UnsupportedOperationException("StackConfigEntry does not support components");
     }
 
-    public static class Serializer implements IConfigEntrySerializer<IStackConfigEntry, Map<String, IConfigEntry<?>>> {
+    public static class Serializer implements IConfigEntrySerializer<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> {
 
         @Override
         public void encodeNode(IStackConfigEntry configEntry, NodeTuple nodeTuple) {
@@ -74,17 +71,25 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
         }
 
         @Override
-        public void valueToNetwork(RegistryFriendlyByteBuf buf, IStackConfigEntry configEntry, Map<String, IConfigEntry<?>> value) {
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IStackConfigEntry configEntry, LinkedHashMap<String, IConfigEntry<?>> value) {
         }
 
         @Override
-        public Map<String, IConfigEntry<?>> valueFromNetwork(RegistryFriendlyByteBuf buf) {
+        public LinkedHashMap<String, IConfigEntry<?>> valueFromNetwork(RegistryFriendlyByteBuf buf) {
             return null;
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IStackConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
+            buf.writeInt(configEntry.getDefaultValue().size());
+            for (Map.Entry<String, IConfigEntry<?>> entry : configEntry.getDefaultValue().entrySet()) {
+                buf.writeUtf(entry.getKey());
+                buf.writeResourceLocation(entry.getValue().getType().getId());
+                //noinspection unchecked
+                ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
+                        .toNetwork(buf, (IConfigEntry<Object>) entry.getValue());
+            }
             buf.writeInt(configEntry.get().size());
             for (Map.Entry<String, IConfigEntry<?>> entry : configEntry.get().entrySet()) {
                 buf.writeUtf(entry.getKey());
@@ -95,11 +100,22 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
             }
         }
 
+        @SuppressWarnings("DuplicatedCode")
         @Override
         public IStackConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
+            int defaultValueSize = buf.readInt();
+            LinkedHashMap<String, IConfigEntry<?>> defaultValue = new LinkedHashMap<>();
+            for (int i = 0; i < defaultValueSize; i++) {
+                String entryKey = buf.readUtf();
+                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
+                IConfigEntry<?> entry = Objects.requireNonNull(type).getSerializer().fromNetwork(buf);
+                defaultValue.put(entryKey, entry);
+            }
+
             int size = buf.readInt();
-            Map<String, IConfigEntry<?>> value = new HashMap<>();
+            LinkedHashMap<String, IConfigEntry<?>> value = new LinkedHashMap<>();
             for (int i = 0; i < size; i++) {
                 String entryKey = buf.readUtf();
                 Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
@@ -107,8 +123,9 @@ public class StackConfigEntry extends BaseConfigEntry<Map<String, IConfigEntry<?
                 IConfigEntry<?> entry = Objects.requireNonNull(type).getSerializer().fromNetwork(buf);
                 value.put(entryKey, entry);
             }
-            StackConfigEntry configEntry = new StackConfigEntry(key, value);
-            configEntry.set(configEntry.getDefaultValue());
+
+            StackConfigEntry configEntry = new StackConfigEntry(key, defaultValue);
+            configEntry.set(value);
             return configEntry;
         }
     }

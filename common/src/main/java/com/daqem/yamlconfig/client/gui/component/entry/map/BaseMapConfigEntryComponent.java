@@ -1,7 +1,9 @@
 package com.daqem.yamlconfig.client.gui.component.entry.map;
 
+import com.daqem.uilib.api.widget.IInputValidatable;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.uilib.gui.widget.EditBoxWidget;
+import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.entry.map.IMapConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IComponentValidator;
@@ -19,7 +21,6 @@ import java.util.stream.Stream;
 public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> extends BaseConfigEntryComponent<C> {
 
     private static final int WIDTH = KEY_WIDTH + GAP_WIDTH + VALUE_WIDTH;
-    private static final Component DUPLICATE_KEY = YamlConfig.translatable("gui.validation_error.duplicate_key");
 
     protected final Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> editBoxWidgets;
     protected final ButtonWidget addEntryButton;
@@ -29,7 +30,7 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     public BaseMapConfigEntryComponent(String key, C configEntry, IComponentValidator validator) {
         super(key, configEntry, 0, 0, calculateInitialHeight(configEntry), WIDTH);
         this.validator = validator;
-        this.editBoxWidgets = createEditBoxWidgets();
+        this.editBoxWidgets = createEditBoxWidgets(new ArrayList<>(new LinkedHashMap<>(configEntry.get()).entrySet()));
         this.addEntryButton = createAddEntryButton();
 
         this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).toList()));
@@ -39,13 +40,16 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
     private static int calculateInitialHeight(IMapConfigEntry<?> configEntry) {
         int entryCount = configEntry.get().size();
-        return entryCount * (DEFAULT_HEIGHT + GAP_WIDTH) + DEFAULT_HEIGHT * 3 + GAP_WIDTH;
+        return DEFAULT_HEIGHT // Title
+                + GAP_WIDTH // Gap between title and first entry or add button
+                + DEFAULT_HEIGHT // Add an entry button
+                + (entryCount * (DEFAULT_HEIGHT + GAP_WIDTH)); // Entries with gaps
     }
 
     private ButtonWidget createAddEntryButton() {
         return new ButtonWidget(
                 0,
-                editBoxWidgets.size() * (DEFAULT_HEIGHT + GAP_WIDTH) + DEFAULT_HEIGHT + GAP_WIDTH,
+                this.getHeight() - DEFAULT_HEIGHT,
                 WIDTH,
                 DEFAULT_HEIGHT,
                 YamlConfig.translatable("gui.add_entry"),
@@ -78,61 +82,61 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
                 DEFAULT_HEIGHT,
                 Component.empty()
         ) {
-//            @Override
-//            public List<Component> validateInput(String input) {
-//                List<Component> errors = super.validateInput(input);
-//
-//                if (editBoxWidgets != null) {
-//                    List<String> currentKeys = editBoxWidgets.keySet().stream()
-//                            .map(Tuple::getA)
-//                            .filter(EditBoxWidget -> EditBoxWidget != this)
-//                            .map(EditBoxWidget::getValue)
-//                            .toList();
-//
-//                    if (currentKeys.contains(input)) {
-//                        errors.add(DUPLICATE_KEY);
-//                        editBoxWidgets.keySet().stream()
-//                                .map(Tuple::getA)
-//                                .filter(EditBoxWidget -> EditBoxWidget != this)
-//                                .filter(EditBoxWidget -> EditBoxWidget.getValue().equals(input))
-//                                .forEach(EditBoxWidget -> {
-//                                    EditBoxWidget.setInputValidationErrors(new ArrayList<>(EditBoxWidget.getInputValidationErrors()));
-//                                    if (!EditBoxWidget.getInputValidationErrors().contains(DUPLICATE_KEY)) {
-//                                        EditBoxWidget.getInputValidationErrors().add(DUPLICATE_KEY);
-//                                    }
-//                                });
-//                    } else {
-//                        for (Map.Entry<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
-//                            String key = entry.getKey().getA().getValue();
-//                            List<String> duplicateKeys = editBoxWidgets.keySet().stream()
-//                                    .map(Tuple::getA)
-//                                    .filter(EditBoxWidget -> EditBoxWidget != this)
-//                                    .filter(EditBoxWidget -> EditBoxWidget != entry.getKey().getA())
-//                                    .map(EditBoxWidget::getValue)
-//                                    .filter(value -> value.equals(key))
-//                                    .toList();
-//
-//                            if (duplicateKeys.isEmpty()) {
-//                                entry.getKey().getA().setInputValidationErrors(
-//                                        new ArrayList<>(entry.getKey().getA().getInputValidationErrors()
-//                                                .stream()
-//                                                .filter(component -> !component.equals(DUPLICATE_KEY))
-//                                                .toList()
-//                                        )
-//                                );
-//                            }
-//                        }
-//                    }
-//                }
-//                if (input.isEmpty()) {
-//                    errors.add(YamlConfig.translatable("gui.validation_error.empty_key"));
-//                }
-//                if (!input.matches("^[a-zA-Z0-9_-]+$")) {
-//                    errors.add(YamlConfig.translatable("gui.validation_error.pattern", "^[a-zA-Z0-9_-]+$"));
-//                }
-//
-//                return errors;
-//            } //TODO
+            @Override
+            public List<Component> validateInput(String input) {
+                List<Component> errors = super.validateInput(input);
+
+                if (editBoxWidgets != null) {
+                    List<String> currentKeys = editBoxWidgets.keySet().stream()
+                            .map(Tuple::getA)
+                            .filter(EditBoxWidget -> EditBoxWidget != this)
+                            .map(EditBoxWidget::getValue)
+                            .toList();
+
+                    if (currentKeys.contains(input)) {
+                        errors.add(ValidationErrors.duplicateKey());
+                        editBoxWidgets.keySet().stream()
+                                .map(Tuple::getA)
+                                .filter(EditBoxWidget -> EditBoxWidget != this)
+                                .filter(EditBoxWidget -> EditBoxWidget.getValue().equals(input))
+                                .forEach(EditBoxWidget -> {
+                                    EditBoxWidget.setInputValidationErrors(new ArrayList<>(EditBoxWidget.getInputValidationErrors()));
+                                    if (!EditBoxWidget.getInputValidationErrors().contains(ValidationErrors.duplicateKey())) {
+                                        EditBoxWidget.getInputValidationErrors().add(ValidationErrors.duplicateKey());
+                                    }
+                                });
+                    } else {
+                        for (Map.Entry<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
+                            String key = entry.getKey().getA().getValue();
+                            List<String> duplicateKeys = editBoxWidgets.keySet().stream()
+                                    .map(Tuple::getA)
+                                    .filter(EditBoxWidget -> EditBoxWidget != this)
+                                    .filter(EditBoxWidget -> EditBoxWidget != entry.getKey().getA())
+                                    .map(EditBoxWidget::getValue)
+                                    .filter(value -> value.equals(key))
+                                    .toList();
+
+                            if (duplicateKeys.isEmpty()) {
+                                entry.getKey().getA().setInputValidationErrors(
+                                        new ArrayList<>(entry.getKey().getA().getInputValidationErrors()
+                                                .stream()
+                                                .filter(component -> !component.equals(ValidationErrors.duplicateKey()))
+                                                .toList()
+                                        )
+                                );
+                            }
+                        }
+                    }
+                }
+                if (input.isEmpty()) {
+                    errors.add(ValidationErrors.emptyKey());
+                }
+                if (!input.matches("^[a-zA-Z0-9_-]+$")) {
+                    errors.add(ValidationErrors.pattern("^[a-zA-Z0-9_-]+$"));
+                }
+
+                return errors;
+            }
         };
     }
 
@@ -145,10 +149,10 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
                 DEFAULT_HEIGHT,
                 Component.empty()
         ) {
-//            @Override
-//            public List<Component> validateInput(String input) {
-//                return validator.validate(input);
-//            } //TODO
+            @Override
+            public List<Component> validateInput(String input) {
+                return validator.validate(input);
+            }
         };
     }
 
@@ -174,12 +178,12 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
     private void adjustLayoutForNewEntry(Button addEntryButton) {
         this.setHeight(this.getHeight() + DEFAULT_HEIGHT + GAP_WIDTH);
-        addEntryButton.setY(addEntryButton.getY() + DEFAULT_HEIGHT + GAP_WIDTH);
+        addEntryButton.setY(this.getHeight() - DEFAULT_HEIGHT);
     }
 
     private void adjustLayoutForRemovedEntry() {
         this.setHeight(this.getHeight() - DEFAULT_HEIGHT - GAP_WIDTH);
-        this.addEntryButton.setY(this.addEntryButton.getY() - DEFAULT_HEIGHT - GAP_WIDTH);
+        this.addEntryButton.setY(this.getHeight() - DEFAULT_HEIGHT);
 
         // Update positions of remaining components
         updateComponentPositions();
@@ -206,9 +210,7 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
     private void renderHorizontalLines(GuiGraphics graphics) {
         int lineYStart = Minecraft.getInstance().font.lineHeight + 6;
-        int lineYEnd = getHeight() - DEFAULT_HEIGHT + 6;
-        graphics.fill(0, lineYStart, WIDTH, lineYStart + 1, 0xFFFFFFFF);
-        graphics.fill(0, lineYEnd, WIDTH, lineYEnd + 1, 0xFFFFFFFF);
+        graphics.fill(getTotalX(), getTotalY() + lineYStart, getTotalX() + WIDTH, getTotalY() + lineYStart + 1, 0xFFFFFFFF);
     }
 
     @Override
@@ -217,14 +219,14 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
                 .map(Tuple::getA)
                 .map(EditBoxWidget::getValue)
                 .toList();
-        List<String> originalKeyValues = this.getConfigEntry().get().keySet().stream()
+        List<String> originalKeyValues = this.getConfigEntry().getDefaultValue().keySet().stream()
                 .map(Object::toString)
                 .toList();
         List<String> currentValueValues = this.editBoxWidgets.keySet().stream()
                 .map(Tuple::getB)
                 .map(EditBoxWidget::getValue)
                 .toList();
-        List<String> originalValueValues = this.getConfigEntry().get().values().stream()
+        List<String> originalValueValues = this.getConfigEntry().getDefaultValue().values().stream()
                 .map(Object::toString)
                 .toList();
         return currentKeyValues.equals(originalKeyValues) && currentValueValues.equals(originalValueValues);
@@ -233,27 +235,26 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     @Override
     public void resetValue() {
         clearEntries();
-        this.editBoxWidgets.putAll(createEditBoxWidgets());
-        this.addChildren(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).toList()));
-        this.addChildren(new ArrayList<>(editBoxWidgets.values()));
+        this.editBoxWidgets.putAll(createEditBoxWidgets(new ArrayList<>(new LinkedHashMap<>(configEntry.getDefaultValue()).entrySet())));
+        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).toList()));
+        this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
         resetLayout();
     }
 
     private void clearEntries() {
-        this.editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).forEach(this::removeChild);
-        this.editBoxWidgets.values().forEach(this::removeChild);
+        this.editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).forEach(this::removeWidget);
+        this.editBoxWidgets.values().forEach(this::removeWidget);
         this.editBoxWidgets.clear();
     }
 
     private void resetLayout() {
         int newHeight = calculateInitialHeight(this.getConfigEntry());
         this.setHeight(newHeight);
-        this.addEntryButton.setY(newHeight - DEFAULT_HEIGHT * 2);
+        this.addEntryButton.setY(newHeight - DEFAULT_HEIGHT);
     }
 
-    private Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> createEditBoxWidgets() {
+    private Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> createEditBoxWidgets(List<Map.Entry<String, ?>> configValues) {
         Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> components = new LinkedHashMap<>();
-        List<Map.Entry<String, ?>> configValues = new ArrayList<>(new LinkedHashMap<>(configEntry.get()).entrySet());
         for (int i = 0; i < configValues.size(); i++) {
             EditBoxWidget keyTextBox = createKeyEditBoxWidget(i);
             EditBoxWidget valueTextBox = createValueEditBoxWidget(i);
@@ -267,9 +268,8 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     }
 
     public boolean hasInputValidationErrors() {
-//        return this.editBoxWidgets.keySet().stream()
-//                .flatMap(key -> Stream.of(key.getA(), key.getB()))
-//                .anyMatch(IInputValidatable::hasInputValidationErrors); //TODO
-        return false;
+        return this.editBoxWidgets.keySet().stream()
+                .flatMap(key -> Stream.of(key.getA(), key.getB()))
+                .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
 }

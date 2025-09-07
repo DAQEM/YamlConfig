@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component.entry.list.numeric;
 
+import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.gui.component.entry.list.BaseListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.list.numeric.FloatListConfigEntry;
@@ -16,13 +17,13 @@ public class FloatListConfigEntryComponent extends BaseListConfigEntryComponent<
             try {
                 double value = Float.parseFloat(input);
                 if (value < configEntry.getMinValue()) {
-                    list.add(YamlConfig.translatable("gui.validation_error.min_value", configEntry.getMinValue()));
+                    list.add(ValidationErrors.minValue(configEntry.getMinValue()));
                 }
                 if (value > configEntry.getMaxValue()) {
-                    list.add(YamlConfig.translatable("gui.validation_error.max_value", configEntry.getMaxValue()));
+                    list.add(ValidationErrors.maxValue(configEntry.getMaxValue()));
                 }
             } catch (NumberFormatException e) {
-                list.add(YamlConfig.translatable("gui.validation_error.invalid_number"));
+                list.add(ValidationErrors.invalidNumber());
             }
             return list;
         });

@@ -66,9 +66,10 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IFloatConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeFloat(configEntry.get());
+            buf.writeFloat(configEntry.getDefaultValue());
             buf.writeFloat(configEntry.getMinValue());
             buf.writeFloat(configEntry.getMaxValue());
+            buf.writeFloat(configEntry.get());
 
         }
 
@@ -80,7 +81,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
                     buf.readFloat(),
                     buf.readFloat()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readFloat());
             return configEntry;
         }
     }

@@ -152,9 +152,10 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IStringConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeUtf(configEntry.get());
+            buf.writeUtf(configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
+            buf.writeUtf(configEntry.get());
         }
 
         @Override
@@ -165,7 +166,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
                     buf.readInt(),
                     buf.readInt()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readUtf());
             return configEntry;
         }
     }

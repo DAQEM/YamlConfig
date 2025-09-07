@@ -77,13 +77,14 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IBooleanConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
+            buf.writeBoolean(configEntry.getDefaultValue());
             buf.writeBoolean(configEntry.get());
         }
 
         @Override
         public IBooleanConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             BooleanConfigEntry configEntry = new BooleanConfigEntry(buf.readUtf(), buf.readBoolean());
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readBoolean());
             return configEntry;
         }
     }

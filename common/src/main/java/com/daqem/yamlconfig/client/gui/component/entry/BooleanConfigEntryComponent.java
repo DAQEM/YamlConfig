@@ -1,38 +1,47 @@
 package com.daqem.yamlconfig.client.gui.component.entry;
 
+import com.daqem.uilib.gui.widget.CycleButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.impl.config.entry.BooleanConfigEntry;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<BooleanConfigEntry> {
 
-    private final CycleButton<Boolean> cycleButtonComponent;
+    private final CycleButtonWidget<Boolean> cycleButtonComponent;
 
     public BooleanConfigEntryComponent(String key, BooleanConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
-        this.cycleButtonComponent = new CycleButtonComponent<>(KEY_WIDTH + GAP_WIDTH, 0, VALUE_WIDTH, DEFAULT_HEIGHT,
-                Arrays.asList(
-                        new IOComponentEntry<>(Boolean.toString(true), YamlConfig.translatable("gui.value.true"), true),
-                        new IOComponentEntry<>(Boolean.toString(false), YamlConfig.translatable("gui.value.false"), false)
-                ),
+        this.cycleButtonComponent = new CycleButtonWidget<>(
+                KEY_WIDTH + GAP_WIDTH,
+                0,
+                VALUE_WIDTH,
+                DEFAULT_HEIGHT,
+                Component.empty(),
+                configEntry.get() ? 0 : 1,
                 configEntry.get(),
-                Component.empty());
-
+                CycleButton.ValueListSupplier.create(List.of(true, false)),
+                value -> value ? YamlConfig.translatable("gui.value.true") : YamlConfig.translatable("gui.value.false"),
+                CycleButton::createDefaultNarrationMessage,
+                (button, value) -> {
+                },
+                value -> null,
+                true
+        );
         this.addWidget(this.cycleButtonComponent);
     }
 
     @Override
     public boolean isOriginalValue() {
-        return this.getConfigEntry().get().equals(this.cycleButtonComponent.getValue());
+        return this.getConfigEntry().getDefaultValue().equals(this.cycleButtonComponent.getValue());
     }
 
     @Override
     public void resetValue() {
-        this.cycleButtonComponent.setValue(this.getConfigEntry().get());
+        this.cycleButtonComponent.setValue(this.getConfigEntry().getDefaultValue());
     }
 
     @Override

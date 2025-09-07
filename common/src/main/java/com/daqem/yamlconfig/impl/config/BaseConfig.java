@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class BaseConfig implements IConfig {
@@ -221,7 +222,7 @@ public abstract class BaseConfig implements IConfig {
             buf.writeEnum(config.getExtension());
             buf.writeUtf(config.getPath().toString());
 
-            IConfigEntryType<IStackConfigEntry, Map<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
+            IConfigEntryType<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
             type.getSerializer().toNetwork(buf, config.getContext());
         }
 
@@ -232,7 +233,7 @@ public abstract class BaseConfig implements IConfig {
             ConfigExtension extension = buf.readEnum(ConfigExtension.class);
             Path path = Path.of(buf.readUtf());
 
-            IConfigEntryType<IStackConfigEntry, Map<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
+            IConfigEntryType<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> type = ConfigEntryTypes.STACK;
             IStackConfigEntry context = type.getSerializer().fromNetwork(buf);
 
             return configConstructor.apply(modId, name, extension, path, context);

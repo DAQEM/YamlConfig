@@ -100,6 +100,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
         public void toNetwork(RegistryFriendlyByteBuf buf, IResourceLocationConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
             buf.writeResourceLocation(configEntry.get());
+            buf.writeResourceLocation(configEntry.getDefaultValue());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
         }
 
@@ -107,9 +108,10 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
         public IResourceLocationConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
             ResourceLocation value = buf.readResourceLocation();
+            ResourceLocation defaultValue = buf.readResourceLocation();
             String pattern = buf.readUtf();
-            ResourceLocationConfigEntry configEntry = new ResourceLocationConfigEntry(key, value, pattern.isEmpty() ? null : pattern);
-            configEntry.set(configEntry.getDefaultValue());
+            ResourceLocationConfigEntry configEntry = new ResourceLocationConfigEntry(key, defaultValue, pattern.isEmpty() ? null : pattern);
+            configEntry.set(value);
             return configEntry;
         }
     }

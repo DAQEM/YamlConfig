@@ -36,13 +36,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public abstract class ConfigEntryTypes {
 
     public static final IConfigEntryType<IStringConfigEntry, String> STRING = register(YamlConfig.getId("string"), new StringConfigEntry.Serializer());
-    public static final IConfigEntryType<IStackConfigEntry, Map<String, IConfigEntry<?>>> STACK = register(YamlConfig.getId("stack"), new StackConfigEntry.Serializer());
+    public static final IConfigEntryType<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> STACK = register(YamlConfig.getId("stack"), new StackConfigEntry.Serializer());
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static final IConfigEntryType<IEnumConfigEntry<? extends Enum<?>>, ? extends Enum<?>> ENUM = register(YamlConfig.getId("enum"), new EnumConfigEntry.Serializer());
     public static final IConfigEntryType<IDateTimeConfigEntry, LocalDateTime> DATE_TIME = register(YamlConfig.getId("datetime"), new DateTimeConfigEntry.Serializer());

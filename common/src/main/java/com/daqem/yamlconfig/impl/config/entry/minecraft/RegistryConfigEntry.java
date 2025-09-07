@@ -94,8 +94,8 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry, T value) {
             buf.writeResourceKey(configEntry.getRegistry().key());
-            buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(value)));
-
+            ResourceLocation resourceLocation = configEntry.getRegistry().getKey(value);
+            buf.writeResourceLocation(Objects.requireNonNull(resourceLocation));
         }
 
         @Override
@@ -104,7 +104,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             ResourceKey<Registry<Object>> key = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
             ResourceLocation resourceLocation = buf.readResourceLocation();
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(key);
-            return (T) reference.map(registry -> registry.value().get(resourceLocation)).orElse(null);
+            return (T) reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null);
         }
 
         @Override
@@ -112,6 +112,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             buf.writeUtf(configEntry.getKey());
             buf.writeResourceKey(configEntry.getRegistry().key());
             buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
+            buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.getDefaultValue())));
         }
 
         @Override
@@ -120,9 +121,10 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             String key = buf.readUtf();
             ResourceKey<Registry<Object>> registryKey = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
             ResourceLocation resourceLocation = buf.readResourceLocation();
+            ResourceLocation defaultResourceLocation = buf.readResourceLocation();
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
-            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(resourceLocation)).orElse(null), reference.map(Holder.Reference::value).orElse(null));
-            configEntry.set(configEntry.getDefaultValue());
+            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(defaultResourceLocation).get().value()).orElse(null), reference.map(Holder.Reference::value).orElse(null));
+            configEntry.set(reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null));
             return (IRegistryConfigEntry<T>) configEntry;
         }
     }

@@ -13,7 +13,7 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
 
     protected final EditBoxWidget editBoxWidget;
 
-    public BaseNumericConfigEntryComponent(String key, C configEntry, N defaultValue, IComponentValidator validator) {
+    public BaseNumericConfigEntryComponent(String key, C configEntry, IComponentValidator validator) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(
@@ -24,12 +24,13 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
                 DEFAULT_HEIGHT,
                 Component.empty()
         ) {
-//            @Override
-//            public List<Component> validateInput(String input) {
-//                return validator.validate(input);
-//            } TODO
+            @Override
+            public List<Component> validateInput(String input) {
+                return validator.validate(input);
+            }
         };
 
+        editBoxWidget.setValue(configEntry.get().toString());
         editBoxWidget.setMaxLength(configEntry.getMaxValue().toString().length());
 
         this.addWidget(editBoxWidget);
@@ -38,7 +39,7 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
     @Override
     public boolean isOriginalValue() {
         try {
-            return this.getConfigEntry().get().toString().equals(this.editBoxWidget.getValue());
+            return this.getConfigEntry().getDefaultValue().toString().equals(this.editBoxWidget.getValue());
         } catch (NumberFormatException e) {
             return false;
         }
@@ -46,6 +47,6 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
 
     @Override
     public void resetValue() {
-        this.editBoxWidget.setValue(this.getConfigEntry().get().toString());
+        this.editBoxWidget.setValue(this.getConfigEntry().getDefaultValue().toString());
     }
 }

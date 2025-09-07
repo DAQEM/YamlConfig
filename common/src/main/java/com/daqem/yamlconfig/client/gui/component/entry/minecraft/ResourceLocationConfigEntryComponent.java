@@ -1,6 +1,7 @@
 package com.daqem.yamlconfig.client.gui.component.entry.minecraft;
 
 import com.daqem.uilib.gui.widget.EditBoxWidget;
+import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
@@ -26,21 +27,22 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
                 DEFAULT_HEIGHT,
                 Component.empty()
         ) {
-//            @Override
-//            public List<Component> validateInput(String input) {
-//                List<Component> list = super.validateInput(input);
-//                ResourceLocation value = ResourceLocation.tryParse(input);
-//                if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
-//                    list.add(YamlConfig.translatable("gui.validation_error.invalid_resource_location"));
-//                } else {
-//                    if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
-//                        list.add(YamlConfig.translatable("gui.validation_error.pattern", configEntry.getPattern()));
-//                    }
-//                }
-//                return list;
-//            } // TODO
+            @Override
+            public List<Component> validateInput(String input) {
+                List<Component> list = super.validateInput(input);
+                ResourceLocation value = ResourceLocation.tryParse(input);
+                if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
+                    list.add(ValidationErrors.invalidResourceLocation());
+                } else {
+                    if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
+                        list.add(ValidationErrors.pattern(configEntry.getPattern()));
+                    }
+                }
+                return list;
+            }
         };
 
+        editBoxWidget.setValue(configEntry.get().toString());
         editBoxWidget.setMaxLength(Integer.MAX_VALUE);
 
         this.addWidget(editBoxWidget);
@@ -62,17 +64,17 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
 
     @Override
     public boolean isOriginalValue() {
-        return this.getConfigEntry().get().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
+        return this.getConfigEntry().getDefaultValue().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override
     public void resetValue() {
-        this.editBoxWidget.setValue(this.getConfigEntry().get().toString());
+        this.editBoxWidget.setValue(this.getConfigEntry().getDefaultValue().toString());
     }
 
     @Override
     public void applyValue() {
-//        if (this.editBoxWidget.hasInputValidationErrors()) return; //TODO
+        if (this.editBoxWidget.hasInputValidationErrors()) return;
         this.getConfigEntry().set(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 }

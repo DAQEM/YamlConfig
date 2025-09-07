@@ -1,5 +1,6 @@
 package com.daqem.yamlconfig.client.gui.component;
 
+import com.daqem.uilib.gui.component.AbstractComponent;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
@@ -8,31 +9,30 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class ConfigCategoryComponent extends ScrollContentComponent {
+public class ConfigCategoryComponent extends AbstractComponent {
 
+    private final @Nullable String key;
     private final List<IConfigEntryComponent<?>> configEntryComponents;
     private final List<ConfigCategoryComponent> subCategories;
 
-    private final @Nullable TruncatedKeyTextComponent keyText;
 
     public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents) {
         this(key, configEntryComponents, new ArrayList<>());
     }
 
     public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents, List<ConfigCategoryComponent> subCategories) {
-        super(0, 0, BaseConfigEntryComponent.GAP_WIDTH, ScrollOrientation.VERTICAL);
+        super(0, 0, BaseConfigEntryComponent.TOTAL_WIDTH, 0);
+        this.key = key;
         this.configEntryComponents = configEntryComponents;
         this.subCategories = subCategories;
-        if (key == null) {
-            this.keyText = null;
-        } else {
-            this.keyText = new TruncatedKeyTextComponent(key, getWidth());
-            if (this.keyText.getText() != null) {
-                this.keyText.getText().setBold(true);
-            }
+
+        if (key != null) {
+            this.addComponent(new TruncatedKeyTextComponent(key, getWidth(), true));
         }
+
+        this.addComponents(configEntryComponents);
+        this.addComponents(subCategories);
     }
 
     @Override
@@ -41,19 +41,42 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
     }
 
     @Override
-    public void startRenderable() {
-        if (this.keyText != null) {
-            this.addChild(this.keyText);
+    public int getHeight() {
+        int height = 0;
+        if (this.key != null) {
+            height += Minecraft.getInstance().font.lineHeight + 6;
         }
-        this.configEntryComponents.forEach(this::addChild);
-        this.subCategories.forEach(this::addChild);
-        super.startRenderable();
+        for (IConfigEntryComponent<?> entry : this.configEntryComponents) {
+            height += entry.getHeight() + 10;
+        }
+        for (int i = 0; i < this.subCategories.size(); i++) {
+            if (i < this.subCategories.size() - 1) {
+                height += 10;
+            }
+            height += this.subCategories.get(i).getHeight();
+        }
+        return height;
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta, int color) {
-        super.render(graphics, mouseX, mouseY, delta, color);
-        renderHorizontalLines(graphics);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        renderHorizontalLines(guiGraphics);
+        int currentY = 0;
+        if (this.key != null) {
+            currentY += Minecraft.getInstance().font.lineHeight + 6;
+        }
+        for (IConfigEntryComponent<?> entry : this.configEntryComponents) {
+            entry.setY(currentY);
+            currentY += entry.getHeight() + 10;
+        }
+        for (int i = 0; i < this.subCategories.size(); i++) {
+            ConfigCategoryComponent subCategory = this.subCategories.get(i);
+            if (i < this.subCategories.size() - 1) {
+                currentY += 10;
+            }
+            subCategory.setY(currentY);
+            currentY += subCategory.getHeight();
+        }
     }
 
     public void addSubCategory(ConfigCategoryComponent subCategory) {
@@ -62,80 +85,15 @@ public class ConfigCategoryComponent extends ScrollContentComponent {
         }
         if (!this.subCategories.contains(subCategory)) {
             this.subCategories.add(subCategory);
+            this.addComponent(subCategory);
         }
     }
 
     private void renderHorizontalLines(GuiGraphics graphics) {
-        if (this.keyText == null) {
-            return;
-        }
-        int lineYStart = Objects.requireNonNull(this.keyText.getText()).getFont().lineHeight + 6;
-        graphics.fill(0, lineYStart, getWidth(), lineYStart + 1, 0xFFFFFFFF);
-    }
+        if (this.key == null) return;
 
-    @Override
-    public void preformOnHoverEvent(double mouseX, double mouseY, float delta) {
-        if (getOnHoverEvent() != null) {
-            if (this.isTotalHovered(mouseX, mouseY)) {
-                getOnHoverEvent().onHover(this, Minecraft.getInstance().screen, mouseX, mouseY, delta);
-            }
-        }
-    }
-
-    @Override
-    public boolean preformOnClickEvent(double mouseX, double mouseY, int button) {
-        if (getOnClickEvent() != null) {
-            if (this.isTotalHovered(mouseX, mouseY)) {
-                return getOnClickEvent().onClick(this, Minecraft.getInstance().screen, mouseX, mouseY, button);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean preformOnMouseReleaseEvent(double mouseX, double mouseY, int button) {
-        if (getOnMouseReleaseEvent() != null) {
-            if (this.isTotalHovered(mouseX, mouseY)) {
-                return getOnMouseReleaseEvent().onMouseRelease(this, Minecraft.getInstance().screen, mouseX, mouseY, button);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean preformOnCharTypedEvent(char typedChar, int modifiers) {
-        if (getOnCharTypedEvent() != null) {
-            return getOnCharTypedEvent().onCharTyped(this, Minecraft.getInstance().screen, typedChar, modifiers);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean preformOnKeyPressedEvent(int keyCode, int scanCode, int modifiers) {
-        if (getOnKeyPressedEvent() != null) {
-            return getOnKeyPressedEvent().onKeyPressed(this, Minecraft.getInstance().screen, keyCode, scanCode, modifiers);
-        }
-        return false;
-    }
-
-    @Override
-    public boolean preformOnDragEvent(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (getOnDragEvent() != null) {
-            if (this.isTotalHovered(mouseX, mouseY)) {
-                return getOnDragEvent().onDrag(this, Minecraft.getInstance().screen, mouseX, mouseY, button, dragX, dragY);
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean preformOnScrollEvent(double mouseX, double mouseY, double amountX, double amountY) {
-        if (getOnScrollEvent() != null) {
-            if (this.isTotalHovered(mouseX, mouseY)) {
-                return getOnScrollEvent().onScroll(this, Minecraft.getInstance().screen, mouseX, mouseY, amountX, amountY);
-            }
-        }
-        return false;
+        int lineYStart = Minecraft.getInstance().font.lineHeight + 6;
+        graphics.fill(getTotalX(), getTotalY() + lineYStart, getTotalX() + getWidth(), getTotalY() + lineYStart + 1, 0xFFFFFFFF);
     }
 
     public List<IConfigEntryComponent<?>> getAllConfigEntryComponents() {

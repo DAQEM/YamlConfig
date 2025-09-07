@@ -66,9 +66,10 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeInt(configEntry.get());
+            buf.writeInt(configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinValue());
             buf.writeInt(configEntry.getMaxValue());
+            buf.writeInt(configEntry.get());
         }
 
         @Override
@@ -79,7 +80,7 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
                     buf.readInt(),
                     buf.readInt()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readInt());
             return configEntry;
         }
     }

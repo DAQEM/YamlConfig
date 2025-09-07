@@ -102,6 +102,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
             buf.writeUtf(configEntry.getKey());
             buf.writeUtf(configEntry.getEnumClass().getName());
             buf.writeUtf(configEntry.get().name());
+            buf.writeUtf(configEntry.getDefaultValue().name());
         }
 
         @Override
@@ -109,11 +110,12 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
             String key = buf.readUtf();
             String enumClassName = buf.readUtf();
             String enumValue = buf.readUtf();
+            String defaultEnumValue = buf.readUtf();
             try {
                 //noinspection unchecked
                 Class<E> enumClass = (Class<E>) Class.forName(enumClassName);
-                EnumConfigEntry<E> configEntry = new EnumConfigEntry<>(key, Enum.valueOf(enumClass, enumValue), enumClass);
-                configEntry.set(configEntry.getDefaultValue());
+                EnumConfigEntry<E> configEntry = new EnumConfigEntry<>(key, Enum.valueOf(enumClass, defaultEnumValue), enumClass);
+                configEntry.set(Enum.valueOf(enumClass, enumValue));
                 return configEntry;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);

@@ -89,11 +89,12 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
+            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeInt(configEntry.getMinValue());
             buf.writeInt(configEntry.getMaxValue());
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
         }
 
         @Override
@@ -106,7 +107,7 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
                     buf.readInt(),
                     buf.readInt()
             );
-            configEntry.set(configEntry.getDefaultValue());
+            configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readInt));
             return configEntry;
         }
     }

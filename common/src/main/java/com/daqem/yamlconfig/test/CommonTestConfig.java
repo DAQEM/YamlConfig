@@ -128,5 +128,17 @@ public class CommonTestConfig {
         builder4.pop();
 
         builder4.build();
+
+        ConfigBuilder builder5 = new ConfigBuilder("test2", "test2-common", ConfigExtension.YAML, ConfigType.COMMON);
+
+        builder5.defineString("test", "value");
+        builder5.defineString("test1", "value1");
+        builder5.defineString("test2", "value2");
+        builder5.defineString("test3", "value3");
+        builder5.defineString("test4", "value4");
+        builder5.defineStringMap("string_map", Map.of("test1", "1"), 0, 10);
+        builder5.defineStringList("string_list", List.of("test1", "test2", "test3"), 3, 10, "test\\d+");
+
+        builder5.build();
     }
 }

@@ -29,7 +29,7 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
         super(x, y, TOTAL_WIDTH, height);
         this.configEntry = configEntry;
 
-        this.keyText = new TruncatedKeyTextComponent(key, textWidth);
+        this.keyText = new TruncatedKeyTextComponent(key, textWidth, false);
         this.resetValueButton = new ResetValueButtonComponent(TOTAL_WIDTH - RELOAD_WIDTH, 0, button -> resetValue());
 
         this.addComponent(this.keyText);
@@ -39,7 +39,6 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         this.resetValueButton.active = !isOriginalValue();
-
     }
 
     @Override
