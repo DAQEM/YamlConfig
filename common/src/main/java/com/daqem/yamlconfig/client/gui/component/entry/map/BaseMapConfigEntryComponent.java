@@ -272,4 +272,9 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
                 .flatMap(key -> Stream.of(key.getA(), key.getB()))
                 .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return hasInputValidationErrors();
+    }
 }

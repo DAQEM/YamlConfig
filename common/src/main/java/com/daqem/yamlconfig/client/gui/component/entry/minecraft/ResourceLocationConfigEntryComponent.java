@@ -48,20 +48,6 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
         this.addWidget(editBoxWidget);
     }
 
-//    @Override
-//    public void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-//        if (isTotalHovered(mouseX, mouseY)) {
-//            if (!this.editBoxWidget.hasInputValidationErrors() && !this.editBoxWidget.getValue().contains(":")) {
-//                ResourceLocation resourceLocation = ResourceLocation.tryParse(this.editBoxWidget.getValue());
-//                guiGraphics.renderTooltip(Minecraft.getInstance().font,
-//                        Component.literal(resourceLocation == null
-//                                ? "Invalid Resource Location"
-//                                : resourceLocation.toString()),
-//                        mouseX, mouseY);
-//            }
-//        }
-//    } //TODO
-
     @Override
     public boolean isOriginalValue() {
         return this.getConfigEntry().getDefaultValue().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
@@ -76,5 +62,10 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
     public void applyValue() {
         if (this.editBoxWidget.hasInputValidationErrors()) return;
         this.getConfigEntry().set(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
+    }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return this.editBoxWidget.hasInputValidationErrors();
     }
 }

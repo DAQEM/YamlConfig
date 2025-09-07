@@ -11,6 +11,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.StringConfigEntryComponen
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -156,6 +157,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.get());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -167,6 +169,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
                     buf.readInt()
             );
             configEntry.set(buf.readUtf());
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

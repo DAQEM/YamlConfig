@@ -152,6 +152,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
             buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -165,6 +166,7 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
             List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
             StringMapConfigEntry configEntry = new StringMapConfigEntry(key, defaultValue, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

@@ -7,6 +7,8 @@ public interface IComments {
 
     List<String> getComments();
 
+    List<String> getComments(boolean showValidationParameters);
+
     void setComments(ArrayList<String> comments);
 
     void addComment(String comment);

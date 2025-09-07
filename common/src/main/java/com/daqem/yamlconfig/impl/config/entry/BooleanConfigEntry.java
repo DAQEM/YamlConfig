@@ -11,6 +11,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.BooleanConfigEntryCompone
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
@@ -79,12 +80,14 @@ public class BooleanConfigEntry extends BaseConfigEntry<Boolean> implements IBoo
             buf.writeUtf(configEntry.getKey());
             buf.writeBoolean(configEntry.getDefaultValue());
             buf.writeBoolean(configEntry.get());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
         public IBooleanConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             BooleanConfigEntry configEntry = new BooleanConfigEntry(buf.readUtf(), buf.readBoolean());
             configEntry.set(buf.readBoolean());
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

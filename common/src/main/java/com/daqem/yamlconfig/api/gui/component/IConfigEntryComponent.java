@@ -8,4 +8,6 @@ public interface IConfigEntryComponent<C extends IConfigEntry<?>> extends ICompo
     C getConfigEntry();
 
     void applyValue();
+
+    boolean hasValidationErrors();
 }

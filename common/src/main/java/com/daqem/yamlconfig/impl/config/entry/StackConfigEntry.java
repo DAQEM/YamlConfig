@@ -10,6 +10,7 @@ import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.nodes.MappingNode;
@@ -98,6 +99,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
                 ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
                         .toNetwork(buf, (IConfigEntry<Object>) entry.getValue());
             }
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @SuppressWarnings("DuplicatedCode")
@@ -126,6 +128,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
 
             StackConfigEntry configEntry = new StackConfigEntry(key, defaultValue);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

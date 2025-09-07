@@ -12,6 +12,7 @@ import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -102,6 +103,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
             buf.writeResourceLocation(configEntry.get());
             buf.writeResourceLocation(configEntry.getDefaultValue());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -112,6 +114,7 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
             String pattern = buf.readUtf();
             ResourceLocationConfigEntry configEntry = new ResourceLocationConfigEntry(key, defaultValue, pattern.isEmpty() ? null : pattern);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

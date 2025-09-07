@@ -16,7 +16,7 @@
   "yamlconfig.gui.validation_error.invalid_date_time": "This field must follow the format: '%s'",
   "yamlconfig.gui.validation_error.invalid_resource_location": "This field must be a valid resource location",
   "yamlconfig.gui.validation_error.invalid_registry_value": "This value in this field is not in the registry",
-  "yamlconfig.gui.validation_error.duplicate_key": "This key is already in use" ,
+  "yamlconfig.gui.validation_error.duplicate_key": "This key is already in use",
   "yamlconfig.gui.validation_error.empty_key": "This field cannot be empty",
 
   "yamlconfig.gui.value.true": "True",

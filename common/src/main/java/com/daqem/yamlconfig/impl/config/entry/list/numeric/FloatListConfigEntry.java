@@ -83,6 +83,7 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
             buf.writeInt(configEntry.getMaxLength());
             buf.writeFloat(configEntry.getMinValue());
             buf.writeFloat(configEntry.getMaxValue());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -96,6 +97,7 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
             float maxValue = buf.readFloat();
             FloatListConfigEntry configEntry = new FloatListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

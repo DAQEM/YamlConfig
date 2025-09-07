@@ -83,6 +83,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
             buf.writeInt(configEntry.getMaxLength());
             buf.writeInt(configEntry.getMinValue());
             buf.writeInt(configEntry.getMaxValue());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -96,6 +97,7 @@ public class IntegerListConfigEntry extends BaseNumericListConfigEntry<Integer> 
             int maxValue = buf.readInt();
             IntegerListConfigEntry configEntry = new IntegerListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

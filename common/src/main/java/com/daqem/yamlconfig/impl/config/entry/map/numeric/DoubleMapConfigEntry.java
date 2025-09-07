@@ -95,6 +95,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
             buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -108,6 +109,7 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
                     buf.readDouble()
             );
             configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble));
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

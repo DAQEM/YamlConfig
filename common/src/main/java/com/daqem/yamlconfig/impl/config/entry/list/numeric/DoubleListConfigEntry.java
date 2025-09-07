@@ -83,6 +83,7 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
             buf.writeInt(configEntry.getMaxLength());
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -96,6 +97,7 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
             double maxValue = buf.readDouble();
             DoubleListConfigEntry configEntry = new DoubleListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

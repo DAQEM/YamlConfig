@@ -9,6 +9,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntry
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
@@ -70,6 +71,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
             buf.writeDouble(configEntry.get());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -81,6 +83,7 @@ public class DoubleConfigEntry extends BaseNumericConfigEntry<Double> implements
                     buf.readDouble()
             );
             configEntry.set(buf.readDouble());
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

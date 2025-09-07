@@ -18,8 +18,17 @@ public class Comments implements IComments {
 
     @Override
     public List<String> getComments() {
+        List<String> comments = new ArrayList<>(this.comments);
         if (validationParameters != null && !comments.contains(validationParameters)) {
             comments.add(validationParameters);
+        }
+        return comments;
+    }
+
+    @Override
+    public List<String> getComments(boolean showValidationParameters) {
+        if (showValidationParameters) {
+            return getComments();
         }
         return comments;
     }

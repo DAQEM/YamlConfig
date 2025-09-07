@@ -72,4 +72,9 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<Re
         Optional<Holder.Reference<T>> reference = getConfigEntry().getRegistry().get(ResourceLocation.parse(this.editBoxWidget.getValue()));
         reference.ifPresent(tReference -> getConfigEntry().set(tReference.value()));
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return this.editBoxWidget.hasInputValidationErrors();
+    }
 }

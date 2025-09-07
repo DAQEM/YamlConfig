@@ -29,7 +29,7 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
         super(x, y, TOTAL_WIDTH, height);
         this.configEntry = configEntry;
 
-        this.keyText = new TruncatedKeyTextComponent(key, textWidth, false);
+        this.keyText = new TruncatedKeyTextComponent(key, textWidth, configEntry, false);
         this.resetValueButton = new ResetValueButtonComponent(TOTAL_WIDTH - RELOAD_WIDTH, 0, button -> resetValue());
 
         this.addComponent(this.keyText);
@@ -49,4 +49,9 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
     public abstract boolean isOriginalValue();
 
     public abstract void resetValue();
+
+    @Override
+    public boolean hasValidationErrors() {
+        return false;
+    }
 }

@@ -61,4 +61,9 @@ public class StringConfigEntryComponent extends BaseConfigEntryComponent<StringC
         if (this.editBoxWidget.hasInputValidationErrors()) return;
         this.getConfigEntry().set(this.editBoxWidget.getValue());
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return this.editBoxWidget.hasInputValidationErrors();
+    }
 }

@@ -151,6 +151,7 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
             buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -164,6 +165,7 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
             List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
             StringListConfigEntry configEntry = new StringListConfigEntry(key, defaultValue, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
             configEntry.set(value);
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

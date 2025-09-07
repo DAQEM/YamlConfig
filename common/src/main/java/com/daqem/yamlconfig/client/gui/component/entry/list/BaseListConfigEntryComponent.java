@@ -183,4 +183,9 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
         return this.editBoxWidgets.keySet().stream()
                 .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return hasInputValidationErrors();
+    }
 }

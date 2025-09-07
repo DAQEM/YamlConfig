@@ -1,6 +1,8 @@
 package com.daqem.yamlconfig.client.gui.component;
 
 import com.daqem.uilib.gui.component.AbstractComponent;
+import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
@@ -12,23 +14,25 @@ import java.util.List;
 
 public class ConfigCategoryComponent extends AbstractComponent {
 
+    private final IStackConfigEntry stackConfigEntry;
     private final @Nullable String key;
     private final List<IConfigEntryComponent<?>> configEntryComponents;
     private final List<ConfigCategoryComponent> subCategories;
 
 
-    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents) {
-        this(key, configEntryComponents, new ArrayList<>());
+    public ConfigCategoryComponent(IStackConfigEntry stackConfigEntry, @Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents) {
+        this(stackConfigEntry, key, configEntryComponents, new ArrayList<>());
     }
 
-    public ConfigCategoryComponent(@Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents, List<ConfigCategoryComponent> subCategories) {
+    public ConfigCategoryComponent(IStackConfigEntry stackConfigEntry, @Nullable String key, List<IConfigEntryComponent<?>> configEntryComponents, List<ConfigCategoryComponent> subCategories) {
         super(0, 0, BaseConfigEntryComponent.TOTAL_WIDTH, 0);
+        this.stackConfigEntry = stackConfigEntry;
         this.key = key;
         this.configEntryComponents = configEntryComponents;
         this.subCategories = subCategories;
 
         if (key != null) {
-            this.addComponent(new TruncatedKeyTextComponent(key, getWidth(), true));
+            this.addComponent(new TruncatedKeyTextComponent(key, getWidth(), stackConfigEntry, true));
         }
 
         this.addComponents(configEntryComponents);

@@ -1,8 +1,11 @@
 package com.daqem.yamlconfig.client.gui;
 
 import com.daqem.yamlconfig.api.config.IConfig;
+import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
+import com.daqem.yamlconfig.impl.config.entry.StackConfigEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +22,7 @@ public class ConfigEntryComponentBuilder {
         List<IConfigEntryComponent<?>> components = createComponents("");
         List<ConfigCategoryComponent> categoryComponents = createCategories();
 
-        return new ConfigCategoryComponent(null, components, categoryComponents);
+        return new ConfigCategoryComponent(null, null, components, categoryComponents);
     }
 
     private List<String> getCategories() {
@@ -55,11 +58,16 @@ public class ConfigEntryComponentBuilder {
                     return key.startsWith(category) && key.lastIndexOf('.') == category.length();
                 })
                 .map(Map.Entry::getValue)
-                .map(entry -> entry.createComponent(getPrefix(category) + entry.getKey()))
+                .map(entry -> {
+                    return entry.createComponent(getPrefix(category) + entry.getKey());
+                })
                 .collect(Collectors.toList());
     }
 
     private String getPrefix(String category) {
+        if (category.isEmpty()) {
+            return getConfigPrefix();
+        }
         return getConfigPrefix() + category + ".";
     }
 
@@ -72,7 +80,8 @@ public class ConfigEntryComponentBuilder {
 
         for (String category : getCategories()) {
             List<IConfigEntryComponent<?>> components = createComponents(category);
-            categoryComponents.put(category, new ConfigCategoryComponent(getConfigPrefix() + category, components));
+            IStackConfigEntry configEntry = getConfigEntry(category, config.getContext().get());
+            categoryComponents.put(category, new ConfigCategoryComponent(configEntry, getConfigPrefix() + category, components));
         }
 
         appendSubCategories(categoryComponents);
@@ -97,5 +106,31 @@ public class ConfigEntryComponentBuilder {
                 }
             }
         }
+    }
+
+    public IStackConfigEntry getConfigEntry(String path, Map<String, IConfigEntry<?>> entries) {
+        if (path == null || path.isEmpty() || entries == null) {
+            return null;
+        }
+
+        String[] keys = path.split("\\.");
+        return getConfigEntryRecursive(keys, 0, entries);
+    }
+
+    private IStackConfigEntry getConfigEntryRecursive(String[] keys, int index, Map<String, IConfigEntry<?>> entries) {
+        IConfigEntry<?> currentEntry = entries.get(keys[index]);
+
+        if (currentEntry instanceof IStackConfigEntry stackConfigEntry) {
+            if (index == keys.length - 1) {
+                return stackConfigEntry;
+            }
+
+            Map<String, IConfigEntry<?>> nextEntries = stackConfigEntry.get();
+            if (nextEntries != null) {
+                return getConfigEntryRecursive(keys, index + 1, nextEntries);
+            }
+        }
+
+        return null;
     }
 }

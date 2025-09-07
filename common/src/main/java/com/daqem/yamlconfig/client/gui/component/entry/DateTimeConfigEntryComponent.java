@@ -58,4 +58,9 @@ public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<DateT
         if (this.editBoxWidget.hasInputValidationErrors()) return;
         this.getConfigEntry().set(LocalDateTime.parse(this.editBoxWidget.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return this.editBoxWidget.hasInputValidationErrors();
+    }
 }

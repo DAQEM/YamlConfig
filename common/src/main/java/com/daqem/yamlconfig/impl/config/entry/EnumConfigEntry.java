@@ -11,6 +11,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.EnumConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
@@ -103,6 +104,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
             buf.writeUtf(configEntry.getEnumClass().getName());
             buf.writeUtf(configEntry.get().name());
             buf.writeUtf(configEntry.getDefaultValue().name());
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -116,6 +118,7 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
                 Class<E> enumClass = (Class<E>) Class.forName(enumClassName);
                 EnumConfigEntry<E> configEntry = new EnumConfigEntry<>(key, Enum.valueOf(enumClass, defaultEnumValue), enumClass);
                 configEntry.set(Enum.valueOf(enumClass, enumValue));
+                buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
                 return configEntry;
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);

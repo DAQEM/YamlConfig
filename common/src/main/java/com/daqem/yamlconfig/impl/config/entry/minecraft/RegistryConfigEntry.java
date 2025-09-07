@@ -15,6 +15,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -113,6 +114,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             buf.writeResourceKey(configEntry.getRegistry().key());
             buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
             buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.getDefaultValue())));
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -125,6 +127,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
             RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(defaultResourceLocation).get().value()).orElse(null), reference.map(Holder.Reference::value).orElse(null));
             configEntry.set(reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null));
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return (IRegistryConfigEntry<T>) configEntry;
         }
     }

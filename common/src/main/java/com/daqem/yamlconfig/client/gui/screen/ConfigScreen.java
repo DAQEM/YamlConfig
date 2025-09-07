@@ -18,6 +18,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
@@ -49,8 +50,9 @@ public class ConfigScreen extends AbstractScreen {
 
         ConfigCategoryComponent configCategoryComponent = new ConfigEntryComponentBuilder(this.config).build();
 
+        List<IConfigEntryComponent<?>> configEntryComponents = configCategoryComponent.getAllConfigEntryComponents();
+
         ButtonWidget saveChangesButton = new ButtonWidget(width / 2 + 2, height - 27, 150, 20, YamlConfig.translatable("screen.config.save"), button -> {
-            List<IConfigEntryComponent<?>> configEntryComponents = configCategoryComponent.getAllConfigEntryComponents();
             configEntryComponents.forEach(IConfigEntryComponent::applyValue);
             if (this.config.getType() == ConfigType.CLIENT) {
                 this.config.save();
@@ -59,7 +61,13 @@ public class ConfigScreen extends AbstractScreen {
             }
 
             this.onClose();
-        });
+        }) {
+            @Override
+            protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+                this.active = configEntryComponents.stream().noneMatch(IConfigEntryComponent::hasValidationErrors);
+                super.renderWidget(guiGraphics, i, j, f);
+            }
+        };
 
         EmptyComponent scrollContainerComponent = new EmptyComponent(this.width / 2 - (330 / 2), 34, 330, this.height - 34 - 32);
 
@@ -70,21 +78,6 @@ public class ConfigScreen extends AbstractScreen {
         scrollContainerWidget.addComponent(new MarginComponent(BaseConfigEntryComponent.TOTAL_WIDTH, 10));
 
         scrollContainerComponent.addWidget(scrollContainerWidget);
-
-//        ScrollContentComponent content = new ScrollContentComponent(0, 0, BaseConfigEntryComponent.GAP_WIDTH, ScrollOrientation.VERTICAL);
-//        ScrollWheelComponent scrollWheel = new ScrollWheelComponent(Textures.SCROLL_WHEEL, 0, 0, 6);
-//        ScrollBarComponent scrollBar = new ScrollBarComponent(BaseConfigEntryComponent.TOTAL_WIDTH + BaseConfigEntryComponent.GAP_WIDTH, 0, 6, getHeight() - 34 - 32, ScrollOrientation.VERTICAL, scrollWheel);
-//        scrollBar.setBackground(null);
-//
-//        this.scrollPanel = new ScrollPanelComponent(
-//                null, 0, 34, BaseConfigEntryComponent.TOTAL_WIDTH, getHeight() - 34 - 32,
-//                ScrollOrientation.VERTICAL, content, scrollBar);
-//
-//        this.scrollPanel.centerHorizontally();
-//
-//        content.addChild(new MarginComponent(BaseConfigEntryComponent.TOTAL_WIDTH, 10));
-//        content.addChild(configCategoryComponent);
-//        content.addChild(new MarginComponent(BaseConfigEntryComponent.TOTAL_WIDTH, 10));
 
         this.addComponent(headerBackground);
         this.addComponent(contentBackground);

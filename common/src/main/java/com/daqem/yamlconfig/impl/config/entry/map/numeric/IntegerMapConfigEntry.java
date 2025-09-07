@@ -95,6 +95,7 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
             buf.writeInt(configEntry.getMinValue());
             buf.writeInt(configEntry.getMaxValue());
             buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -108,6 +109,7 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
                     buf.readInt()
             );
             configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readInt));
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

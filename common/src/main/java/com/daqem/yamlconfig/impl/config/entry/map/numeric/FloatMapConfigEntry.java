@@ -96,6 +96,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
             buf.writeFloat(configEntry.getMinValue());
             buf.writeFloat(configEntry.getMaxValue());
             buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeFloat);
+            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
@@ -109,6 +110,7 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
                     buf.readFloat()
             );
             configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readFloat));
+            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;
         }
     }

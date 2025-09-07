@@ -49,4 +49,9 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
     public void resetValue() {
         this.editBoxWidget.setValue(this.getConfigEntry().getDefaultValue().toString());
     }
+
+    @Override
+    public boolean hasValidationErrors() {
+        return this.editBoxWidget.hasInputValidationErrors();
+    }
 }
