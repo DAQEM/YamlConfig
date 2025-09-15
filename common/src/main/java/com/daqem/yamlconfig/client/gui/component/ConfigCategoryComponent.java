@@ -67,7 +67,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
         renderHorizontalLines(guiGraphics);
         int currentY = 0;
         if (this.key != null) {
-            currentY += Minecraft.getInstance().font.lineHeight + 6;
+            currentY += Minecraft.getInstance().font.lineHeight + 12;
         }
         for (IConfigEntryComponent<?> entry : this.configEntryComponents) {
             entry.setY(currentY);
