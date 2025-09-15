@@ -6,11 +6,7 @@ import com.daqem.yamlconfig.api.config.entry.map.IStringMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.StringMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -78,12 +74,6 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
     public IConfigEntryType<IConfigEntry<Map<String, String>>, Map<String, String>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, String>>, Map<String, String>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STRING_MAP;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new StringMapConfigEntryComponent(key, this);
     }
 
     @Override

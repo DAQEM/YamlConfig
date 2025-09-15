@@ -4,11 +4,8 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -34,12 +31,6 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
     public IConfigEntryType<IConfigEntry<LinkedHashMap<String, IConfigEntry<?>>>, LinkedHashMap<String, IConfigEntry<?>>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<LinkedHashMap<String, IConfigEntry<?>>>, LinkedHashMap<String, IConfigEntry<?>>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STACK;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        throw new UnsupportedOperationException("StackConfigEntry does not support components");
     }
 
     public static class Serializer implements IConfigEntrySerializer<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> {

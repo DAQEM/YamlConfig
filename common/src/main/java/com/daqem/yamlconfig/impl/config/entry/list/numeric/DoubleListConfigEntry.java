@@ -4,11 +4,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IDoubleListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.DoubleListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -35,12 +31,6 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
     public IConfigEntryType<IConfigEntry<List<Double>>, List<Double>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<List<Double>>, List<Double>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.DOUBLE_LIST;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new DoubleListConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleListConfigEntry, List<Double>> {

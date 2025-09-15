@@ -4,11 +4,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IFloatListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.FloatListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -35,12 +31,6 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
     public IConfigEntryType<IConfigEntry<List<Float>>, List<Float>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<List<Float>>, List<Float>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.FLOAT_LIST;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new FloatListConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IFloatListConfigEntry, List<Float>> {
