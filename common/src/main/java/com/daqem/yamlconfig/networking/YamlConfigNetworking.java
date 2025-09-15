@@ -1,6 +1,9 @@
 package com.daqem.yamlconfig.networking;
 
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.client.networking.ClientboundOpenConfigScreenPacketHandler;
+import com.daqem.yamlconfig.client.networking.ClientboundOpenConfigsScreenPacketHandler;
+import com.daqem.yamlconfig.client.networking.ClientboundSyncConfigPacketHandler;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigsScreenPacket;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
@@ -23,9 +26,9 @@ public interface YamlConfigNetworking {
     CustomPacketPayload.Type<ServerboundSaveConfigPacket> SERVERBOUND_SAVE_CONFIG_PACKET = new CustomPacketPayload.Type<>(YamlConfig.getId("serverbound_save_config_packet"));
 
     static void initClient() {
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC, ClientboundSyncConfigPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC, ClientboundOpenConfigsScreenPacket::handleClientSide);
-        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC, ClientboundOpenConfigScreenPacket::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC, ClientboundSyncConfigPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC, ClientboundOpenConfigsScreenPacketHandler::handleClientSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC, ClientboundOpenConfigScreenPacketHandler::handleClientSide);
     }
 
     static void initServer() {

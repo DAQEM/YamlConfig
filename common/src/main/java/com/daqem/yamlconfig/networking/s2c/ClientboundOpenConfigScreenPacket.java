@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientboundOpenConfigScreenPacket implements CustomPacketPayload {
 
-    private final IConfig config;
+    public final IConfig config;
 
     @SuppressWarnings("unchecked")
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundOpenConfigScreenPacket> STREAM_CODEC = StreamCodec.of(
@@ -38,10 +38,5 @@ public class ClientboundOpenConfigScreenPacket implements CustomPacketPayload {
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return YamlConfigNetworking.CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void handleClientSide(NetworkManager.PacketContext packetContext) {
-        Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, this.config));
     }
 }

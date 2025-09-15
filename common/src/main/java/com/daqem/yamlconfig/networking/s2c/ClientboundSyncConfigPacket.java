@@ -22,8 +22,8 @@ import java.util.Optional;
 
 public class ClientboundSyncConfigPacket implements CustomPacketPayload {
 
-    private final IConfig config;
-    private final Map<String, ?> data;
+    public final IConfig config;
+    public final Map<String, ?> data;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSyncConfigPacket> STREAM_CODEC = StreamCodec.of(
             (buf, packet) -> {
@@ -71,10 +71,5 @@ public class ClientboundSyncConfigPacket implements CustomPacketPayload {
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {
         return YamlConfigNetworking.CLIENTBOUND_SYNC_CONFIG;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public void handleClientSide(NetworkManager.PacketContext packetContext) {
-        config.sync(data);
     }
 }
