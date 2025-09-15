@@ -4,11 +4,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.FloatMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -39,12 +35,6 @@ public class FloatMapConfigEntry extends BaseNumericMapConfigEntry<Float> implem
     public IConfigEntryType<IConfigEntry<Map<String, Float>>, Map<String, Float>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<Map<String, Float>>, Map<String, Float>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.FLOAT_MAP;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new FloatMapConfigEntryComponent(key, this);
     }
 
     public static class Serializer implements IConfigEntrySerializer<IFloatMapConfigEntry, Map<String, Float>> {

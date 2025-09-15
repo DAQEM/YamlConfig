@@ -6,11 +6,7 @@ import com.daqem.yamlconfig.api.config.entry.list.IStringListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.StringListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
@@ -76,12 +72,6 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
     public IConfigEntryType<IConfigEntry<List<String>>, List<String>> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<List<String>>, List<String>>) (IConfigEntryType<?, ?>) ConfigEntryTypes.STRING_LIST;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new StringListConfigEntryComponent(key, this);
     }
 
     @Override

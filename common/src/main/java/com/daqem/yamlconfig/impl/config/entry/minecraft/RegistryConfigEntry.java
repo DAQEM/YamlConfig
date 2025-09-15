@@ -6,12 +6,8 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,12 +44,6 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
     public IConfigEntryType<IConfigEntry<T>, T> getType() {
         //noinspection unchecked
         return (IConfigEntryType<IConfigEntry<T>, T>) (IConfigEntryType<?, ?>) ConfigEntryTypes.REGISTRY;
-    }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public IConfigEntryComponent<?> createComponent(String key) {
-        return new RegistryConfigEntryComponent<>(key, this);
     }
 
     @Override

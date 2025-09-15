@@ -41,9 +41,6 @@ public interface IConfigEntry<T> extends Supplier<T> {
 
     IConfigEntry<T> setShouldBeSynced(boolean shouldBeSynced);
 
-    @Environment(EnvType.CLIENT)
-    IConfigEntryComponent<?> createComponent(String key);
-
     default ScalarNode createKeyNode() {
         ScalarNode keyNode = new ScalarNode(Tag.STR, getKey(), ScalarStyle.PLAIN);
         keyNode.setBlockComments(getComments().getComments().stream()

@@ -5,7 +5,37 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
-import com.daqem.yamlconfig.impl.config.entry.StackConfigEntry;
+import com.daqem.yamlconfig.client.gui.component.entry.BooleanConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.DateTimeConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.EnumConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.StringConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.StringListConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.DoubleListConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.FloatListConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.IntegerListConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.StringMapConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.DoubleMapConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.FloatMapConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.IntegerMapConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocationConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.FloatConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.IntegerConfigEntryComponent;
+import com.daqem.yamlconfig.impl.config.entry.*;
+import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.list.numeric.DoubleListConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.list.numeric.FloatListConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.list.numeric.IntegerListConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.map.StringMapConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.map.numeric.DoubleMapConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.map.numeric.IntegerMapConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,7 +89,27 @@ public class ConfigEntryComponentBuilder {
                 })
                 .map(Map.Entry::getValue)
                 .map(entry -> {
-                    return entry.createComponent(getPrefix(category) + entry.getKey());
+                    String key = getPrefix(category) + entry.getKey();
+                    return switch (entry) {
+                        case BooleanConfigEntry booleanConfigEntry -> new BooleanConfigEntryComponent(key, booleanConfigEntry);
+                        case DateTimeConfigEntry dateTimeConfigEntry -> new DateTimeConfigEntryComponent(key, dateTimeConfigEntry);
+                        case EnumConfigEntry<?> enumConfigEntry -> new EnumConfigEntryComponent<>(key, enumConfigEntry);
+                        case StringConfigEntry stringConfigEntry -> new StringConfigEntryComponent(key, stringConfigEntry);
+                        case StringListConfigEntry stringListConfigEntry -> new StringListConfigEntryComponent(key, stringListConfigEntry);
+                        case DoubleListConfigEntry doubleListConfigEntry -> new DoubleListConfigEntryComponent(key, doubleListConfigEntry);
+                        case FloatListConfigEntry floatListConfigEntry -> new FloatListConfigEntryComponent(key, floatListConfigEntry);
+                        case IntegerListConfigEntry integerListConfigEntry -> new IntegerListConfigEntryComponent(key, integerListConfigEntry);
+                        case StringMapConfigEntry stringMapConfigEntry -> new StringMapConfigEntryComponent(key, stringMapConfigEntry);
+                        case DoubleMapConfigEntry doubleMapConfigEntry -> new DoubleMapConfigEntryComponent(key, doubleMapConfigEntry);
+                        case FloatMapConfigEntry floatMapConfigEntry -> new FloatMapConfigEntryComponent(key, floatMapConfigEntry);
+                        case IntegerMapConfigEntry integerMapConfigEntry -> new IntegerMapConfigEntryComponent(key, integerMapConfigEntry);
+                        case RegistryConfigEntry<?> registryConfigEntry -> new RegistryConfigEntryComponent<>(key, registryConfigEntry);
+                        case ResourceLocationConfigEntry resourceLocationConfigEntry -> new ResourceLocationConfigEntryComponent(key, resourceLocationConfigEntry);
+                        case DoubleConfigEntry doubleConfigEntry -> new DoubleConfigEntryComponent(key, doubleConfigEntry);
+                        case FloatConfigEntry floatConfigEntry -> new FloatConfigEntryComponent(key, floatConfigEntry);
+                        case IntegerConfigEntry integerConfigEntry -> new IntegerConfigEntryComponent(key, integerConfigEntry);
+                        default -> throw new UnsupportedOperationException("This entry does not support components");
+                    };
                 })
                 .collect(Collectors.toList());
     }
