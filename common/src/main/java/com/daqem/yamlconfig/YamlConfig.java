@@ -23,9 +23,22 @@ public class YamlConfig {
         if (isDevelopment) {
             CommonTestConfig.init();
         }
-        YamlConfigNetworking.init();
+        // Initialize server-safe components only
+        initServerSafeNetworking();
         YamlConfigRegistry.init();
         registerEvents();
+    }
+
+    /**
+     * Initialize only the networking components that are safe to load on a dedicated server
+     */
+    private static void initServerSafeNetworking() {
+        try {
+            // Only register server-bound (C2S) packets that don't reference client classes
+            YamlConfigNetworking.initServerSafe();
+        } catch (Exception e) {
+            LOGGER.error("Failed to initialize server-safe networking", e);
+        }
     }
 
     public static void registerEvents() {

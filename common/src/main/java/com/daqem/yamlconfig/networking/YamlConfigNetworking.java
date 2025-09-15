@@ -8,8 +8,6 @@ import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigsScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
 import dev.architectury.networking.NetworkManager;
-import dev.architectury.utils.Env;
-import dev.architectury.utils.EnvExecutor;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public interface YamlConfigNetworking {
@@ -23,23 +21,36 @@ public interface YamlConfigNetworking {
     CustomPacketPayload.Type<ServerboundSaveConfigPacket> SERVERBOUND_SAVE_CONFIG_PACKET = new CustomPacketPayload.Type<>(YamlConfig.getId("serverbound_save_config_packet"));
 
     static void initClient() {
+        // Register client-side packet receivers
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC, ClientboundSyncConfigPacket::handleClientSide);
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC, ClientboundOpenConfigsScreenPacket::handleClientSide);
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC, ClientboundOpenConfigScreenPacket::handleClientSide);
     }
 
     static void initServer() {
+        // Register server-side packet types and receivers
         NetworkManager.registerS2CPayloadType(CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC);
         NetworkManager.registerS2CPayloadType(CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC);
         NetworkManager.registerS2CPayloadType(CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC);
-    }
-
-    static void init() {
-        EnvExecutor.runInEnv(Env.CLIENT, () -> YamlConfigNetworking::initClient);
-        EnvExecutor.runInEnv(Env.SERVER, () -> YamlConfigNetworking::initServer);
-
+        
+        // Register server-side (C2S) receivers
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC, ServerboundOpenConfigsScreenPacket::handleServerSide);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, ServerboundOpenConfigScreenPacket.STREAM_CODEC, ServerboundOpenConfigScreenPacket::handleServerSide);
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_SAVE_CONFIG_PACKET, ServerboundSaveConfigPacket.STREAM_CODEC, ServerboundSaveConfigPacket::handleServerSide);
+    }
+    
+    /**
+     * Initialize only server-safe networking components that don't reference client classes
+     */
+    static void initServerSafe() {
+        // Register only server-bound (C2S) packets that are safe to load on dedicated servers
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC, ServerboundOpenConfigsScreenPacket::handleServerSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, ServerboundOpenConfigScreenPacket.STREAM_CODEC, ServerboundOpenConfigScreenPacket::handleServerSide);
+        NetworkManager.registerReceiver(NetworkManager.Side.C2S, SERVERBOUND_SAVE_CONFIG_PACKET, ServerboundSaveConfigPacket.STREAM_CODEC, ServerboundSaveConfigPacket::handleServerSide);
+    }
+
+    static void init() {
+        // This method was causing issues on dedicated servers by loading client-side classes
+        // Now initialization is handled separately for client and server
     }
 }
