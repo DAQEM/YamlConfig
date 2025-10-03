@@ -1,6 +1,6 @@
 {
   "key.yamlconfig.configs": "Open Configs Screen",
-  "category.yamlconfig": "YAML Config",
+  "key.category.yamlconfig.category": "YAML Config",
   "yamlconfig.screen.configs": "All Configs",
   "yamlconfig.screen.config.save": "Save Changes",
   "yamlconfig.screen.config.cancel": "Cancel",

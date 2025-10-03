@@ -11,6 +11,7 @@ import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -49,7 +50,7 @@ public class ServerboundSaveConfigPacket implements CustomPacketPayload {
 
             if (existingConfig.getType() == ConfigType.COMMON) {
                 //Sync the config to the players on the server
-                Objects.requireNonNull(packetContext.getPlayer().getServer()).getPlayerList().getPlayers().forEach(player -> {
+                Objects.requireNonNull(packetContext.getPlayer().level().getServer()).getPlayerList().getPlayers().forEach(player -> {
                     NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig));
                 });
             }
