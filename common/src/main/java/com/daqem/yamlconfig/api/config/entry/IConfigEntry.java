@@ -31,6 +31,8 @@ public interface IConfigEntry<T> extends Supplier<T> {
 
     IConfigEntry<T> withComments(boolean showDefaultValues, boolean showValidationParameters, String... comments);
 
+    IConfigEntry<T> showDefaultValue(boolean showDefaultValue);
+
     void validate(T value) throws ConfigEntryValidationException;
 
     IConfigEntryType<IConfigEntry<T>, T> getType();

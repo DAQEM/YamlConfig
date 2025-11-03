@@ -66,7 +66,9 @@ public class CommonTestConfig {
 
         testIntList = builder.defineIntegerList("testIntList", List.of(1, 2, 3), 3, 10);
 
-        testBoolean = builder.defineBoolean("testBoolean", true);
+        testBoolean = builder.defineBoolean("testBoolean", true)
+                .withComments("Test boolean with no default value shown")
+                .showDefaultValue(false);
 
         testFloat = builder.defineFloat("testFloat", 1.0F);
 

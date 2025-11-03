@@ -75,6 +75,12 @@ public abstract class BaseConfigEntry<T> implements IConfigEntry<T> {
     }
 
     @Override
+    public IConfigEntry<T> showDefaultValue(boolean showDefaultValue) {
+        this.comments.setShowDefaultValues(showDefaultValue);
+        return this;
+    }
+
+    @Override
     public boolean shouldBeSynced() {
         return shouldBeSynced;
     }
