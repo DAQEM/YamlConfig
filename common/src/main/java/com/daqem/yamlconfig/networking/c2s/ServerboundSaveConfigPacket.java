@@ -4,6 +4,7 @@ import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
+import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
@@ -47,6 +48,7 @@ public class ServerboundSaveConfigPacket implements CustomPacketPayload {
             IConfig existingConfig = YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName());
             existingConfig.updateEntries(config.getEntries());
             existingConfig.save();
+            ConfigEvent.ON_UPDATE.invoker().update(this.config, packetContext.getPlayer().level());
 
             if (existingConfig.getType() == ConfigType.COMMON) {
                 //Sync the config to the players on the server

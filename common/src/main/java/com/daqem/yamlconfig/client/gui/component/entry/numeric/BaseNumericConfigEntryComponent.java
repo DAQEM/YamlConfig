@@ -31,7 +31,7 @@ public abstract class BaseNumericConfigEntryComponent<C extends INumericConfigEn
         };
 
         editBoxWidget.setValue(configEntry.get().toString());
-        editBoxWidget.setMaxLength(configEntry.getMaxValue().toString().length());
+        editBoxWidget.setMaxLength(32);
 
         this.addWidget(editBoxWidget);
     }

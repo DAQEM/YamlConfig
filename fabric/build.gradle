@@ -31,7 +31,7 @@ dependencies {
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 
     shadowCommon "org.snakeyaml:snakeyaml-engine:2.7"
-    modImplementation "curse.maven:ui-933200:${project.ui_library_file_fabric}"
+    modImplementation "com.daqem.uilib:uilib-fabric:${rootProject.ui_library_version}"
 }
 
 processResources {
@@ -68,8 +68,18 @@ remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    archiveClassifier = "fabric"
+    archiveClassifier = null
 }
+
+task renameJarForPublication(type: Zip, dependsOn: remapJar) {
+    from remapJar.archiveFile.map { zipTree(it) }
+    archiveExtension = "jar"
+    metadataCharset "UTF-8"
+    destinationDirectory = base.libsDirectory
+    archiveClassifier = project.name
+}
+
+assemble.dependsOn renameJarForPublication
 
 sourcesJar {
     def commonSources = project(":common").sourcesJar
@@ -84,6 +94,26 @@ remapSourcesJar {
 components.java {
     withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
         skip()
+    }
+}
+
+publishing {
+    publications {
+        mavenFabric(MavenPublication) {
+            groupId = rootProject.maven_group
+            artifactId = rootProject.archives_base_name + "-fabric"
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url = project.version.contains('-PR') ? 'https://maven.daqem.com/snapshots' : 'https://maven.daqem.com/releases'
+            credentials {
+                username = System.getenv("MAVEN_USER")
+                password = System.getenv("MAVEN_PASS")
+            }
+        }
     }
 }
 
@@ -108,7 +138,7 @@ curseforge {
             }
         }
 
-        mainArtifact(remapJar) {
+        mainArtifact(renameJarForPublication) {
             displayName = "$project.mod_name Fabric $project.minecraft_version - $project.mod_version"
         }
 
@@ -123,7 +153,7 @@ modrinth {
     versionName = "$project.mod_name Fabric $project.minecraft_version - $project.mod_version"
     versionNumber = "$project.mod_version"
     versionType = "$project.release_type"
-    uploadFile = remapJar
+    uploadFile = renameJarForPublication
     additionalFiles = [remapSourcesJar]
     gameVersions = project.supported_minecraft_versions.split(',').toList()
     loaders = ["fabric"]

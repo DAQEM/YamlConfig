@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "yamlconfig_test",
+  "version": "${version}",
+  "name": "YAML Config Test Mod",
+  "description": "A test mod for YAML Config.",
+  "authors": [
+    "DAQEM"
+  ],
+  "license": "Apache-2.0",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.daqem.yamlconfig.test.TestMod::init"
+    ],
+    "client": [
+      "com.daqem.yamlconfig.test.TestModClient::init"
+    ],
+    "server": [
+      "com.daqem.yamlconfig.test.TestModServer::init"
+    ]
+  }
+}

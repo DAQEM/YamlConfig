@@ -15,6 +15,7 @@ import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
 import com.daqem.yamlconfig.client.gui.component.EmptyComponent;
 import com.daqem.yamlconfig.client.gui.component.MarginComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
+import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
 import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
@@ -56,6 +57,7 @@ public class ConfigScreen extends AbstractScreen {
             configEntryComponents.forEach(IConfigEntryComponent::applyValue);
             if (this.config.getType() == ConfigType.CLIENT) {
                 this.config.save();
+                ConfigEvent.ON_UPDATE.invoker().update(this.config, Minecraft.getInstance().level);
             } else {
                 NetworkManager.sendToServer(new ServerboundSaveConfigPacket(this.config));
             }

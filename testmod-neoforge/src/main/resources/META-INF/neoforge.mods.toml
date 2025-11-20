@@ -1,0 +1,13 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "Apache-2.0"
+
+[[mods]]
+modId = "yamlconfig_test"
+version = "${file.jarVersion}"
+displayName = "YAML Condig Test Mod"
+authors = "DAQEM"
+description = '''
+This is a test mod for YAML Config.
+'''
+license = "Apache-2.0"

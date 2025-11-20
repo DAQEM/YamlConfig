@@ -43,7 +43,7 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
         };
 
         editBoxWidget.setValue(configEntry.get().toString());
-        editBoxWidget.setMaxLength(Integer.MAX_VALUE);
+        editBoxWidget.setMaxLength(256);
 
         this.addWidget(editBoxWidget);
     }

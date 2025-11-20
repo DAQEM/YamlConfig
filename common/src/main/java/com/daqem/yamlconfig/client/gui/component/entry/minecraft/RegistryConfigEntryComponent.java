@@ -47,7 +47,7 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<Re
         String stringValue = resourceLocation != null ? resourceLocation.toString() : "unknown";
 
         editBoxWidget.setValue(stringValue);
-        editBoxWidget.setMaxLength(Integer.MAX_VALUE);
+        editBoxWidget.setMaxLength(256);
 
         this.addWidget(editBoxWidget);
     }
