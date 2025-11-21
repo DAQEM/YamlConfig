@@ -15,6 +15,7 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEn
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.impl.config.entry.*;
@@ -31,6 +32,7 @@ import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -49,6 +51,7 @@ public abstract class ConfigEntryTypes {
     public static final IConfigEntryType<IDateTimeConfigEntry, LocalDateTime> DATE_TIME = register(YamlConfig.getId("datetime"), new DateTimeConfigEntry.Serializer());
     public static final IConfigEntryType<IBooleanConfigEntry, Boolean> BOOLEAN = register(YamlConfig.getId("boolean"), new BooleanConfigEntry.Serializer());
     public static final IConfigEntryType<IIntegerConfigEntry, Integer> INTEGER = register(YamlConfig.getId("integer"), new IntegerConfigEntry.Serializer());
+    public static final IConfigEntryType<ILongConfigEntry, Long> LONG = register(YamlConfig.getId("long"), new LongConfigEntry.Serializer());
     public static final IConfigEntryType<IFloatConfigEntry, Float> FLOAT = register(YamlConfig.getId("float"), new FloatConfigEntry.Serializer());
     public static final IConfigEntryType<IDoubleConfigEntry, Double> DOUBLE = register(YamlConfig.getId("double"), new DoubleConfigEntry.Serializer());
     public static final IConfigEntryType<IResourceLocationConfigEntry, ResourceLocation> RESOURCE_LOCATION = register(YamlConfig.getId("resource_location"), new ResourceLocationConfigEntry.Serializer());

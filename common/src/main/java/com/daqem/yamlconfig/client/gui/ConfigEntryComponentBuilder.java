@@ -22,6 +22,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocatio
 import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.numeric.FloatConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.numeric.IntegerConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.LongConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.*;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.list.numeric.DoubleListConfigEntry;
@@ -36,6 +37,7 @@ import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEn
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -108,6 +110,7 @@ public class ConfigEntryComponentBuilder {
                         case DoubleConfigEntry doubleConfigEntry -> new DoubleConfigEntryComponent(key, doubleConfigEntry);
                         case FloatConfigEntry floatConfigEntry -> new FloatConfigEntryComponent(key, floatConfigEntry);
                         case IntegerConfigEntry integerConfigEntry -> new IntegerConfigEntryComponent(key, integerConfigEntry);
+                        case LongConfigEntry longConfigEntry -> new LongConfigEntryComponent(key, longConfigEntry);
                         default -> throw new UnsupportedOperationException("This entry does not support components");
                     };
                 })

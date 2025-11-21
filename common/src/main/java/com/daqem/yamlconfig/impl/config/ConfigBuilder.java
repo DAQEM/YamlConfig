@@ -20,6 +20,7 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEn
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
 import com.daqem.yamlconfig.api.exception.YamlConfigException;
 import com.daqem.yamlconfig.impl.config.entry.*;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
@@ -35,6 +36,7 @@ import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEn
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -156,6 +158,16 @@ public class ConfigBuilder implements IConfigBuilder {
     @Override
     public IIntegerConfigEntry defineInteger(String key, int defaultValue, int minValue, int maxValue) {
         return define(new IntegerConfigEntry(key, defaultValue, minValue, maxValue));
+    }
+
+    @Override
+    public ILongConfigEntry defineLong(String key, long defaultValue) {
+        return define(new LongConfigEntry(key, defaultValue));
+    }
+
+    @Override
+    public ILongConfigEntry defineLong(String key, long defaultValue, long minValue, long maxValue) {
+        return define(new LongConfigEntry(key, defaultValue, minValue, maxValue));
     }
 
     @Override

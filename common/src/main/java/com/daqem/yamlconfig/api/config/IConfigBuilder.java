@@ -14,6 +14,7 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEn
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
@@ -43,6 +44,10 @@ public interface IConfigBuilder {
     IIntegerConfigEntry defineInteger(String key, int defaultValue);
 
     IIntegerConfigEntry defineInteger(String key, int defaultValue, int minValue, int maxValue);
+
+    ILongConfigEntry defineLong(String key, long defaultValue);
+
+    ILongConfigEntry defineLong(String key, long defaultValue, long minValue, long maxValue);
 
     IFloatConfigEntry defineFloat(String key, float defaultValue);
 

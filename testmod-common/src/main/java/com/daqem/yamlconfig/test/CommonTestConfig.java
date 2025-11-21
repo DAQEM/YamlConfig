@@ -24,6 +24,7 @@ public class CommonTestConfig {
     public static IConfigEntry<Boolean> debug;
 
     public static IConfigEntry<Integer> testInt;
+    public static IConfigEntry<Long> testLong;
     public static IConfigEntry<String> testString;
     public static IConfigEntry<String> testString1;
     public static IConfigEntry<List<String>> testStringList;
@@ -48,6 +49,8 @@ public class CommonTestConfig {
         builder.push("test").withComments("This is a test stack.", "And another comment.", "Wow even a third comment.");
 
         testInt = builder.defineInteger("testInt", 10, 0, 100);
+
+        testLong = builder.defineLong("testLong", 100L, 0L, 1000L);
 
         builder.push("test1");
 
