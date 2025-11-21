@@ -12,6 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class CommonTestConfig {
     public static IConfigEntry<ResourceLocation> testResourceLocation;
 
     public static void init() {
-        ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML, ConfigType.COMMON);
+        ConfigBuilder builder = new ConfigBuilder("test", "test-common", ConfigExtension.YAML, ConfigType.COMMON, Path.of("test"));
 
         debug = builder.defineBoolean("debug", false)
                 .withComments("Whether debug mode is enabled for the mod.")

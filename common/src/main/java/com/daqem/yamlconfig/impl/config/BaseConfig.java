@@ -89,7 +89,7 @@ public abstract class BaseConfig implements IConfig {
             dumper.dumpNode(node, streamDataWriter);
             YamlConfig.LOGGER.info("Saved config file: " + name + extension.getExtension());
         } catch (FileNotFoundException e) {
-            YamlConfig.LOGGER.error("Failed to save config file: " + name + "." + extension.getExtension(), e);
+            YamlConfig.LOGGER.error("Failed to save config file: " + name + extension.getExtension(), e);
         }
     }
 
