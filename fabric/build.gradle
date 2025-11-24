@@ -14,22 +14,52 @@ loom {
 }
 
 configurations {
-    common
-    shadowCommon // Don't use shadow from the shadow plugin since it *excludes* files.
+    common {
+        canBeResolved = true
+        canBeConsumed = false
+    }
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
+
+    // Files in this configuration will be bundled into your mod using the Shadow plugin.
+    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
+    }
 }
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
+    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 
-    shadowCommon "org.snakeyaml:snakeyaml-engine:2.7"
-    modImplementation "com.daqem.uilib:uilib-fabric:${rootProject.ui_library_version}"
+    modImplementation "com.daqem.uilib:uilib-fabric:${project.ui_library_version}"
+
+    // SnakeYAML
+    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
+    shadowBundle "org.snakeyaml:snakeyaml-engine:2.7"
+
+    // NightConfig (TOML)
+    modImplementation "com.electronwill.night-config:toml:3.6.6"
+    shadowBundle "com.electronwill.night-config:toml:3.6.6"
+    modImplementation "com.electronwill.night-config:core:3.6.6"
+    shadowBundle "com.electronwill.night-config:core:3.6.6"
+
+    // Jankson (JSON5)
+    modImplementation "blue.endless:jankson:1.2.3"
+    shadowBundle "blue.endless:jankson:1.2.3"
+
+    // Configurate (HOCON)
+    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
+    shadowBundle("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
 }
 
 processResources {
@@ -56,8 +86,20 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
-    relocate "org.snakeyaml", "com.daqem.snakeyaml"
-    configurations = [project.configurations.shadowCommon]
+    // YAML
+    relocate "org.snakeyaml", "com.daqem.yamlconfig.libs.snakeyaml"
+
+    // TOML
+    relocate "com.electronwill.nightconfig", "com.daqem.yamlconfig.libs.nightconfig"
+
+    // JSON5
+    relocate "blue.endless.jankson", "com.daqem.yamlconfig.libs.jankson"
+
+    // HOCON (Configurate)
+    relocate "org.spongepowered.configurate", "com.daqem.yamlconfig.libs.configurate"
+    relocate "com.typesafe.config", "com.daqem.yamlconfig.libs.typesafe.config"
+    relocate "io.leangen.geantyref", "com.daqem.yamlconfig.libs.geantyref"
+    configurations = [project.configurations.shadowBundle]
     archiveClassifier = "fabric-dev-shadow"
 }
 

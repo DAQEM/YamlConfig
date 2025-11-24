@@ -6,8 +6,12 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -66,20 +70,24 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
     public static class Serializer<T> implements IConfigEntrySerializer<IRegistryConfigEntry<T>, T> {
 
         @Override
-        public void encodeNode(IRegistryConfigEntry<T> configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                ResourceLocation resourceLocation = ResourceLocation.parse(scalarNode.getValue());
-                Optional<Holder.Reference<T>> reference = configEntry.getRegistry().get(resourceLocation);
-                reference.ifPresent(tReference -> configEntry.set(tReference.value()));
+        public void toNode(IRegistryConfigEntry<T> configEntry, IMapNode parentMap) {
+            ResourceLocation key = configEntry.getRegistry().getKey(configEntry.get());
+            if (key != null) {
+                ConfigValueNode<String> node = new ConfigValueNode<>(key.toString());
+                node.setComments(configEntry.getComments().getComments());
+                parentMap.put(configEntry.getKey(), node);
             }
         }
 
         @Override
-        public NodeTuple decodeNode(IRegistryConfigEntry<T> configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ResourceLocation key = configEntry.getRegistry().getKey(configEntry.get());
-            ScalarNode valueNode = new ScalarNode(Tag.STR, Objects.requireNonNull(key).toString(), ScalarStyle.SINGLE_QUOTED);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IRegistryConfigEntry<T> configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                ResourceLocation rl = ResourceLocation.tryParse(valueNode.getValue().toString());
+                if (rl != null) {
+                    configEntry.getRegistry().get(rl).ifPresent(ref -> configEntry.set(ref.value()));
+                }
+            }
         }
 
         @Override

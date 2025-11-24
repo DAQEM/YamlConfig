@@ -6,7 +6,13 @@ import com.daqem.yamlconfig.api.config.entry.list.IStringListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IListNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigListNode;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +20,7 @@ import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StringListConfigEntry extends BaseListConfigEntry<String> implements IStringListConfigEntry {
@@ -104,22 +111,27 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
     public static class Serializer implements IConfigEntrySerializer<IStringListConfigEntry, List<String>> {
 
         @Override
-        public void encodeNode(IStringListConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.set(sequenceNode.getValue().stream()
-                        .filter(n -> n instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR))
-                        .map(n -> ((ScalarNode) n).getValue())
-                        .toList());
+        public void toNode(IStringListConfigEntry configEntry, IMapNode parentMap) {
+            ConfigListNode listNode = new ConfigListNode();
+            for (String s : configEntry.get()) {
+                listNode.add(new ConfigValueNode<>(s));
             }
+            listNode.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), listNode);
         }
 
         @Override
-        public NodeTuple decodeNode(IStringListConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            SequenceNode valueNode = new SequenceNode(Tag.SEQ, configEntry.get().stream()
-                    .map(s -> (Node) new ScalarNode(Tag.STR, s, ScalarStyle.SINGLE_QUOTED))
-                    .toList(), FlowStyle.BLOCK);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IStringListConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IListNode listNode) {
+                List<String> list = new ArrayList<>();
+                for (IConfigNode child : listNode.getValue()) {
+                    if (child instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                        list.add(valueNode.getValue().toString());
+                    }
+                }
+                configEntry.set(list);
+            }
         }
 
         @Override

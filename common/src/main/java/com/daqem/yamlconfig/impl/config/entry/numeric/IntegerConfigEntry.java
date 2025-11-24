@@ -4,7 +4,11 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -31,17 +35,23 @@ public class IntegerConfigEntry extends BaseNumericConfigEntry<Integer> implemen
     public static class Serializer implements IConfigEntrySerializer<IIntegerConfigEntry, Integer> {
 
         @Override
-        public void encodeNode(IIntegerConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.INT)) {
-                configEntry.set(Integer.parseInt(scalarNode.getValue()));
-            }
+        public void toNode(IIntegerConfigEntry configEntry, IMapNode parentMap) {
+            ConfigValueNode<Integer> node = new ConfigValueNode<>(configEntry.get());
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(IIntegerConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.INT, Integer.toString(configEntry.get()), ScalarStyle.PLAIN);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IIntegerConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode) {
+                Object val = valueNode.getValue();
+                if (val instanceof Number number) {
+                    configEntry.set(number.intValue());
+                } else if (val instanceof String) {
+                    try { configEntry.set(Integer.parseInt((String) val)); } catch (NumberFormatException ignored) {}
+                }
+            }
         }
 
         @Override

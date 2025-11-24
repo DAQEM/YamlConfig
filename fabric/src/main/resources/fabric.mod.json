@@ -3,7 +3,7 @@
   "id": "${mod_id}",
   "version": "${version}",
   "name": "${mod_name}",
-  "description": "${mod_description}",
+  "description": "${mod_description}\n\nIncludes libraries: SnakeYAML (Apache 2.0), NightConfig (LGPL 3.0), Jankson (MIT), Configurate (Apache 2.0), Geantyref (Apache 2.0) and TypeSafe Config (Apache 2.0).",
   "authors": [
     "${mod_author}"
   ],

@@ -22,12 +22,20 @@ configurations {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     implementation project(path: ":fabric", configuration: "namedElements")
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 
     modImplementation "com.daqem.uilib:uilib-fabric:${project.ui_library_version}"
+
+    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
+    modImplementation "com.electronwill.night-config:toml:3.6.6"
+    modImplementation "com.electronwill.night-config:core:3.6.6"
+    modImplementation "blue.endless:jankson:1.2.3"
+    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
 }

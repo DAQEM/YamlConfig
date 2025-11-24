@@ -4,7 +4,11 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -31,17 +35,23 @@ public class LongConfigEntry extends BaseNumericConfigEntry<Long> implements ILo
     public static class Serializer implements IConfigEntrySerializer<ILongConfigEntry, Long> {
 
         @Override
-        public void encodeNode(ILongConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.INT)) {
-                configEntry.set(Long.parseLong(scalarNode.getValue()));
-            }
+        public void toNode(ILongConfigEntry configEntry, IMapNode parentMap) {
+            ConfigValueNode<Long> node = new ConfigValueNode<>(configEntry.get());
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(ILongConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.INT, Long.toString(configEntry.get()), ScalarStyle.PLAIN);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(ILongConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode) {
+                Object val = valueNode.getValue();
+                if (val instanceof Number number) {
+                    configEntry.set(number.longValue());
+                } else if (val instanceof String) {
+                    try { configEntry.set(Long.parseLong((String) val)); } catch (NumberFormatException ignored) {}
+                }
+            }
         }
 
         @Override

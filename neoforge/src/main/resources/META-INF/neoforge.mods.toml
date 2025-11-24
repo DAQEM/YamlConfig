@@ -9,8 +9,12 @@ version = "${version}"
 license = "${mod_license}"
 displayName = "${mod_name}"
 authors = "${mod_author}"
-credits = "${mod_author}"
-description = "${mod_description}"
+credits = "SnakeYAML, NightConfig, Jankson, Configurate, Geantyref, TypeSafe Config"
+description = """
+${mod_description}
+
+Includes libraries: SnakeYAML (Apache 2.0), NightConfig (LGPL 3.0), Jankson (MIT), Configurate (Apache 2.0), Geantyref (Apache 2.0) and TypeSafe Config (Apache 2.0).
+"""
 
 [[dependencies."${mod_id}"]]
 modId = "neoforge"

@@ -4,13 +4,20 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IFloatListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IListNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigListNode;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> implements IFloatListConfigEntry {
@@ -36,22 +43,27 @@ public class FloatListConfigEntry extends BaseNumericListConfigEntry<Float> impl
     public static class Serializer implements IConfigEntrySerializer<IFloatListConfigEntry, List<Float>> {
 
         @Override
-        public void encodeNode(IFloatListConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof SequenceNode sequenceNode) {
-                configEntry.set(sequenceNode.getValue().stream()
-                        .filter(n -> n instanceof ScalarNode scalarNode && (scalarNode.getTag().equals(Tag.FLOAT) || scalarNode.getTag().equals(Tag.INT)))
-                        .map(n -> Float.parseFloat(((ScalarNode) n).getValue()))
-                        .toList());
+        public void toNode(IFloatListConfigEntry configEntry, IMapNode parentMap) {
+            ConfigListNode listNode = new ConfigListNode();
+            for (Float f : configEntry.get()) {
+                listNode.add(new ConfigValueNode<>(f));
             }
+            listNode.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), listNode);
         }
 
         @Override
-        public NodeTuple decodeNode(IFloatListConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            SequenceNode valueNode = new SequenceNode(Tag.SEQ, configEntry.get().stream()
-                    .map(s -> (Node) new ScalarNode(Tag.FLOAT, Float.toString(s), ScalarStyle.PLAIN))
-                    .toList(), FlowStyle.BLOCK);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IFloatListConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IListNode listNode) {
+                List<Float> list = new ArrayList<>();
+                for (IConfigNode child : listNode.getValue()) {
+                    if (child instanceof IValueNode<?> valueNode && valueNode.getValue() instanceof Number number) {
+                        list.add(number.floatValue());
+                    }
+                }
+                configEntry.set(list);
+            }
         }
 
         @Override

@@ -3,10 +3,18 @@ loom {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     implementation project(path: ":common", configuration: "namedElements")
 
     modImplementation "com.daqem.uilib:uilib-common:${project.ui_library_version}"
+
+    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
+    modImplementation "com.electronwill.night-config:toml:3.6.6"
+    modImplementation "com.electronwill.night-config:core:3.6.6"
+    modImplementation "blue.endless:jankson:1.2.3"
+    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
 }
 
 architectury {

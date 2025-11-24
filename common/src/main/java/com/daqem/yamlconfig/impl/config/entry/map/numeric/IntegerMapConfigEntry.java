@@ -4,7 +4,12 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigMapNode;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.FlowStyle;
@@ -14,6 +19,7 @@ import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
 import org.snakeyaml.engine.v2.nodes.Tag;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,30 +46,27 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
     public static class Serializer implements IConfigEntrySerializer<IIntegerMapConfigEntry, Map<String, Integer>> {
 
         @Override
-        public void encodeNode(IIntegerMapConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof MappingNode mappingNode) {
-                configEntry.set(mappingNode.getValue().stream()
-                        .filter(n ->
-                                n.getKeyNode() instanceof ScalarNode keyNode
-                                        && n.getValueNode() instanceof ScalarNode valueNode
-                                        && keyNode.getTag().equals(Tag.STR)
-                                        && valueNode.getTag().equals(Tag.INT))
-                        .collect(Collectors.toMap(
-                                n -> ((ScalarNode) n.getKeyNode()).getValue(),
-                                n -> Integer.parseInt(((ScalarNode) n.getValueNode()).getValue()))));
+        public void toNode(IIntegerMapConfigEntry configEntry, IMapNode parentMap) {
+            ConfigMapNode mapNode = new ConfigMapNode();
+            for (Map.Entry<String, Integer> entry : configEntry.get().entrySet()) {
+                mapNode.put(entry.getKey(), new ConfigValueNode<>(entry.getValue()));
             }
+            mapNode.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), mapNode);
         }
 
         @Override
-        public NodeTuple decodeNode(IIntegerMapConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            MappingNode valueNode = new MappingNode(Tag.MAP, configEntry.get().entrySet().stream()
-                    .map(e -> {
-                        ScalarNode key = new ScalarNode(Tag.STR, e.getKey(), ScalarStyle.PLAIN);
-                        ScalarNode value = new ScalarNode(Tag.INT, Integer.toString(e.getValue()), ScalarStyle.PLAIN);
-                        return new NodeTuple(key, value);
-                    }).toList(), FlowStyle.BLOCK);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IIntegerMapConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IMapNode mapNode) {
+                Map<String, Integer> map = new LinkedHashMap<>();
+                for (Map.Entry<String, IConfigNode> entry : mapNode.entrySet()) {
+                    if (entry.getValue() instanceof IValueNode<?> valueNode && valueNode.getValue() instanceof Number number) {
+                        map.put(entry.getKey(), number.intValue());
+                    }
+                }
+                configEntry.set(map);
+            }
         }
 
         @Override

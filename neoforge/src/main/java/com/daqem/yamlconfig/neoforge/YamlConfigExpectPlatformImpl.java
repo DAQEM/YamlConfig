@@ -24,7 +24,13 @@ public class YamlConfigExpectPlatformImpl {
     }
 
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
-        PacketDistributor.sendToPlayer(player, payload);
+        try {
+            PacketDistributor.sendToPlayer(player, payload);
+        } catch (UnsupportedOperationException e) {
+            // This exception is thrown by NeoForge if the client does not have the
+            // channel registered (i.e., they don't have the mod installed).
+            // Since our networking is optional, we catch this and ignore it.
+        }
     }
 
     public static void registerKeyBinding(KeyMapping mapping) {

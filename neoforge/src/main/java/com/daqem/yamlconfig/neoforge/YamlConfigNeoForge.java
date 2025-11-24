@@ -31,7 +31,7 @@ public class YamlConfigNeoForge {
     }
 
     private void registerNetworking(RegisterPayloadHandlersEvent event) {
-        final PayloadRegistrar registrar = event.registrar("1");
+        final PayloadRegistrar registrar = event.registrar("1").optional();
 
         // C2S
         registrar.playToServer(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC, (payload, context) ->

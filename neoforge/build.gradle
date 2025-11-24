@@ -31,13 +31,34 @@ configurations {
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
+    neoForge "net.neoforged:neoforge:${project.neoforge_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 
+    modImplementation "com.daqem.uilib:uilib-neoforge:${project.ui_library_version}"
+
+    // SnakeYAML
+    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
     shadowBundle "org.snakeyaml:snakeyaml-engine:2.7"
-    modImplementation "com.daqem.uilib:uilib-neoforge:${rootProject.ui_library_version}"
+
+    // NightConfig (TOML)
+    modImplementation "com.electronwill.night-config:toml:3.6.6"
+    shadowBundle "com.electronwill.night-config:toml:3.6.6"
+    modImplementation "com.electronwill.night-config:core:3.6.6"
+    shadowBundle "com.electronwill.night-config:core:3.6.6"
+
+    // Jankson (JSON5)
+    modImplementation "blue.endless:jankson:1.2.3"
+    shadowBundle "blue.endless:jankson:1.2.3"
+
+    // Configurate (HOCON)
+    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
+    shadowBundle("org.spongepowered:configurate-hocon:4.1.2") {
+        exclude group: 'org.checkerframework'
+    }
 }
 
 processResources {
@@ -64,7 +85,19 @@ processResources {
 shadowJar {
     exclude "architectury.common.json"
 
-    relocate "org.snakeyaml", "com.daqem.snakeyaml"
+    // YAML
+    relocate "org.snakeyaml", "com.daqem.yamlconfig.libs.snakeyaml"
+
+    // TOML
+    relocate "com.electronwill.nightconfig", "com.daqem.yamlconfig.libs.nightconfig"
+
+    // JSON5
+    relocate "blue.endless.jankson", "com.daqem.yamlconfig.libs.jankson"
+
+    // HOCON (Configurate)
+    relocate "org.spongepowered.configurate", "com.daqem.yamlconfig.libs.configurate"
+    relocate "com.typesafe.config", "com.daqem.yamlconfig.libs.typesafe.config"
+    relocate "io.leangen.geantyref", "com.daqem.yamlconfig.libs.geantyref"
     configurations = [project.configurations.shadowBundle]
     archiveClassifier = "neoforge-dev-shadow"
 }

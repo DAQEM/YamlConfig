@@ -6,14 +6,14 @@ import com.daqem.yamlconfig.api.config.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.List;
 
@@ -116,17 +116,18 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
     public static class Serializer implements IConfigEntrySerializer<IStringConfigEntry, String> {
 
         @Override
-        public void encodeNode(IStringConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.set(scalarNode.getValue());
-            }
+        public void toNode(IStringConfigEntry configEntry, IMapNode parentMap) {
+            ConfigValueNode<String> node = new ConfigValueNode<>(configEntry.get());
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(IStringConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.STR, configEntry.get(), ScalarStyle.SINGLE_QUOTED);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IStringConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                configEntry.set(valueNode.getValue().toString());
+            }
         }
 
         @Override

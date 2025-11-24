@@ -6,7 +6,11 @@ import com.daqem.yamlconfig.api.config.entry.IDateTimeConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -77,17 +81,20 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
     public static class Serializer implements IConfigEntrySerializer<IDateTimeConfigEntry, LocalDateTime> {
 
         @Override
-        public void encodeNode(IDateTimeConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.set(LocalDateTime.parse(scalarNode.getValue(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
-            }
+        public void toNode(IDateTimeConfigEntry configEntry, IMapNode parentMap) {
+            ConfigValueNode<String> node = new ConfigValueNode<>(configEntry.get().format(IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(IDateTimeConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.STR, configEntry.get().format(IDateTimeConfigEntry.DATE_TIME_FORMATTER), ScalarStyle.SINGLE_QUOTED);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IDateTimeConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                try {
+                    configEntry.set(LocalDateTime.parse(valueNode.getValue().toString(), IDateTimeConfigEntry.DATE_TIME_FORMATTER));
+                } catch (Exception ignored) {}
+            }
         }
 
         @Override

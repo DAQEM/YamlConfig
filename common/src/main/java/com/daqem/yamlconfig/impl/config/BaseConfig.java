@@ -8,24 +8,17 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
+import com.daqem.yamlconfig.api.format.IConfigFormat;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
-import com.daqem.yamlconfig.yaml.YamlFileWriter;
+import com.daqem.yamlconfig.impl.node.ConfigMapNode;
 import com.mojang.datafixers.util.Function5;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import org.snakeyaml.engine.v2.api.Dump;
-import org.snakeyaml.engine.v2.api.DumpSettings;
-import org.snakeyaml.engine.v2.api.LoadSettings;
-import org.snakeyaml.engine.v2.api.lowlevel.Compose;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -52,58 +45,115 @@ public abstract class BaseConfig implements IConfig {
 
     @Override
     public void load() {
-        LoadSettings settings = LoadSettings.builder()
-                .setParseComments(true)
-                .build();
+        IConfigFormat format = extension.createFormat();
+        File file = new File(path.toFile(), name + extension.getExtension());
 
-        try (FileInputStream inputStream = new FileInputStream(new File(path.toFile(), name + extension.getExtension()))) {
-            Compose compose = new Compose(settings);
-            Node node = compose.composeInputStream(inputStream).orElseThrow(FileNotFoundException::new);
-            if (node instanceof MappingNode mappingNode) {
-                ScalarNode keyNode = new ScalarNode(Tag.STR, "parent", ScalarStyle.PLAIN);
-                NodeTuple nodeTuple = new NodeTuple(keyNode, mappingNode);
-                context.getType().getSerializer().encodeNode(context, nodeTuple);
-            }
+        if (!file.exists()) {
+            YamlConfig.LOGGER.info("Config file not found, creating default: {}{}", name, extension.getExtension());
+            save(); // Save defaults to create the file
+            return;
+        }
+
+        try (FileReader reader = new FileReader(file)) {
+            // 1. Read file into generic Node structure
+            IMapNode rootNode = format.read(reader);
+
+            // 2. Populate Config Entries from the Node structure
+            deserializeFromNode(rootNode, context);
+
             setSynced(false);
             YamlConfig.LOGGER.info("Loaded config file: {}{}", name, extension.getExtension());
-        } catch (IOException e) {
-            if (e instanceof FileNotFoundException) {
-                YamlConfig.LOGGER.info("Creating config file: {}{}", name, extension.getExtension());
+        } catch (Exception e) {
+            YamlConfig.LOGGER.error("Failed to load config file: {}{}", name, extension.getExtension(), e);
+        }
+    }
+
+    private void deserializeFromNode(IMapNode parent, IStackConfigEntry stack) {
+        for (Map.Entry<String, IConfigEntry<?>> entrySet : stack.getEntries().entrySet()) {
+            String key = entrySet.getKey();
+            IConfigEntry<?> entry = entrySet.getValue();
+
+            // If key is missing in file, we skip (keeping default value)
+            if (!parent.containsKey(key)) continue;
+
+            if (entry instanceof IStackConfigEntry childStack) {
+                IConfigNode node = parent.get(key);
+                if (node instanceof IMapNode mapNode) {
+                    deserializeFromNode(mapNode, childStack);
+                }
             } else {
-                YamlConfig.LOGGER.error("Failed to load config file: {}{}", name, extension.getExtension(), e);
+                deserializeEntry(entry, parent);
             }
         }
     }
 
+    private <T> void deserializeEntry(IConfigEntry<T> entry, IMapNode parent) {
+        entry.getType().getSerializer().fromNode(entry, parent);
+    }
+
     @Override
     public void save() {
-        DumpSettings settings = DumpSettings.builder()
-                .setDefaultFlowStyle(FlowStyle.BLOCK)
-                .setDumpComments(true)
-                .build();
+        IConfigFormat format = extension.createFormat();
+        File file = new File(path.toFile(), name + extension.getExtension());
 
-        try {
-            Dump dumper = new Dump(settings);
-            YamlFileWriter streamDataWriter = new YamlFileWriter(this);
-            Node node = context.getType().getSerializer().decodeNode(context).getValueNode();
-            dumper.dumpNode(node, streamDataWriter);
+        // Ensure directory exists
+        if (file.getParentFile() != null) {
+            if (!file.getParentFile().mkdirs() && !file.getParentFile().exists()) {
+                YamlConfig.LOGGER.error("Failed to create config directory: {}", file.getParentFile().getAbsolutePath());
+                return;
+            }
+        }
+
+        try (FileWriter writer = new FileWriter(file)) {
+            // 1. Convert Config Entries into generic Node structure
+            ConfigMapNode rootNode = new ConfigMapNode();
+            serializeToNode(rootNode, context);
+
+            // 2. Write Node structure to file
+            format.write(writer, rootNode);
             YamlConfig.LOGGER.info("Saved config file: {}{}", name, extension.getExtension());
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             YamlConfig.LOGGER.error("Failed to save config file: {}{}", name, extension.getExtension(), e);
         }
+    }
+
+    private void serializeToNode(IMapNode parent, IStackConfigEntry stack) {
+        for (IConfigEntry<?> entry : stack.getEntries().values()) {
+            if (entry instanceof IStackConfigEntry childStack) {
+                ConfigMapNode childNode = new ConfigMapNode();
+                // Transfer comments from the stack entry to the map node
+                childNode.setComments(childStack.getComments().getComments());
+                serializeToNode(childNode, childStack);
+                parent.put(childStack.getKey(), childNode);
+            } else {
+                // Use helper to handle wildcard capture
+                serializeEntry(entry, parent);
+            }
+        }
+    }
+
+    private <T> void serializeEntry(IConfigEntry<T> entry, IMapNode parent) {
+        entry.getType().getSerializer().toNode(entry, parent);
     }
 
     @Override
     public void sync(Map<String, ?> data) {
         if (data == null) return;
         for (Map.Entry<String, IConfigEntry<?>> entry : this.getSyncEntries().entrySet()) {
-            IConfigEntry<?> configEntry = entry.getValue();
             if (data.containsKey(entry.getKey())) {
-                //noinspection unchecked
-                ((IConfigEntry<Object>) configEntry).set(data.get(entry.getKey()));
+                setEntryValue(entry.getValue(), data.get(entry.getKey()));
             }
         }
         setSynced(true);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void setEntryValue(IConfigEntry<T> entry, Object value) {
+        try {
+            entry.set((T) value);
+        } catch (ClassCastException e) {
+            YamlConfig.LOGGER.error("Failed to sync config entry: {}", entry.getKey(), e);
+        }
     }
 
     @Override

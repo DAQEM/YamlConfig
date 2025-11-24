@@ -6,8 +6,12 @@ import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEn
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -64,17 +68,21 @@ public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocatio
     public static class Serializer implements IConfigEntrySerializer<IResourceLocationConfigEntry, ResourceLocation> {
 
         @Override
-        public void encodeNode(IResourceLocationConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.set(ResourceLocation.tryParse(scalarNode.getValue()));
-            }
+        public void toNode(IResourceLocationConfigEntry configEntry, IMapNode parentMap) {
+            ConfigValueNode<String> node = new ConfigValueNode<>(configEntry.get().toString());
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(IResourceLocationConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.STR, configEntry.get().toString(), ScalarStyle.SINGLE_QUOTED);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IResourceLocationConfigEntry configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                ResourceLocation rl = ResourceLocation.tryParse(valueNode.getValue().toString());
+                if (rl != null) {
+                    configEntry.set(rl);
+                }
+            }
         }
 
         @Override

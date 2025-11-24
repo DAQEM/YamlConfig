@@ -4,6 +4,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
+import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import net.minecraft.core.Holder;
@@ -36,30 +37,13 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
     public static class Serializer implements IConfigEntrySerializer<IStackConfigEntry, LinkedHashMap<String, IConfigEntry<?>>> {
 
         @Override
-        public void encodeNode(IStackConfigEntry configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof MappingNode mappingNode && configEntry.get() != null) {
-                for (Map.Entry<String, IConfigEntry<?>> entry : configEntry.get().entrySet()) {
-                    //noinspection unchecked
-                    mappingNode.getValue().stream()
-                            .filter(nodeTuple1 -> nodeTuple1.getKeyNode() instanceof ScalarNode keyNode
-                                    && keyNode.getValue().equals(entry.getKey()))
-                            .findFirst()
-                            .ifPresent(valueNode -> ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
-                                    .encodeNode((IConfigEntry<Object>) entry.getValue(), valueNode));
-                }
-            }
+        public void toNode(IStackConfigEntry configEntry, IMapNode parentMap) {
+            // Handled recursively by BaseConfig
         }
 
         @Override
-        public NodeTuple decodeNode(IStackConfigEntry configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            //noinspection unchecked
-            MappingNode mappingNode = new MappingNode(Tag.MAP, configEntry.get()
-                    .values().stream().map(configEntry1 ->
-                            ((IConfigEntry<Object>) configEntry1).getType().getSerializer()
-                                    .decodeNode((IConfigEntry<Object>) configEntry1)
-                    ).toList(), FlowStyle.BLOCK);
-            return new NodeTuple(keyNode, mappingNode);
+        public void fromNode(IStackConfigEntry configEntry, IMapNode parentMap) {
+            // Handled recursively by BaseConfig
         }
 
         @Override

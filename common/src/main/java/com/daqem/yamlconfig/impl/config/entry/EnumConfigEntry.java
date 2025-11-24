@@ -6,7 +6,11 @@ import com.daqem.yamlconfig.api.config.entry.IEnumConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
+import com.daqem.yamlconfig.api.node.IConfigNode;
+import com.daqem.yamlconfig.api.node.IMapNode;
+import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
@@ -58,17 +62,22 @@ public class EnumConfigEntry<E extends Enum<E>> extends BaseConfigEntry<E> imple
     public static class Serializer<E extends Enum<E>> implements IConfigEntrySerializer<IEnumConfigEntry<E>, E> {
 
         @Override
-        public void encodeNode(IEnumConfigEntry<E> configEntry, NodeTuple nodeTuple) {
-            if (nodeTuple.getValueNode() instanceof ScalarNode scalarNode && scalarNode.getTag().equals(Tag.STR)) {
-                configEntry.set(Enum.valueOf(configEntry.getEnumClass(), scalarNode.getValue()));
-            }
+        public void toNode(IEnumConfigEntry<E> configEntry, IMapNode parentMap) {
+            ConfigValueNode<String> node = new ConfigValueNode<>(configEntry.get().name());
+            node.setComments(configEntry.getComments().getComments());
+            parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public NodeTuple decodeNode(IEnumConfigEntry<E> configEntry) {
-            ScalarNode keyNode = configEntry.createKeyNode();
-            ScalarNode valueNode = new ScalarNode(Tag.STR, configEntry.get().toString(), ScalarStyle.SINGLE_QUOTED);
-            return new NodeTuple(keyNode, valueNode);
+        public void fromNode(IEnumConfigEntry<E> configEntry, IMapNode parentMap) {
+            IConfigNode node = parentMap.get(configEntry.getKey());
+            if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
+                try {
+                    configEntry.set(Enum.valueOf(configEntry.getEnumClass(), valueNode.getValue().toString()));
+                } catch (IllegalArgumentException e) {
+                    // Keep default if invalid enum
+                }
+            }
         }
 
         @Override

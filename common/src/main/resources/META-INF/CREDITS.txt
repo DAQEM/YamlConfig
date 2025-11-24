@@ -1,0 +1,45 @@
+YAML Config
+Copyright (c) 2025 DAQEM
+Licensed under Apache License 2.0
+
+-----------------------------------------------------------------------
+THIRD-PARTY LIBRARIES
+-----------------------------------------------------------------------
+This mod bundles the following open-source libraries.
+The source code for these libraries has been relocated to prevent conflicts.
+
+1. SnakeYAML Engine
+   Author:  Andrey Somov
+   License: Apache License 2.0
+   Source:  https://bitbucket.org/snakeyaml/snakeyaml-engine
+   File:    META-INF/licenses/yamlconfig/LICENSE_SnakeYAML.txt
+
+2. NightConfig
+   Author:  TheElectronWill
+   License: LGPL-3.0
+   Source:  https://github.com/TheElectronWill/Night-Config
+   File:    META-INF/licenses/yamlconfig/LICENSE_NightConfig.txt
+
+3. Jankson
+   Author:  falkreon (Blue Endless)
+   License: MIT License
+   Source:  https://github.com/falkreon/Jankson
+   File:    META-INF/licenses/yamlconfig/LICENSE_Jankson.txt
+
+4. Configurate (HOCON)
+   Author:  SpongePowered Team
+   License: Apache License 2.0
+   Source:  https://github.com/SpongePowered/Configurate
+   File:    META-INF/licenses/yamlconfig/LICENSE_Configurate.txt
+
+5. TypeSafe Config (Transitive dependency of Configurate)
+   Author:  Lightbend Inc.
+   License: Apache License 2.0
+   Source:  https://github.com/lightbend/config
+   File:    META-INF/licenses/yamlconfig/LICENSE_TypeSafeConfig.txt
+
+6. GeantYRef (Transitive dependency of Configurate)
+   Author:  leangen
+   License: MIT License
+   Source:  https://github.com/leangen/geantyref
+    File:    META-INF/licenses/yamlconfig/LICENSE_GeantYRef.txt
