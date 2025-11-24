@@ -1,46 +1,28 @@
 package com.daqem.yamlconfig.client.gui;
 
+import com.daqem.uilib.gui.component.AbstractComponent;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.BooleanConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.DateTimeConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.EnumConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.StringConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.StringListConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.DoubleListConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.FloatListConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.IntegerListConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.StringMapConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.DoubleMapConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.FloatMapConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.IntegerMapConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.minecraft.RegistryConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.minecraft.ResourceLocationConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.numeric.DoubleConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.numeric.FloatConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.numeric.IntegerConfigEntryComponent;
-import com.daqem.yamlconfig.client.gui.component.entry.numeric.LongConfigEntryComponent;
+import com.daqem.yamlconfig.client.gui.component.entry.*;
+import com.daqem.yamlconfig.client.gui.component.entry.list.*;
+import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.*;
+import com.daqem.yamlconfig.client.gui.component.entry.map.*;
+import com.daqem.yamlconfig.client.gui.component.entry.map.numeric.*;
+import com.daqem.yamlconfig.client.gui.component.entry.minecraft.*;
+import com.daqem.yamlconfig.client.gui.component.entry.numeric.*;
 import com.daqem.yamlconfig.impl.config.entry.*;
-import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.list.numeric.DoubleListConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.list.numeric.FloatListConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.list.numeric.IntegerListConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.map.StringMapConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.map.numeric.DoubleMapConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.map.numeric.IntegerMapConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.list.*;
+import com.daqem.yamlconfig.impl.config.entry.list.numeric.*;
+import com.daqem.yamlconfig.impl.config.entry.map.*;
+import com.daqem.yamlconfig.impl.config.entry.map.numeric.*;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.*;
+import com.daqem.yamlconfig.impl.config.entry.numeric.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigEntryComponentBuilder {
 
@@ -51,139 +33,52 @@ public class ConfigEntryComponentBuilder {
     }
 
     public ConfigCategoryComponent build() {
-        List<IConfigEntryComponent<?>> components = createComponents("");
-        List<ConfigCategoryComponent> categoryComponents = createCategories();
-
-        return new ConfigCategoryComponent(null, null, components, categoryComponents);
+        return buildCategory(null, "", config.getContext());
     }
 
-    private List<String> getCategories() {
-        List<String> keys = new ArrayList<>(config.getEntries().keySet());
+    private ConfigCategoryComponent buildCategory(String key, String prefix, IStackConfigEntry stackEntry) {
+        List<AbstractComponent> children = new ArrayList<>();
 
-        Set<String> categoriesSet = keys.stream()
-                .filter(s -> s.contains(".") && s.lastIndexOf('.') != 0)
-                .map(s -> s.substring(0, s.lastIndexOf('.')))
-                .collect(Collectors.toSet());
+        // stackEntry.get() returns a LinkedHashMap, guaranteeing insertion order
+        for (Map.Entry<String, IConfigEntry<?>> entry : stackEntry.get().entrySet()) {
+            String entryKey = entry.getKey();
+            IConfigEntry<?> configEntry = entry.getValue();
+            String fullPath = prefix.isEmpty() ? entryKey : prefix + entryKey;
 
-        for (String category : new ArrayList<>(categoriesSet)) {
-            String[] parts = category.split("\\.");
-            StringBuilder subCategory = new StringBuilder(parts[0]);
-
-            categoriesSet.add(parts[0]);
-
-            for (int i = 1; i < parts.length; i++) {
-                subCategory.append(".").append(parts[i]);
-                categoriesSet.add(subCategory.toString());
+            if (configEntry instanceof IStackConfigEntry subStack) {
+                children.add(buildCategory(entryKey, fullPath + ".", subStack));
+            } else {
+                children.add(createEntryComponent(fullPath, configEntry));
             }
         }
 
-        return new ArrayList<>(categoriesSet);
+        String labelKey = key == null ? null : (config.getModId() + "." + config.getName() + "." + prefix.substring(0, prefix.length() - 1));
+        return new ConfigCategoryComponent(stackEntry, labelKey, children);
     }
 
-    private List<IConfigEntryComponent<?>> createComponents(String category) {
-        return config.getEntries().entrySet().stream()
-                .filter(entry -> {
-                    String key = entry.getKey();
-                    if (category.isEmpty()) {
-                        return !key.contains(".");
-                    }
-                    return key.startsWith(category) && key.lastIndexOf('.') == category.length();
-                })
-                .map(Map.Entry::getValue)
-                .map(entry -> {
-                    String key = getPrefix(category) + entry.getKey();
-                    return switch (entry) {
-                        case BooleanConfigEntry booleanConfigEntry -> new BooleanConfigEntryComponent(key, booleanConfigEntry);
-                        case DateTimeConfigEntry dateTimeConfigEntry -> new DateTimeConfigEntryComponent(key, dateTimeConfigEntry);
-                        case EnumConfigEntry<?> enumConfigEntry -> new EnumConfigEntryComponent<>(key, enumConfigEntry);
-                        case StringConfigEntry stringConfigEntry -> new StringConfigEntryComponent(key, stringConfigEntry);
-                        case StringListConfigEntry stringListConfigEntry -> new StringListConfigEntryComponent(key, stringListConfigEntry);
-                        case DoubleListConfigEntry doubleListConfigEntry -> new DoubleListConfigEntryComponent(key, doubleListConfigEntry);
-                        case FloatListConfigEntry floatListConfigEntry -> new FloatListConfigEntryComponent(key, floatListConfigEntry);
-                        case IntegerListConfigEntry integerListConfigEntry -> new IntegerListConfigEntryComponent(key, integerListConfigEntry);
-                        case StringMapConfigEntry stringMapConfigEntry -> new StringMapConfigEntryComponent(key, stringMapConfigEntry);
-                        case DoubleMapConfigEntry doubleMapConfigEntry -> new DoubleMapConfigEntryComponent(key, doubleMapConfigEntry);
-                        case FloatMapConfigEntry floatMapConfigEntry -> new FloatMapConfigEntryComponent(key, floatMapConfigEntry);
-                        case IntegerMapConfigEntry integerMapConfigEntry -> new IntegerMapConfigEntryComponent(key, integerMapConfigEntry);
-                        case RegistryConfigEntry<?> registryConfigEntry -> new RegistryConfigEntryComponent<>(key, registryConfigEntry);
-                        case ResourceLocationConfigEntry resourceLocationConfigEntry -> new ResourceLocationConfigEntryComponent(key, resourceLocationConfigEntry);
-                        case DoubleConfigEntry doubleConfigEntry -> new DoubleConfigEntryComponent(key, doubleConfigEntry);
-                        case FloatConfigEntry floatConfigEntry -> new FloatConfigEntryComponent(key, floatConfigEntry);
-                        case IntegerConfigEntry integerConfigEntry -> new IntegerConfigEntryComponent(key, integerConfigEntry);
-                        case LongConfigEntry longConfigEntry -> new LongConfigEntryComponent(key, longConfigEntry);
-                        default -> throw new UnsupportedOperationException("This entry does not support components");
-                    };
-                })
-                .collect(Collectors.toList());
-    }
+    private AbstractComponent createEntryComponent(String key, IConfigEntry<?> entry) {
+        String translationKey = config.getModId() + "." + config.getName() + "." + key;
 
-    private String getPrefix(String category) {
-        if (category.isEmpty()) {
-            return getConfigPrefix();
-        }
-        return getConfigPrefix() + category + ".";
-    }
-
-    private String getConfigPrefix() {
-        return this.config.getModId() + "." + this.config.getName() + ".";
-    }
-
-    private List<ConfigCategoryComponent> createCategories() {
-        Map<String, ConfigCategoryComponent> categoryComponents = new HashMap<>();
-
-        for (String category : getCategories()) {
-            List<IConfigEntryComponent<?>> components = createComponents(category);
-            IStackConfigEntry configEntry = getConfigEntry(category, config.getContext().get());
-            categoryComponents.put(category, new ConfigCategoryComponent(configEntry, getConfigPrefix() + category, components));
-        }
-
-        appendSubCategories(categoryComponents);
-
-        return categoryComponents.entrySet().stream()
-                .filter(entry -> !entry.getKey().contains(".")) // Only return top level categories
-                .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
-
-    private void appendSubCategories(Map<String, ConfigCategoryComponent> categoryComponents) {
-        for (Map.Entry<String, ConfigCategoryComponent> entry : categoryComponents.entrySet()) {
-            String category = entry.getKey();
-            ConfigCategoryComponent component = entry.getValue();
-
-            if (category.contains(".")) {
-                String parentCategory = category.substring(0, category.lastIndexOf('.'));
-                ConfigCategoryComponent parentComponent = categoryComponents.get(parentCategory);
-
-                if (parentComponent != null) {
-                    parentComponent.addSubCategory(component);
-                }
-            }
-        }
-    }
-
-    public IStackConfigEntry getConfigEntry(String path, Map<String, IConfigEntry<?>> entries) {
-        if (path == null || path.isEmpty() || entries == null) {
-            return null;
-        }
-
-        String[] keys = path.split("\\.");
-        return getConfigEntryRecursive(keys, 0, entries);
-    }
-
-    private IStackConfigEntry getConfigEntryRecursive(String[] keys, int index, Map<String, IConfigEntry<?>> entries) {
-        IConfigEntry<?> currentEntry = entries.get(keys[index]);
-
-        if (currentEntry instanceof IStackConfigEntry stackConfigEntry) {
-            if (index == keys.length - 1) {
-                return stackConfigEntry;
-            }
-
-            Map<String, IConfigEntry<?>> nextEntries = stackConfigEntry.get();
-            if (nextEntries != null) {
-                return getConfigEntryRecursive(keys, index + 1, nextEntries);
-            }
-        }
-
-        return null;
+        return switch (entry) {
+            case BooleanConfigEntry e -> new BooleanConfigEntryComponent(translationKey, e);
+            case DateTimeConfigEntry e -> new DateTimeConfigEntryComponent(translationKey, e);
+            case EnumConfigEntry<?> e -> new EnumConfigEntryComponent<>(translationKey, e);
+            case StringConfigEntry e -> new StringConfigEntryComponent(translationKey, e);
+            case StringListConfigEntry e -> new StringListConfigEntryComponent(translationKey, e);
+            case DoubleListConfigEntry e -> new DoubleListConfigEntryComponent(translationKey, e);
+            case FloatListConfigEntry e -> new FloatListConfigEntryComponent(translationKey, e);
+            case IntegerListConfigEntry e -> new IntegerListConfigEntryComponent(translationKey, e);
+            case StringMapConfigEntry e -> new StringMapConfigEntryComponent(translationKey, e);
+            case DoubleMapConfigEntry e -> new DoubleMapConfigEntryComponent(translationKey, e);
+            case FloatMapConfigEntry e -> new FloatMapConfigEntryComponent(translationKey, e);
+            case IntegerMapConfigEntry e -> new IntegerMapConfigEntryComponent(translationKey, e);
+            case RegistryConfigEntry<?> e -> new RegistryConfigEntryComponent<>(translationKey, e);
+            case ResourceLocationConfigEntry e -> new ResourceLocationConfigEntryComponent(translationKey, e);
+            case DoubleConfigEntry e -> new DoubleConfigEntryComponent(translationKey, e);
+            case FloatConfigEntry e -> new FloatConfigEntryComponent(translationKey, e);
+            case IntegerConfigEntry e -> new IntegerConfigEntryComponent(translationKey, e);
+            case LongConfigEntry e -> new LongConfigEntryComponent(translationKey, e);
+            default -> throw new UnsupportedOperationException("This entry does not support components: " + entry.getClass().getName());
+        };
     }
 }
