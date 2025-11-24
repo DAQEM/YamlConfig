@@ -7,6 +7,7 @@ import com.daqem.uilib.gui.component.text.TextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.uilib.gui.widget.ScrollContainerWidget;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
@@ -17,7 +18,6 @@ import com.daqem.yamlconfig.client.gui.component.MarginComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
-import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -57,9 +57,9 @@ public class ConfigScreen extends AbstractScreen {
             configEntryComponents.forEach(IConfigEntryComponent::applyValue);
             if (this.config.getType() == ConfigType.CLIENT) {
                 this.config.save();
-                ConfigEvent.ON_UPDATE.invoker().update(this.config, Minecraft.getInstance().level);
+                ConfigEvent.fireUpdate(this.config, Minecraft.getInstance().level);
             } else {
-                NetworkManager.sendToServer(new ServerboundSaveConfigPacket(this.config));
+                YamlConfigExpectPlatform.sendToServer(new ServerboundSaveConfigPacket(this.config));
             }
 
             this.onClose();

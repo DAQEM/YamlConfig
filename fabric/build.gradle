@@ -24,8 +24,6 @@ configurations {
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
     modApi "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    // Remove the next line if you don't want to depend on the API
-    modApi "dev.architectury:architectury-fabric:${project.architectury_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -46,7 +44,6 @@ processResources {
             "mod_repository": project.mod_repository,
 
             "minecraft_version": project.minecraft_version,
-            "architectury_version": project.architectury_version,
             "ui_library_version": project.ui_library_version
     ]
     inputs.properties replaceProperties

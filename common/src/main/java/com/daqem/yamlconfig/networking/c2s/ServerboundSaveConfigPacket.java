@@ -1,14 +1,13 @@
 package com.daqem.yamlconfig.networking.c2s;
 
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
 import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
-import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
-import dev.architectury.networking.NetworkManager;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -43,18 +42,17 @@ public class ServerboundSaveConfigPacket implements CustomPacketPayload {
         return YamlConfigNetworking.SERVERBOUND_SAVE_CONFIG_PACKET;
     }
 
-    public void handleServerSide(NetworkManager.PacketContext packetContext) {
-        if (packetContext.getPlayer().hasPermissions(2)) {
+    public void handleServerSide(ServerPlayer serverPlayer) {
+        if (serverPlayer.hasPermissions(2)) {
             IConfig existingConfig = YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName());
             existingConfig.updateEntries(config.getEntries());
             existingConfig.save();
-            ConfigEvent.ON_UPDATE.invoker().update(this.config, packetContext.getPlayer().level());
+            ConfigEvent.fireUpdate(this.config, serverPlayer.level());
 
             if (existingConfig.getType() == ConfigType.COMMON) {
                 //Sync the config to the players on the server
-                Objects.requireNonNull(packetContext.getPlayer().level().getServer()).getPlayerList().getPlayers().forEach(player -> {
-                    NetworkManager.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig));
-                });
+                Objects.requireNonNull(serverPlayer.level().getServer()).getPlayerList().getPlayers().forEach(player ->
+                        YamlConfigExpectPlatform.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig)));
             }
         }
     }

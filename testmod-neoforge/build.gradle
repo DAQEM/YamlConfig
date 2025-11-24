@@ -16,7 +16,7 @@ loom {
 architectury {
     platformSetupLoomIde()
     neoForge {
-        platformPackage = "forge"
+        platformPackage = "neoforge"
     }
 }
 
@@ -36,6 +36,4 @@ dependencies {
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 
     modImplementation "com.daqem.uilib:uilib-neoforge:${project.ui_library_version}"
-
-    modRuntimeOnly "dev.architectury:architectury-neoforge:${project.architectury_version}"
 }

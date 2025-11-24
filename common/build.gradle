@@ -10,7 +10,6 @@ loom {
 
 dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-    modImplementation "dev.architectury:architectury:${project.architectury_version}"
 
     modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
     modImplementation "com.daqem.uilib:uilib-common:${rootProject.ui_library_version}"

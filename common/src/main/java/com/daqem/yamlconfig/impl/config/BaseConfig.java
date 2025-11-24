@@ -65,12 +65,12 @@ public abstract class BaseConfig implements IConfig {
                 context.getType().getSerializer().encodeNode(context, nodeTuple);
             }
             setSynced(false);
-            YamlConfig.LOGGER.info("Loaded config file: " + name + extension.getExtension());
+            YamlConfig.LOGGER.info("Loaded config file: {}{}", name, extension.getExtension());
         } catch (IOException e) {
             if (e instanceof FileNotFoundException) {
-                YamlConfig.LOGGER.info("Creating config file: " + name + extension.getExtension());
+                YamlConfig.LOGGER.info("Creating config file: {}{}", name, extension.getExtension());
             } else {
-                YamlConfig.LOGGER.error("Failed to load config file: " + name + extension.getExtension(), e);
+                YamlConfig.LOGGER.error("Failed to load config file: {}{}", name, extension.getExtension(), e);
             }
         }
     }
@@ -87,9 +87,9 @@ public abstract class BaseConfig implements IConfig {
             YamlFileWriter streamDataWriter = new YamlFileWriter(this);
             Node node = context.getType().getSerializer().decodeNode(context).getValueNode();
             dumper.dumpNode(node, streamDataWriter);
-            YamlConfig.LOGGER.info("Saved config file: " + name + extension.getExtension());
+            YamlConfig.LOGGER.info("Saved config file: {}{}", name, extension.getExtension());
         } catch (FileNotFoundException e) {
-            YamlConfig.LOGGER.error("Failed to save config file: " + name + extension.getExtension(), e);
+            YamlConfig.LOGGER.error("Failed to save config file: {}{}", name, extension.getExtension(), e);
         }
     }
 

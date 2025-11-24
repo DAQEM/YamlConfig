@@ -4,15 +4,14 @@ import com.daqem.uilib.gui.component.AbstractComponent;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.screen.ConfigScreen;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigScreenPacket;
-import dev.architectury.networking.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class ConfigsCategoryComponent extends AbstractComponent {
                             ConfigType type = config.getType();
                             switch (type) {
                                 case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
-                                case COMMON, SERVER -> NetworkManager.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
+                                case COMMON, SERVER -> YamlConfigExpectPlatform.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
                         }))
                 .toList();

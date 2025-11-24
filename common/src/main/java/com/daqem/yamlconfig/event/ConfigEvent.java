@@ -1,27 +1,22 @@
 package com.daqem.yamlconfig.event;
 
 import com.daqem.yamlconfig.api.config.IConfig;
-import dev.architectury.event.Event;
-import dev.architectury.event.EventFactory;
 import net.minecraft.world.level.Level;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiConsumer;
 
-public interface ConfigEvent {
+public class ConfigEvent {
 
-    /**
-     * @see Update#update(IConfig, Level)
-     */
-    Event<Update> ON_UPDATE = EventFactory.createLoop();
+    private static final List<BiConsumer<IConfig, Level>> LISTENERS = new ArrayList<>();
 
-    interface Update {
+    public static void register(BiConsumer<IConfig, Level> listener) {
+        LISTENERS.add(listener);
+    }
 
-        /**
-         * Invoked after the configuration has been updated.
-         * For client-side configurations, the update will occur on the client level.
-         * For server-side and common configurations, the update will occur on the server level.
-         *
-         * @param config The updated configuration.
-         * @param level  The level where the update occurred.
-         */
-        void update(IConfig config, Level level);
+    public static void fireUpdate(IConfig config, Level level) {
+        for (BiConsumer<IConfig, Level> listener : LISTENERS) {
+            listener.accept(config, level);
+        }
     }
 }
