@@ -1,6 +1,16 @@
 package com.daqem.yamlconfig.api.config;
 
-import com.daqem.yamlconfig.api.config.entry.*;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import com.daqem.yamlconfig.api.config.entry.IBooleanConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IDateTimeConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IEnumConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.IStringListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IDoubleListConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.list.numeric.IFloatListConfigEntry;
@@ -15,32 +25,82 @@ import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
+
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
+/**
+ * Builds a configuration with various entry types.
+ */
 public interface IConfigBuilder {
 
+    /**
+     * Gets the mod ID associated with this builder.
+     *
+     * @return The mod ID.
+     */
     String getModId();
 
+    /**
+     * Gets the name of the configuration being built.
+     *
+     * @return The configuration name.
+     */
     String getName();
 
+    /**
+     * Gets the file extension for the configuration.
+     *
+     * @return The {@link ConfigExtension}.
+     */
     ConfigExtension getExtension();
 
+    /**
+     * Gets the file path for the configuration.
+     *
+     * @return The {@link Path} to the configuration file.
+     */
     Path getPath();
 
+    /**
+     * Checks if the configuration has already been built.
+     *
+     * @return True if built, false otherwise.
+     */
     boolean isBuilt();
 
+    /**
+     * Builds the configuration.
+     *
+     * @return The built {@link IConfig}.
+     */
     IConfig build();
 
+    /**
+     * Defines a custom configuration entry.
+     *
+     * @param entry The entry to define.
+     * @param <T>   The type of the entry.
+     * @return The defined entry.
+     */
     <T extends IConfigEntry<?>> T define(T entry);
 
+    /**
+     * Defines a boolean configuration entry.
+     *
+     * @param key          The key for the entry.
+     * @param defaultValue The default value.
+     * @return The defined {@link IBooleanConfigEntry}.
+     */
     IBooleanConfigEntry defineBoolean(String key, boolean defaultValue);
 
+    /**
+     * Defines an integer configuration entry.
+     *
+     * @param key          The key for the entry.
+     * @param defaultValue The default value.
+     * @return The defined {@link IIntegerConfigEntry}.
+     */
     IIntegerConfigEntry defineInteger(String key, int defaultValue);
 
     IIntegerConfigEntry defineInteger(String key, int defaultValue, int minValue, int maxValue);
@@ -141,7 +201,16 @@ public interface IConfigBuilder {
 
     IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue, String pattern);
 
+    /**
+     * Pops the current context from the stack.
+     */
     void pop();
 
+    /**
+     * Pushes a new context onto the stack.
+     *
+     * @param key The key for the new context.
+     * @return The new {@link IStackConfigEntry} context.
+     */
     IStackConfigEntry push(String key);
 }

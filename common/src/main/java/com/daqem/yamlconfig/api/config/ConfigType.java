@@ -5,6 +5,9 @@ import com.daqem.yamlconfig.impl.config.ClientConfig;
 import com.daqem.yamlconfig.impl.config.CommonConfig;
 import com.daqem.yamlconfig.impl.config.ServerConfig;
 
+/**
+ * Represents the type of configuration, determining its side (client, common, server) and serializer.
+ */
 public enum ConfigType {
     CLIENT(new ClientConfig.Serializer()),
     COMMON(new CommonConfig.Serializer()),
@@ -15,6 +18,11 @@ public enum ConfigType {
     ConfigType(IConfigSerializer<? extends IConfig> serializer) {
         this.serializer = serializer;
     }
+    /**
+     * Gets the serializer associated with this configuration type.
+     *
+     * @return The {@link IConfigSerializer} for this config type.
+     */
     public IConfigSerializer<? extends IConfig> getSerializer() {
         return serializer;
     }
