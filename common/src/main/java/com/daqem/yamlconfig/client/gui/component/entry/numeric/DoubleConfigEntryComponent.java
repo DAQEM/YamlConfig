@@ -2,15 +2,16 @@ package com.daqem.yamlconfig.client.gui.component.entry.numeric;
 
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<DoubleConfigEntry, Double>{
+public class DoubleConfigEntryComponent extends BaseNumericConfigEntryComponent<IDoubleConfigEntry, Double>{
 
-    public DoubleConfigEntryComponent(String key, DoubleConfigEntry configEntry) {
+    public DoubleConfigEntryComponent(String key, IDoubleConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             try {

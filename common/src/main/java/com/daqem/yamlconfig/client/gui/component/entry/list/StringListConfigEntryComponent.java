@@ -2,15 +2,16 @@ package com.daqem.yamlconfig.client.gui.component.entry.list;
 
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.uilib.util.ValidationErrors;
+import com.daqem.yamlconfig.api.config.entry.list.IStringListConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.list.StringListConfigEntry;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StringListConfigEntryComponent extends BaseListConfigEntryComponent<StringListConfigEntry> {
+public class StringListConfigEntryComponent extends BaseListConfigEntryComponent<IStringListConfigEntry> {
 
-    public StringListConfigEntryComponent(String key, StringListConfigEntry configEntry) {
+    public StringListConfigEntryComponent(String key, IStringListConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {

@@ -2,15 +2,16 @@ package com.daqem.yamlconfig.client.gui.component.entry.numeric;
 
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<FloatConfigEntry, Float>{
+public class FloatConfigEntryComponent extends BaseNumericConfigEntryComponent<IFloatConfigEntry, Float>{
 
-    public FloatConfigEntryComponent(String key, FloatConfigEntry configEntry) {
+    public FloatConfigEntryComponent(String key, IFloatConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             try {

@@ -2,17 +2,18 @@ package com.daqem.yamlconfig.client.gui.component.entry;
 
 import com.daqem.uilib.gui.widget.CycleButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.IBooleanConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.BooleanConfigEntry;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<BooleanConfigEntry> {
+public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<IBooleanConfigEntry> {
 
     private final CycleButtonWidget<Boolean> cycleButtonComponent;
 
-    public BooleanConfigEntryComponent(String key, BooleanConfigEntry configEntry) {
+    public BooleanConfigEntryComponent(String key, IBooleanConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.cycleButtonComponent = new CycleButtonWidget<>(

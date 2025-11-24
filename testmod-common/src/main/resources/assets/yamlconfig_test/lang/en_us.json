@@ -1,0 +1,28 @@
+{
+  "yamlconfig.test": "Test Config",
+  "yamlconfig.test.test-common": "Test Common Config",
+  "yamlconfig.test.test-client": "Test Client Config",
+  "yamlconfig.test.test-server": "Test Server Config",
+
+  "yamlconfig.test1": "Test1 Config",
+  "yamlconfig.test1.test1-common": "Test1 Common Config",
+  "yamlconfig.test1.test1-client": "Test1 Client Config",
+
+  "yamlconfig.test2": "Test2 Config",
+  "yamlconfig.test2.test2-common": "Test2 Common Config",
+  "yamlconfig.test2.test2-client": "Test2 Client Config",
+  "yamlconfig.test2.test2-server": "Test2 Server Config",
+
+  "yamlconfig.test3": "Test3 Config",
+  "yamlconfig.test3.test3-common": "Test3 Common Config",
+  "yamlconfig.test3.test3-client": "Test3 Client Config",
+  "yamlconfig.test3.test3-server": "Test3 Server Config",
+
+  "yamlconfig.test4": "Test4 Config",
+  "yamlconfig.test4.test4-common": "Test4 Common Config",
+  "yamlconfig.test4.test4-client": "Test4 Client Config",
+  "yamlconfig.test4.test4-server": "Test4 Server Config",
+
+  "yamlconfig.test5": "Test5 Config",
+  "yamlconfig.test5.test5-client": "Test5 Client Config"
+}

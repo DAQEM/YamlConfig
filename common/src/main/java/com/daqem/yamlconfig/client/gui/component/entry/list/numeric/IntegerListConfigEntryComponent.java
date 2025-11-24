@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.client.gui.component.entry.list.numeric;
 
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.list.numeric.IIntegerListConfigEntry;
 import com.daqem.yamlconfig.client.gui.component.entry.list.BaseListConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.list.numeric.IntegerListConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -9,9 +10,9 @@ import net.minecraft.network.chat.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IntegerListConfigEntryComponent extends BaseListConfigEntryComponent<IntegerListConfigEntry> {
+public class IntegerListConfigEntryComponent extends BaseListConfigEntryComponent<IIntegerListConfigEntry> {
 
-    public IntegerListConfigEntryComponent(String key, IntegerListConfigEntry configEntry) {
+    public IntegerListConfigEntryComponent(String key, IIntegerListConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             try {

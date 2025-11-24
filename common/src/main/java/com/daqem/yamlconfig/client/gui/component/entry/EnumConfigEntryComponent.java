@@ -1,18 +1,18 @@
 package com.daqem.yamlconfig.client.gui.component.entry;
 
 import com.daqem.uilib.gui.widget.CycleButtonWidget;
-import com.daqem.yamlconfig.impl.config.entry.EnumConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.IEnumConfigEntry;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntryComponent<EnumConfigEntry<E>>{
+public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntryComponent<IEnumConfigEntry<E>> {
 
     private final CycleButtonWidget<E> cycleButtonComponent;
 
-    public EnumConfigEntryComponent(String key, EnumConfigEntry<E> configEntry) {
+    public EnumConfigEntryComponent(String key, IEnumConfigEntry<E> configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         List<E> values = Arrays.asList(configEntry.getEnumClass().getEnumConstants());

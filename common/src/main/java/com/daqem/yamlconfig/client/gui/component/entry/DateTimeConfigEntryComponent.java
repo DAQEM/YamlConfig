@@ -10,11 +10,11 @@ import net.minecraft.network.chat.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<DateTimeConfigEntry> {
+public class DateTimeConfigEntryComponent extends BaseConfigEntryComponent<IDateTimeConfigEntry> {
 
     private final EditBoxWidget editBoxWidget;
 
-    public DateTimeConfigEntryComponent(String key, DateTimeConfigEntry configEntry) {
+    public DateTimeConfigEntryComponent(String key, IDateTimeConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(

@@ -3,6 +3,7 @@ package com.daqem.yamlconfig.client.gui.component.entry.minecraft;
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
 import net.minecraft.client.Minecraft;
@@ -12,11 +13,11 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<ResourceLocationConfigEntry> {
+public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<IResourceLocationConfigEntry> {
 
     private final EditBoxWidget editBoxWidget;
 
-    public ResourceLocationConfigEntryComponent(String key, ResourceLocationConfigEntry configEntry) {
+    public ResourceLocationConfigEntryComponent(String key, IResourceLocationConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(

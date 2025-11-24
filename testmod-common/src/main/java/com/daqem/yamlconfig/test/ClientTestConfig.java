@@ -5,6 +5,7 @@ import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.impl.config.ConfigBuilder;
+import com.daqem.yamlconfig.test.config.entry.TestConfigEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
@@ -22,6 +23,7 @@ public class ClientTestConfig {
 
     public static IConfigEntry<Boolean> debug;
 
+    public static TestConfigEntry customEntry;
     public static IConfigEntry<Integer> testInt;
     public static IConfigEntry<String> testString;
     public static IConfigEntry<String> testString1;
@@ -45,6 +47,8 @@ public class ClientTestConfig {
 
 
         builder.push("test").withComments("This is a test stack.", "And another comment.", "Wow even a third comment.");
+
+        customEntry = builder.define(new TestConfigEntry("customEntry", "Default Custom Value"));
 
         testInt = builder.defineInteger("testInt", 10, 0, 100);
 

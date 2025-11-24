@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.client.gui.component.entry.map.numeric;
 
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.client.gui.component.entry.map.BaseMapConfigEntryComponent;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
 import net.minecraft.network.chat.Component;
@@ -11,9 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<FloatMapConfigEntry> {
+public class FloatMapConfigEntryComponent extends BaseMapConfigEntryComponent<IFloatMapConfigEntry> {
 
-    public FloatMapConfigEntryComponent(String key, FloatMapConfigEntry configEntry) {
+    public FloatMapConfigEntryComponent(String key, IFloatMapConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             try {

@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.client.gui.component.entry.map;
 
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.map.IStringMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.StringMapConfigEntry;
 import net.minecraft.network.chat.Component;
 
@@ -10,9 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class StringMapConfigEntryComponent extends BaseMapConfigEntryComponent<StringMapConfigEntry>{
+public class StringMapConfigEntryComponent extends BaseMapConfigEntryComponent<IStringMapConfigEntry>{
 
-    public StringMapConfigEntryComponent(String key, StringMapConfigEntry configEntry) {
+    public StringMapConfigEntryComponent(String key, IStringMapConfigEntry configEntry) {
         super(key, configEntry, input -> {
             List<Component> list = new ArrayList<>();
             if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {

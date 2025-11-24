@@ -3,17 +3,18 @@ package com.daqem.yamlconfig.client.gui.component.entry;
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.uilib.util.ValidationErrors;
 import com.daqem.yamlconfig.YamlConfig;
+import com.daqem.yamlconfig.api.config.entry.IStringConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.StringConfigEntry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class StringConfigEntryComponent extends BaseConfigEntryComponent<StringConfigEntry> {
+public class StringConfigEntryComponent extends BaseConfigEntryComponent<IStringConfigEntry> {
 
     private final EditBoxWidget editBoxWidget;
 
-    public StringConfigEntryComponent(String key, StringConfigEntry configEntry) {
+    public StringConfigEntryComponent(String key, IStringConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(
