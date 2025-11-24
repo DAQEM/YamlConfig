@@ -3,16 +3,7 @@ package com.daqem.yamlconfig.api.config.entry;
 import com.daqem.yamlconfig.api.config.entry.comment.IComments;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
-import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import org.snakeyaml.engine.v2.comments.CommentLine;
-import org.snakeyaml.engine.v2.comments.CommentType;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public interface IConfigEntry<T> extends Supplier<T> {
@@ -40,12 +31,4 @@ public interface IConfigEntry<T> extends Supplier<T> {
     IConfigEntry<T> dontSync();
 
     IConfigEntry<T> setShouldBeSynced(boolean shouldBeSynced);
-
-    default ScalarNode createKeyNode() {
-        ScalarNode keyNode = new ScalarNode(Tag.STR, getKey(), ScalarStyle.PLAIN);
-        keyNode.setBlockComments(getComments().getComments().stream()
-                .map(c -> new CommentLine(Optional.empty(), Optional.empty(), c, CommentType.BLOCK))
-                .toList());
-        return keyNode;
-    }
 }

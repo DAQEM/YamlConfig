@@ -13,9 +13,6 @@ import com.daqem.yamlconfig.impl.node.ConfigListNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.*;
 
 import java.util.ArrayList;
 import java.util.List;
