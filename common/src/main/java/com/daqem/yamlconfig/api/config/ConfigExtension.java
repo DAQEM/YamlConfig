@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 public enum ConfigExtension {
     YAML(".yaml", YamlFormat::new),
-    YML(".yml", YamlFormat::new),
     TOML(".toml", TomlFormat::new),
     JSON5(".json5", Json5Format::new),
     HOCON(".conf", HoconFormat::new);

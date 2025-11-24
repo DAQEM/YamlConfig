@@ -1,11 +1,11 @@
-package com.daqem.yamlconfig.test;
+package com.daqem.yamlconfig.test.server;
 
 import com.daqem.yamlconfig.api.config.ConfigExtension;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.impl.config.ConfigBuilder;
 import com.daqem.yamlconfig.test.config.TestConfigPopulator;
 
-public class CommonTestConfig {
+public class ServerTestConfig {
 
     public static void init() {
         createConfig(ConfigExtension.YAML);
@@ -15,8 +15,8 @@ public class CommonTestConfig {
     }
 
     private static void createConfig(ConfigExtension extension) {
-        String name = "test-common-" + extension.getExtension().replace(".", "");
-        ConfigBuilder builder = new ConfigBuilder("yamlconfig_test", name, extension, ConfigType.COMMON);
+        String name = "test-server-" + extension.getExtension().replace(".", "");
+        ConfigBuilder builder = new ConfigBuilder("yamlconfig_test", name, extension, ConfigType.SERVER);
         TestConfigPopulator.populate(builder);
         builder.build();
     }

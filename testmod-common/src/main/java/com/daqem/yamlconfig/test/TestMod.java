@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 
 public class TestMod {
     public static final String MOD_ID = "yamlconfig_test";
-    public static final Logger LOGGER = LogUtils.getLogger();
 
     public static IConfigEntryType<TestConfigEntry, String> TEST_ENTRY_TYPE;
 
@@ -44,17 +43,5 @@ public class TestMod {
 
     public static ResourceLocation getId(String id) {
         return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
-    }
-
-    public static MutableComponent translatable(String str) {
-        return Component.translatable(MOD_ID + "." + str);
-    }
-
-    public static MutableComponent translatable(String str, Object... objects) {
-        return Component.translatable(MOD_ID + "." + str, objects);
-    }
-
-    public static MutableComponent literal(String str) {
-        return Component.literal(str);
     }
 }

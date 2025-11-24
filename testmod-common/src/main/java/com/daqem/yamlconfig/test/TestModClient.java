@@ -1,6 +1,7 @@
 package com.daqem.yamlconfig.test;
 
 import com.daqem.yamlconfig.client.gui.registry.ConfigEntryComponentRegistry;
+import com.daqem.yamlconfig.test.client.ClientTestConfig;
 import com.daqem.yamlconfig.test.client.gui.component.entry.TestConfigEntryComponent;
 
 public class TestModClient {
