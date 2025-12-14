@@ -118,7 +118,7 @@ public abstract class BaseConfig implements IConfig {
     }
 
     private void serializeToNode(IMapNode parent, IStackConfigEntry stack) {
-        for (IConfigEntry<?> entry : stack.getEntries().values()) {
+        for (IConfigEntry<?> entry : stack.get().values()) {
             if (entry instanceof IStackConfigEntry childStack) {
                 ConfigMapNode childNode = new ConfigMapNode();
                 // Transfer comments from the stack entry to the map node
