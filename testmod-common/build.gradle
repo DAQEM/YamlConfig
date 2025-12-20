@@ -1,5 +1,5 @@
 loom {
-    accessWidenerPath = project(':common').file("src/main/resources/yamlconfig.accessWidener")
+    accessWidenerPath = project(':common').file("src/main/resources/yamlconfig.accesswidener")
 }
 
 dependencies {
