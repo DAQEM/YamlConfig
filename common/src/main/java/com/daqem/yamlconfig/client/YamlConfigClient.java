@@ -38,7 +38,7 @@ public class YamlConfigClient {
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.FLOAT_MAP, FloatMapConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.INTEGER_MAP, IntegerMapConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.REGISTRY, (key, entry) -> new RegistryConfigEntryComponent(key, entry));
-        ConfigEntryComponentRegistry.register(ConfigEntryTypes.RESOURCE_LOCATION, ResourceLocationConfigEntryComponent::new);
+        ConfigEntryComponentRegistry.register(ConfigEntryTypes.RESOURCE_LOCATION, IdentifierConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.DOUBLE, DoubleConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.FLOAT, FloatConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.INTEGER, IntegerConfigEntryComponent::new);

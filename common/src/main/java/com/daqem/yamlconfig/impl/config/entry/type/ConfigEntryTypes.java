@@ -11,7 +11,7 @@ import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
@@ -29,13 +29,13 @@ import com.daqem.yamlconfig.impl.config.entry.map.StringMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.IntegerMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.IdentifierConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -54,7 +54,7 @@ public abstract class ConfigEntryTypes {
     public static final IConfigEntryType<ILongConfigEntry, Long> LONG = register(YamlConfig.getId("long"), new LongConfigEntry.Serializer());
     public static final IConfigEntryType<IFloatConfigEntry, Float> FLOAT = register(YamlConfig.getId("float"), new FloatConfigEntry.Serializer());
     public static final IConfigEntryType<IDoubleConfigEntry, Double> DOUBLE = register(YamlConfig.getId("double"), new DoubleConfigEntry.Serializer());
-    public static final IConfigEntryType<IResourceLocationConfigEntry, ResourceLocation> RESOURCE_LOCATION = register(YamlConfig.getId("resource_location"), new ResourceLocationConfigEntry.Serializer());
+    public static final IConfigEntryType<IIdentifierConfigEntry, Identifier> RESOURCE_LOCATION = register(YamlConfig.getId("resource_location"), new IdentifierConfigEntry.Serializer());
     @SuppressWarnings({"rawtypes", "unchecked"})
     public static final IConfigEntryType<IRegistryConfigEntry<?>, ?> REGISTRY = register(YamlConfig.getId("registry"), new RegistryConfigEntry.Serializer());
     public static final IConfigEntryType<IStringListConfigEntry, List<String>> STRING_LIST = register(YamlConfig.getId("string_list"), new StringListConfigEntry.Serializer());
@@ -67,10 +67,10 @@ public abstract class ConfigEntryTypes {
     public static final IConfigEntryType<IDoubleMapConfigEntry, Map<String, Double>> DOUBLE_MAP = register(YamlConfig.getId("double_map"), new DoubleMapConfigEntry.Serializer());
 
 
-    static <C extends IConfigEntry<T>, T> IConfigEntryType<C, T> register(ResourceLocation id, IConfigEntrySerializer<C, T> serializer) {
+    static <C extends IConfigEntry<T>, T> IConfigEntryType<C, T> register(Identifier id, IConfigEntrySerializer<C, T> serializer) {
         return Registry.register(YamlConfigRegistry.CONFIG_ENTRY, id, new IConfigEntryType<>() {
             @Override
-            public ResourceLocation getId() {
+            public Identifier getId() {
                 return id;
             }
 

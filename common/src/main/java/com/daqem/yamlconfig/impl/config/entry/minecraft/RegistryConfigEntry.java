@@ -18,7 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.snakeyaml.engine.v2.common.ScalarStyle;
 import org.snakeyaml.engine.v2.nodes.NodeTuple;
 import org.snakeyaml.engine.v2.nodes.ScalarNode;
@@ -59,7 +59,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
     public IComments getComments() {
         IComments comments = super.getComments();
         if (comments.showValidationParameters()) {
-            comments.addValidationParameter("Registry: " + getRegistry().key().location());
+            comments.addValidationParameter("Registry: " + getRegistry().key().identifier());
         }
         if (comments.showDefaultValues()) {
             comments.addDefaultValues("'" + getRegistry().getKey(getDefaultValue()) + "'");
@@ -71,7 +71,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
 
         @Override
         public void toNode(IRegistryConfigEntry<T> configEntry, IMapNode parentMap) {
-            ResourceLocation key = configEntry.getRegistry().getKey(configEntry.get());
+            Identifier key = configEntry.getRegistry().getKey(configEntry.get());
             if (key != null) {
                 ConfigValueNode<String> node = new ConfigValueNode<>(key.toString());
                 node.setComments(configEntry.getComments().getComments());
@@ -83,7 +83,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public void fromNode(IRegistryConfigEntry<T> configEntry, IMapNode parentMap) {
             IConfigNode node = parentMap.get(configEntry.getKey());
             if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
-                ResourceLocation rl = ResourceLocation.tryParse(valueNode.getValue().toString());
+                Identifier rl = Identifier.tryParse(valueNode.getValue().toString());
                 if (rl != null) {
                     configEntry.getRegistry().get(rl).ifPresent(ref -> configEntry.set(ref.value()));
                 }
@@ -93,15 +93,15 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry, T value) {
             buf.writeResourceKey(configEntry.getRegistry().key());
-            ResourceLocation resourceLocation = configEntry.getRegistry().getKey(value);
-            buf.writeResourceLocation(Objects.requireNonNull(resourceLocation));
+            Identifier resourceLocation = configEntry.getRegistry().getKey(value);
+            buf.writeIdentifier(Objects.requireNonNull(resourceLocation));
         }
 
         @Override
         @SuppressWarnings("unchecked")
         public T valueFromNetwork(RegistryFriendlyByteBuf buf) {
             ResourceKey<Registry<Object>> key = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
-            ResourceLocation resourceLocation = buf.readResourceLocation();
+            Identifier resourceLocation = buf.readIdentifier();
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(key);
             return (T) reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null);
         }
@@ -110,8 +110,8 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public void toNetwork(RegistryFriendlyByteBuf buf, IRegistryConfigEntry<T> configEntry) {
             buf.writeUtf(configEntry.getKey());
             buf.writeResourceKey(configEntry.getRegistry().key());
-            buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
-            buf.writeResourceLocation(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.getDefaultValue())));
+            buf.writeIdentifier(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
+            buf.writeIdentifier(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.getDefaultValue())));
             buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
@@ -120,10 +120,10 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         public IRegistryConfigEntry<T> fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
             ResourceKey<Registry<Object>> registryKey = (ResourceKey<Registry<Object>>) buf.readRegistryKey();
-            ResourceLocation resourceLocation = buf.readResourceLocation();
-            ResourceLocation defaultResourceLocation = buf.readResourceLocation();
+            Identifier resourceLocation = buf.readIdentifier();
+            Identifier defaultIdentifier = buf.readIdentifier();
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
-            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(defaultResourceLocation).get().value()).orElse(null), reference.map(Holder.Reference::value).orElse(null));
+            RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(defaultIdentifier).get().value()).orElse(null), reference.map(Holder.Reference::value).orElse(null));
             configEntry.set(reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null));
             buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return (IRegistryConfigEntry<T>) configEntry;

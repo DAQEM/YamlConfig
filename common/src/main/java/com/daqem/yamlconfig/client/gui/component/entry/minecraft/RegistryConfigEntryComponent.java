@@ -7,7 +7,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +30,9 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<IR
             @Override
             public List<Component> validateInput(String input) {
                 List<Component> list = super.validateInput(input);
-                ResourceLocation value = ResourceLocation.tryParse(input);
+                Identifier value = Identifier.tryParse(input);
                 if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")) {
-                    list.add(ValidationErrors.invalidResourceLocation());
+                    list.add(ValidationErrors.invalidIdentifier());
                 } else {
                     if (!getConfigEntry().getRegistry().keySet().contains(value)) {
                         list.add(ValidationErrors.invalidRegistryValue());
@@ -42,7 +42,7 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<IR
             }
         };
 
-        ResourceLocation resourceLocation = getConfigEntry().getRegistry().getKey(getConfigEntry().get());
+        Identifier resourceLocation = getConfigEntry().getRegistry().getKey(getConfigEntry().get());
         String stringValue = resourceLocation != null ? resourceLocation.toString() : "unknown";
 
         editBoxWidget.setValue(stringValue);
@@ -54,13 +54,13 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<IR
     @Override
     public boolean isOriginalValue() {
         T defaultValue = getConfigEntry().getDefaultValue();
-        Optional<Holder.Reference<T>> value = getConfigEntry().getRegistry().get(ResourceLocation.parse(this.editBoxWidget.getValue()));
+        Optional<Holder.Reference<T>> value = getConfigEntry().getRegistry().get(Identifier.parse(this.editBoxWidget.getValue()));
         return value.isPresent() && defaultValue == value.get().value();
     }
 
     @Override
     public void resetValue() {
-        ResourceLocation resourceLocation = getConfigEntry().getRegistry().getKey(getConfigEntry().getDefaultValue());
+        Identifier resourceLocation = getConfigEntry().getRegistry().getKey(getConfigEntry().getDefaultValue());
         String stringValue = resourceLocation != null ? resourceLocation.toString() : "unknown";
         this.editBoxWidget.setValue(stringValue);
     }
@@ -68,7 +68,7 @@ public class RegistryConfigEntryComponent<T> extends BaseConfigEntryComponent<IR
     @Override
     public void applyValue() {
         if (this.editBoxWidget.hasInputValidationErrors()) return;
-        Optional<Holder.Reference<T>> reference = getConfigEntry().getRegistry().get(ResourceLocation.parse(this.editBoxWidget.getValue()));
+        Optional<Holder.Reference<T>> reference = getConfigEntry().getRegistry().get(Identifier.parse(this.editBoxWidget.getValue()));
         reference.ifPresent(tReference -> getConfigEntry().set(tReference.value()));
     }
 

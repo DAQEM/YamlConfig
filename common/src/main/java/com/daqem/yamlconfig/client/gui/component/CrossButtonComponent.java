@@ -7,15 +7,15 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
 public class CrossButtonComponent extends ButtonWidget {
 
     private static final WidgetSprites DEFAULT_SPRITES = new WidgetSprites(
-            ResourceLocation.withDefaultNamespace("widget/cross_button"),
+            Identifier.withDefaultNamespace("widget/cross_button"),
             YamlConfig.getId("widget/cross_button_disabled"),
-            ResourceLocation.withDefaultNamespace("widget/cross_button_highlighted")
+            Identifier.withDefaultNamespace("widget/cross_button_highlighted")
     );
 
     public CrossButtonComponent(int x, int y, OnPress onPress) {
@@ -23,8 +23,7 @@ public class CrossButtonComponent extends ButtonWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        Minecraft minecraft = Minecraft.getInstance();
+    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
         guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 DEFAULT_SPRITES.get(this.active, this.isHoveredOrFocused()),
@@ -34,7 +33,6 @@ public class CrossButtonComponent extends ButtonWidget {
                 this.getHeight(),
                 ARGB.white(this.alpha)
         );
-        int k = ARGB.color(this.alpha, this.active ? -1 : -6250336);
-        this.renderString(guiGraphics, minecraft.font, k);
+        this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
     }
 }

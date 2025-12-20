@@ -9,6 +9,8 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -34,7 +36,7 @@ public class ServerboundOpenConfigsScreenPacket implements CustomPacketPayload {
     public void handleServerSide(ServerPlayer serverPlayer) {
         Map<String, List<IConfig>> configMap = new HashMap<>();
 
-        if (serverPlayer.hasPermissions(2)) {
+        if (serverPlayer.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.byId(2)))) {
             configMap.putAll(YamlConfig.CONFIG_MANAGER.getAllServerAndCommonConfigs().stream()
                     .collect(Collectors.groupingBy(IConfig::getModId)));
         }

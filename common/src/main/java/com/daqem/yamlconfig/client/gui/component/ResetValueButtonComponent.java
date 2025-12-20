@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class ResetValueButtonComponent extends ButtonWidget {
 
@@ -16,8 +17,8 @@ public class ResetValueButtonComponent extends ButtonWidget {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-        super.renderWidget(guiGraphics, i, j, f);
+    protected void renderContents(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
+        super.renderContents(guiGraphics, i, j, f);
         guiGraphics.pose().pushMatrix();
         guiGraphics.pose().scale(0.6f, 0.6f);
         guiGraphics.pose().translate(getX() * (1.0f / 0.6f - 1) + 6f, getY() * (1.0f / 0.6f - 1) + 6f);

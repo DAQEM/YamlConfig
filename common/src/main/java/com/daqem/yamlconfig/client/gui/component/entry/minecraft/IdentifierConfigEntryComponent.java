@@ -2,22 +2,19 @@ package com.daqem.yamlconfig.client.gui.component.entry.minecraft;
 
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.uilib.util.ValidationErrors;
-import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
-import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
-public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<IResourceLocationConfigEntry> {
+public class IdentifierConfigEntryComponent extends BaseConfigEntryComponent<IIdentifierConfigEntry> {
 
     private final EditBoxWidget editBoxWidget;
 
-    public ResourceLocationConfigEntryComponent(String key, IResourceLocationConfigEntry configEntry) {
+    public IdentifierConfigEntryComponent(String key, IIdentifierConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(
@@ -31,9 +28,9 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
             @Override
             public List<Component> validateInput(String input) {
                 List<Component> list = super.validateInput(input);
-                ResourceLocation value = ResourceLocation.tryParse(input);
+                Identifier value = Identifier.tryParse(input);
                 if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
-                    list.add(ValidationErrors.invalidResourceLocation());
+                    list.add(ValidationErrors.invalidIdentifier());
                 } else {
                     if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
                         list.add(ValidationErrors.pattern(configEntry.getPattern()));
@@ -51,7 +48,7 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
 
     @Override
     public boolean isOriginalValue() {
-        return this.getConfigEntry().getDefaultValue().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
+        return this.getConfigEntry().getDefaultValue().equals(Identifier.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override
@@ -62,7 +59,7 @@ public class ResourceLocationConfigEntryComponent extends BaseConfigEntryCompone
     @Override
     public void applyValue() {
         if (this.editBoxWidget.hasInputValidationErrors()) return;
-        this.getConfigEntry().set(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
+        this.getConfigEntry().set(Identifier.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override

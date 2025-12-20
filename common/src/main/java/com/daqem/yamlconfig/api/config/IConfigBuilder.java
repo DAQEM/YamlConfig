@@ -20,14 +20,14 @@ import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.ILongConfigEntry;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Builds a configuration with various entry types.
@@ -197,9 +197,9 @@ public interface IConfigBuilder {
 
     <T> IRegistryConfigEntry<T> defineRegistry(String key, T defaultValue, Registry<T> registry);
 
-    IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue);
+    IIdentifierConfigEntry defineIdentifier(String key, Identifier defaultValue);
 
-    IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue, String pattern);
+    IIdentifierConfigEntry defineIdentifier(String key, Identifier defaultValue, String pattern);
 
     /**
      * Pops the current context from the stack.

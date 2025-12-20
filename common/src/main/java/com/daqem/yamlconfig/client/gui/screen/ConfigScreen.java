@@ -22,6 +22,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -65,9 +66,9 @@ public class ConfigScreen extends AbstractScreen {
             this.onClose();
         }) {
             @Override
-            protected void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
+            protected void renderContents(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
                 this.active = configEntryComponents.stream().noneMatch(IConfigEntryComponent::hasValidationErrors);
-                super.renderWidget(guiGraphics, i, j, f);
+                super.renderContents(guiGraphics, i, j, f);
             }
         };
 

@@ -3,7 +3,7 @@ package com.daqem.yamlconfig.test.config;
 import com.daqem.yamlconfig.api.config.IConfigBuilder;
 import com.daqem.yamlconfig.test.config.entry.TestConfigEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -84,7 +84,7 @@ public class TestConfigPopulator {
         builder.push("minecraft")
                 .withComments("Minecraft specific types and Enums");
 
-        builder.defineResourceLocation("resource_location", ResourceLocation.fromNamespaceAndPath("minecraft", "dirt"));
+        builder.defineIdentifier("resource_location", Identifier.fromNamespaceAndPath("minecraft", "dirt"));
         builder.defineRegistry("item_registry", Items.DIAMOND_SWORD, BuiltInRegistries.ITEM);
         builder.defineRegistry("block_registry", Blocks.STONE, BuiltInRegistries.BLOCK);
         builder.defineEnum("difficulty_enum", Difficulty.HARD, Difficulty.class);

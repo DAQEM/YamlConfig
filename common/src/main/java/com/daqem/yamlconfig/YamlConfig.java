@@ -6,7 +6,7 @@ import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 
 public class YamlConfig {
@@ -19,8 +19,8 @@ public class YamlConfig {
         YamlConfigRegistry.init();
     }
 
-    public static ResourceLocation getId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier getId(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 
     public static MutableComponent translatable(String key) {

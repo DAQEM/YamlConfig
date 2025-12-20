@@ -25,17 +25,20 @@ public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntry
                 VALUE_WIDTH,
                 DEFAULT_HEIGHT,
                 Component.empty(),
+                Component.empty(),
                 index,
                 value,
+                () -> value,
                 CycleButton.ValueListSupplier.create(values),
                 e -> Component.literal(e.name()),
                 CycleButton::createDefaultNarrationMessage,
-                (button, e) -> {
+                (cycleButton, o) -> {
                 },
-                e -> null,
-                false
+                o -> null,
+                CycleButton.DisplayState.VALUE,
+                (cycleButton, object1) -> null
         );
-
+        this.cycleButtonComponent.setValue(configEntry.get());
         this.addWidget(this.cycleButtonComponent);
     }
 

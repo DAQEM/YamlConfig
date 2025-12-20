@@ -16,7 +16,7 @@ import com.daqem.yamlconfig.api.config.entry.map.numeric.IDoubleMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IFloatMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.map.numeric.IIntegerMapConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.minecraft.IRegistryConfigEntry;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IDoubleConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IFloatConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.numeric.IIntegerConfigEntry;
@@ -32,13 +32,13 @@ import com.daqem.yamlconfig.impl.config.entry.map.numeric.DoubleMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.FloatMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.map.numeric.IntegerMapConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.minecraft.RegistryConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.minecraft.ResourceLocationConfigEntry;
+import com.daqem.yamlconfig.impl.config.entry.minecraft.IdentifierConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -391,13 +391,13 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     @Override
-    public IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue) {
-        return define(new ResourceLocationConfigEntry(key, defaultValue));
+    public IIdentifierConfigEntry defineIdentifier(String key, Identifier defaultValue) {
+        return define(new IdentifierConfigEntry(key, defaultValue));
     }
 
     @Override
-    public IResourceLocationConfigEntry defineResourceLocation(String key, ResourceLocation defaultValue, String pattern) {
-        return define(new ResourceLocationConfigEntry(key, defaultValue, pattern));
+    public IIdentifierConfigEntry defineIdentifier(String key, Identifier defaultValue, String pattern) {
+        return define(new IdentifierConfigEntry(key, defaultValue, pattern));
     }
 
     @Override

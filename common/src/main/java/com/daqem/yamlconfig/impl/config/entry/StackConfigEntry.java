@@ -56,7 +56,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
             buf.writeInt(configEntry.getDefaultValue().size());
             for (Map.Entry<String, IConfigEntry<?>> entry : configEntry.getDefaultValue().entrySet()) {
                 buf.writeUtf(entry.getKey());
-                buf.writeResourceLocation(entry.getValue().getType().getId());
+                buf.writeIdentifier(entry.getValue().getType().getId());
                 //noinspection unchecked
                 ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
                         .toNetwork(buf, (IConfigEntry<Object>) entry.getValue());
@@ -64,7 +64,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
             buf.writeInt(configEntry.get().size());
             for (Map.Entry<String, IConfigEntry<?>> entry : configEntry.get().entrySet()) {
                 buf.writeUtf(entry.getKey());
-                buf.writeResourceLocation(entry.getValue().getType().getId());
+                buf.writeIdentifier(entry.getValue().getType().getId());
                 //noinspection unchecked
                 ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
                         .toNetwork(buf, (IConfigEntry<Object>) entry.getValue());
@@ -80,7 +80,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
             LinkedHashMap<String, IConfigEntry<?>> defaultValue = new LinkedHashMap<>();
             for (int i = 0; i < defaultValueSize; i++) {
                 String entryKey = buf.readUtf();
-                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readIdentifier());
                 IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
                 IConfigEntry<?> entry = Objects.requireNonNull(type).getSerializer().fromNetwork(buf);
                 defaultValue.put(entryKey, entry);
@@ -90,7 +90,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
             LinkedHashMap<String, IConfigEntry<?>> value = new LinkedHashMap<>();
             for (int i = 0; i < size; i++) {
                 String entryKey = buf.readUtf();
-                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readResourceLocation());
+                Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readIdentifier());
                 IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
                 IConfigEntry<?> entry = Objects.requireNonNull(type).getSerializer().fromNetwork(buf);
                 value.put(entryKey, entry);

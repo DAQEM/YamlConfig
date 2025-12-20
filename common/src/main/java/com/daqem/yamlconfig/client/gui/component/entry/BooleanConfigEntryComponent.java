@@ -3,7 +3,6 @@ package com.daqem.yamlconfig.client.gui.component.entry;
 import com.daqem.uilib.gui.widget.CycleButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.entry.IBooleanConfigEntry;
-import com.daqem.yamlconfig.impl.config.entry.BooleanConfigEntry;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
@@ -22,16 +21,20 @@ public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<IBoole
                 VALUE_WIDTH,
                 DEFAULT_HEIGHT,
                 Component.empty(),
+                Component.empty(),
                 configEntry.get() ? 0 : 1,
-                configEntry.get(),
-                CycleButton.ValueListSupplier.create(List.of(true, false)),
-                value -> value ? YamlConfig.translatable("gui.value.true") : YamlConfig.translatable("gui.value.false"),
+                configEntry.get() ? Boolean.TRUE : Boolean.FALSE,
+                () -> configEntry.get() ? Boolean.TRUE : Boolean.FALSE,
+                CycleButton.ValueListSupplier.create(List.of(Boolean.TRUE, Boolean.FALSE)),
+                value -> value == Boolean.TRUE ? YamlConfig.translatable("gui.value.true") : YamlConfig.translatable("gui.value.false"),
                 CycleButton::createDefaultNarrationMessage,
-                (button, value) -> {
+                (cycleButton, o) -> {
                 },
-                value -> null,
-                true
+                o -> null,
+                CycleButton.DisplayState.VALUE,
+                (cycleButton, object1) -> null
         );
+        this.cycleButtonComponent.setValue(configEntry.get() ? Boolean.TRUE : Boolean.FALSE);
         this.addWidget(this.cycleButtonComponent);
     }
 
