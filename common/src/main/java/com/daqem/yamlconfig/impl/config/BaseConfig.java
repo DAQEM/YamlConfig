@@ -69,7 +69,7 @@ public abstract class BaseConfig implements IConfig {
     }
 
     private void deserializeFromNode(IMapNode parent, IStackConfigEntry stack) {
-        for (Map.Entry<String, IConfigEntry<?>> entrySet : stack.getEntries().entrySet()) {
+        for (Map.Entry<String, IConfigEntry<?>> entrySet : stack.get().entrySet()) {
             String key = entrySet.getKey();
             IConfigEntry<?> entry = entrySet.getValue();
 
