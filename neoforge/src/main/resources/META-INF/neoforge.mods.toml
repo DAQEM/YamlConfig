@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[${neoforge_loader_version},)"
+loaderVersion = "[1,)"
 issueTrackerURL = "${mod_repository}/issues"
 license = "${mod_license}"
 
@@ -33,7 +33,7 @@ side = "BOTH"
 [[dependencies."${mod_id}"]]
 modId = "uilib"
 type = "required"
-versionRange = "[${ui_library_version},)"
+versionRange = "[${uilib_version},)"
 ordering = "AFTER"
 side = "CLIENT"
 

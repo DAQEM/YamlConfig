@@ -1,41 +1,29 @@
-plugins {
-    id "com.github.johnrengelman.shadow" version "8.1.1"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-
-    mixin { useLegacyMixinAp = true }
-}
-
 architectury {
     platformSetupLoomIde()
     fabric()
 }
 
-configurations {
-    common
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
+loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+    mixin { useLegacyMixinAp = true }
 }
 
+apply from: rootProject.file("gradle/scripts/platform.gradle")
+
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
 
     implementation project(path: ":fabric", configuration: "namedElements")
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     common(project(path: ":testmod-common", configuration: "namedElements")) { transitive false }
 
-    modImplementation "com.daqem.uilib:uilib-fabric:${project.ui_library_version}"
-
-    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
-    modImplementation "com.electronwill.night-config:toml:3.6.6"
-    modImplementation "com.electronwill.night-config:core:3.6.6"
-    modImplementation "blue.endless:jankson:1.2.3"
-    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+    modImplementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
+    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
+    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
+    modImplementation "blue.endless:jankson:${project.json5_version}"
+    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
     }
 }

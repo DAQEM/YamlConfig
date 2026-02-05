@@ -1,56 +1,22 @@
-apply plugin: 'com.github.johnrengelman.shadow'
-
 architectury {
-    common rootProject.enabled_platforms.split(",")
+    common(rootProject.enabled_platforms.split(","))
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/yamlconfig.accesswidener")
+    accessWidenerPath = file("src/main/resources/${rootProject.mod_id}.accesswidener")
 }
+
+apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-
-    modImplementation "com.daqem.uilib:uilib-common:${project.ui_library_version}"
-
-    // YAML
-    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
-
-    // TOML
-    modImplementation "com.electronwill.night-config:toml:3.6.6"
-    modImplementation "com.electronwill.night-config:core:3.6.6"
-
-    // JSON5
-    modImplementation "blue.endless:jankson:1.2.3"
-
-    // HOCON
-    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+    // Fabric loader for annotations/mixins (Architectury standard)
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    modImplementation "com.daqem.uilib:uilib-common:${project.uilib_version}"
+    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
+    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
+    modImplementation "blue.endless:jankson:${project.json5_version}"
+    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
-    }
-}
-
-components.java {
-    withVariantsFromConfiguration(project.configurations.shadowRuntimeElements) {
-        skip()
-    }
-}
-
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            groupId = rootProject.maven_group
-            artifactId = rootProject.archives_base_name + "-common"
-            from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            url = project.version.contains('-PR') ? 'https://maven.daqem.com/snapshots' : 'https://maven.daqem.com/releases'
-            credentials {
-                username = System.getenv("MAVEN_USER")
-                password = System.getenv("MAVEN_PASS")
-            }
-        }
     }
 }

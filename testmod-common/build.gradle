@@ -1,22 +1,20 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
 loom {
-    accessWidenerPath = project(':common').file("src/main/resources/yamlconfig.accesswidener")
+    accessWidenerPath = project(':common').file("src/main/resources/${rootProject.mod_id}.accesswidener")
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
     implementation project(path: ":common", configuration: "namedElements")
-
-    modImplementation "com.daqem.uilib:uilib-common:${project.ui_library_version}"
-
-    modImplementation "org.snakeyaml:snakeyaml-engine:2.7"
-    modImplementation "com.electronwill.night-config:toml:3.6.6"
-    modImplementation "com.electronwill.night-config:core:3.6.6"
-    modImplementation "blue.endless:jankson:1.2.3"
-    modImplementation("org.spongepowered:configurate-hocon:4.1.2") {
+    modImplementation "com.daqem.uilib:uilib-common:${project.uilib_version}"
+    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
+    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
+    modImplementation "blue.endless:jankson:${project.json5_version}"
+    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
     }
-}
-
-architectury {
-    common(rootProject.enabled_platforms.split(","))
 }
