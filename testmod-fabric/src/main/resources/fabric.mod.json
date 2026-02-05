@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "yamlconfig_test",
-  "version": "${version}",
+  "version": "1.0.0",
   "name": "YAML Config Test Mod",
   "description": "A test mod for YAML Config.",
   "authors": [

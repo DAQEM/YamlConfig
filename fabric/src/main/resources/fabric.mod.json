@@ -28,6 +28,6 @@
   "depends": {
     "fabric": "*",
     "minecraft": ">=${minecraft_version}",
-    "uilib": ">=${ui_library_version}"
+    "uilib": ">=${uilib_version}"
   }
 }
