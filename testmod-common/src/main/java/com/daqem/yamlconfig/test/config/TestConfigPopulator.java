@@ -25,7 +25,7 @@ public class TestConfigPopulator {
         builder.defineInteger("integer_val", 10)
                 .withComments("An integer value");
         builder.defineInteger("integer_bounded", 50, 0, 100)
-                .withComments("An integer between 0 and 100");
+                .withComments(false);
 
         builder.defineLong("long_val", 1000000L)
                 .withComments("A long value");
