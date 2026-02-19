@@ -19,7 +19,7 @@ Includes libraries: SnakeYAML (Apache 2.0), NightConfig (LGPL 3.0), Jankson (MIT
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21,)"
+versionRange = "[${neoforge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
