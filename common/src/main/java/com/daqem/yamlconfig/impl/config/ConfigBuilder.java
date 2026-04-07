@@ -1,7 +1,6 @@
 package com.daqem.yamlconfig.impl.config;
 
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigExtension;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
@@ -37,6 +36,7 @@ import com.daqem.yamlconfig.impl.config.entry.numeric.DoubleConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.FloatConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.IntegerConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.numeric.LongConfigEntry;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
@@ -64,11 +64,11 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension) {
-        this(modId, name, extension, ConfigType.COMMON, YamlConfigExpectPlatform.getConfigDirectory());
+        this(modId, name, extension, ConfigType.COMMON, Services.PLATFORM.getConfigDirectory());
     }
 
     public ConfigBuilder(String modId, String name, ConfigType type) {
-        this(modId, name, ConfigExtension.YAML, type, YamlConfigExpectPlatform.getConfigDirectory());
+        this(modId, name, ConfigExtension.YAML, type, Services.PLATFORM.getConfigDirectory());
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension, Path path) {
@@ -80,7 +80,7 @@ public class ConfigBuilder implements IConfigBuilder {
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension, ConfigType type) {
-        this(modId, name, extension, type, YamlConfigExpectPlatform.getConfigDirectory());
+        this(modId, name, extension, type, Services.PLATFORM.getConfigDirectory());
     }
 
     public ConfigBuilder(String modId, String name, ConfigExtension extension, ConfigType type, Path path) {

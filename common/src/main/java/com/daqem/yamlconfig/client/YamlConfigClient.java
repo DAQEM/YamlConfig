@@ -1,7 +1,6 @@
 package com.daqem.yamlconfig.client;
 
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.client.gui.component.entry.*;
 import com.daqem.yamlconfig.client.gui.component.entry.list.*;
 import com.daqem.yamlconfig.client.gui.component.entry.list.numeric.*;
@@ -11,6 +10,7 @@ import com.daqem.yamlconfig.client.gui.component.entry.minecraft.*;
 import com.daqem.yamlconfig.client.gui.component.entry.numeric.*;
 import com.daqem.yamlconfig.client.gui.registry.ConfigEntryComponentRegistry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
+import com.daqem.yamlconfig.platform.Services;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
@@ -19,7 +19,7 @@ public class YamlConfigClient {
     public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_F12, YAML_CONFIG_CATEGORY);
 
     public static void init() {
-        YamlConfigExpectPlatform.registerKeyBinding(CONFIGS_KEY);
+        Services.PLATFORM.registerKeyBinding(CONFIGS_KEY);
         registerComponents();
     }
 

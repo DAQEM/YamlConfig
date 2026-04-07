@@ -4,14 +4,14 @@ import com.daqem.uilib.gui.component.AbstractComponent;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.screen.ConfigScreen;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigScreenPacket;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class ConfigsCategoryComponent extends AbstractComponent {
                             ConfigType type = config.getType();
                             switch (type) {
                                 case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
-                                case COMMON, SERVER -> YamlConfigExpectPlatform.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
+                                case COMMON, SERVER -> Services.PLATFORM.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
                         }))
                 .toList();
@@ -55,7 +55,7 @@ public class ConfigsCategoryComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         guiGraphics.fill(getTotalX(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT, getTotalX() + getWidth(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
         this.configButtons.forEach(button -> {
             button.setX(3 + (this.configButtons.indexOf(button) % 2) * 150);

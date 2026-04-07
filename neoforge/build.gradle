@@ -1,36 +1,75 @@
-architectury {
-    platformSetupLoomIde()
-    neoForge()
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
 }
 
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-apply from: rootProject.file("gradle/scripts/platform.gradle")
 apply from: rootProject.file("gradle/scripts/publishing.gradle")
 apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
 dependencies {
-    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
-
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
-
-    modImplementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
-    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
-    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
-    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
-    modImplementation "blue.endless:jankson:${project.json5_version}"
-    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
+    implementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
+    implementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    implementation "com.electronwill.night-config:toml:${project.toml_version}"
+    implementation "com.electronwill.night-config:core:${project.toml_version}"
+    implementation "blue.endless:jankson:${project.json5_version}"
+    implementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
     }
+}
 
-    shadowBundle "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
-    shadowBundle "com.electronwill.night-config:toml:${project.toml_version}"
-    shadowBundle "com.electronwill.night-config:core:${project.toml_version}"
-    shadowBundle "blue.endless:jankson:${project.json5_version}"
-    shadowBundle("org.spongepowered:configurate-hocon:${project.hocon_version}") {
-        exclude group: 'org.checkerframework'
+neoForge {
+    version = neoforge_version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+            gameDirectory = this.mkdir(this.file("runs/client"))
+        }
+        data {
+            clientData()
+            gameDirectory = this.mkdir(this.file("runs/data"))
+            // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        server {
+            server()
+            this.file("runs/server").createParentDirectories()
+            gameDirectory = this.mkdir(this.file("runs/server"))
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'neoforge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName, it.getTaskName(null, 'jarJar')].each { variant ->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'neoforge')
+            }
+        }
     }
 }

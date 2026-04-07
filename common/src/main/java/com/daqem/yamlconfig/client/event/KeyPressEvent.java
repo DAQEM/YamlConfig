@@ -2,9 +2,9 @@ package com.daqem.yamlconfig.client.event;
 
 import com.daqem.uilib.api.widget.IInputValidatable;
 import com.daqem.yamlconfig.client.YamlConfigClient;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.client.gui.screen.ConfigsScreen;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigsScreenPacket;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -17,7 +17,7 @@ public class KeyPressEvent {
             if (screen instanceof ConfigsScreen configsScreen && !(configsScreen.getFocused() instanceof IInputValidatable)) {
                 screen.onClose();
             } else if (screen == null) {
-                YamlConfigExpectPlatform.sendToServer(new ServerboundOpenConfigsScreenPacket());
+                Services.PLATFORM.sendToServer(new ServerboundOpenConfigsScreenPacket());
             }
         }
     }

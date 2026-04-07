@@ -120,19 +120,19 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry, Map<String, String> value) {
-            buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buf.writeMap(value, FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
         }
 
         @Override
         public Map<String, String> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            return buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
-            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
+            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
@@ -143,8 +143,8 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
         @Override
         public IStringMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
-            Map<String, String> value = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
-            Map<String, String> defaultValue = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf);
+            Map<String, String> value = buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
+            Map<String, String> defaultValue = buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             String pattern = buf.readUtf();

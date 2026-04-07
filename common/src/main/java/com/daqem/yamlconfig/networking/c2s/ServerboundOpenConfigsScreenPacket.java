@@ -1,10 +1,10 @@
 package com.daqem.yamlconfig.networking.c2s;
 
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import com.daqem.yamlconfig.networking.s2c.ClientboundOpenConfigsScreenPacket;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -41,7 +41,7 @@ public class ServerboundOpenConfigsScreenPacket implements CustomPacketPayload {
                     .collect(Collectors.groupingBy(IConfig::getModId)));
         }
 
-        YamlConfigExpectPlatform.sendToPlayer(
+        Services.PLATFORM.sendToPlayer(
                 serverPlayer,
                 new ClientboundOpenConfigsScreenPacket(configMap)
         );

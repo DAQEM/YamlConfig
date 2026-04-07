@@ -7,7 +7,6 @@ import com.daqem.uilib.gui.component.text.TextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.uilib.gui.widget.ScrollContainerWidget;
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
@@ -18,8 +17,9 @@ import com.daqem.yamlconfig.client.gui.component.MarginComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -60,15 +60,15 @@ public class ConfigScreen extends AbstractScreen {
                 this.config.save();
                 ConfigEvent.fireUpdate(this.config, Minecraft.getInstance().level);
             } else {
-                YamlConfigExpectPlatform.sendToServer(new ServerboundSaveConfigPacket(this.config));
+                Services.PLATFORM.sendToServer(new ServerboundSaveConfigPacket(this.config));
             }
 
             this.onClose();
         }) {
             @Override
-            protected void renderContents(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
+            protected void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
                 this.active = configEntryComponents.stream().noneMatch(IConfigEntryComponent::hasValidationErrors);
-                super.renderContents(guiGraphics, i, j, f);
+                super.extractContents(guiGraphics, i, j, f);
             }
         };
 

@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.daqem.yamlconfig.fabric.YamlConfigCommonFabric"
+      "com.daqem.yamlconfig.fabric.YamlConfigFabric"
     ],
     "client": [
       "com.daqem.yamlconfig.fabric.YamlConfigClientFabric"
@@ -26,7 +26,7 @@
     "yamlconfig-common.mixins.json"
   ],
   "depends": {
-    "fabric": "*",
+    "fabric-api": "*",
     "minecraft": ">=${minecraft_version}",
     "uilib": ">=${uilib_version}"
   }

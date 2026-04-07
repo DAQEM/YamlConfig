@@ -1,22 +1,72 @@
-architectury {
-    common(rootProject.enabled_platforms.split(","))
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/${rootProject.mod_id}.accesswidener")
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
 }
 
 apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
+neoForge {
+    neoFormVersion = neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+}
+
 dependencies {
-    // Fabric loader for annotations/mixins (Architectury standard)
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modImplementation "com.daqem.uilib:uilib-common:${project.uilib_version}"
-    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
-    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
-    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
-    modImplementation "blue.endless:jankson:${project.json5_version}"
-    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: '0.8.5'
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+    annotationProcessor group: 'io.github.llamalad7', name: 'mixinextras-common', version: '0.3.5'
+
+    implementation "com.daqem.uilib:uilib-common:${project.uilib_version}"
+    implementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    implementation "com.electronwill.night-config:toml:${project.toml_version}"
+    implementation "com.electronwill.night-config:core:${project.toml_version}"
+    implementation "blue.endless:jankson:${project.json5_version}"
+    implementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
+    }
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
+
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'common')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'common')
+            }
+        }
+    }
+}
+
+tasks.register('printVersionName') {
+    doLast {
+        println version
     }
 }

@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.client.gui.component;
 
 import com.daqem.uilib.gui.component.AbstractComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class MarginComponent extends AbstractComponent {
 
@@ -10,7 +10,7 @@ public class MarginComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
 
     }
 }

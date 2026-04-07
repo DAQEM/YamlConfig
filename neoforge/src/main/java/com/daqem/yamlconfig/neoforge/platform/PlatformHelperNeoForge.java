@@ -1,5 +1,6 @@
-package com.daqem.yamlconfig.neoforge;
+package com.daqem.yamlconfig.neoforge.platform;
 
+import com.daqem.yamlconfig.platform.IPlatformHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,19 +12,22 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YamlConfigExpectPlatformImpl {
+public class PlatformHelperNeoForge implements IPlatformHelper {
 
     public static final List<KeyMapping> KEYS_TO_REGISTER = new ArrayList<>();
 
-    public static Path getConfigDirectory() {
+    @Override
+    public Path getConfigDirectory() {
         return FMLPaths.CONFIGDIR.get();
     }
 
-    public static void sendToServer(CustomPacketPayload payload) {
+    @Override
+    public void sendToServer(CustomPacketPayload payload) {
         ClientPacketDistributor.sendToServer(payload);
     }
 
-    public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
+    @Override
+    public void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
         try {
             PacketDistributor.sendToPlayer(player, payload);
         } catch (UnsupportedOperationException e) {
@@ -33,7 +37,8 @@ public class YamlConfigExpectPlatformImpl {
         }
     }
 
-    public static void registerKeyBinding(KeyMapping mapping) {
+    @Override
+    public void registerKeyBinding(KeyMapping mapping) {
         KEYS_TO_REGISTER.add(mapping);
     }
 }

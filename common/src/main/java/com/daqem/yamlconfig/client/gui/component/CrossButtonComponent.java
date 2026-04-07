@@ -3,7 +3,7 @@ package com.daqem.yamlconfig.client.gui.component;
 import com.daqem.uilib.gui.widget.ButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -23,7 +23,7 @@ public class CrossButtonComponent extends ButtonWidget {
     }
 
     @Override
-    protected void renderContents(GuiGraphics guiGraphics, int i, int j, float f) {
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
         guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 DEFAULT_SPRITES.get(this.active, this.isHoveredOrFocused()),
@@ -33,6 +33,6 @@ public class CrossButtonComponent extends ButtonWidget {
                 this.getHeight(),
                 ARGB.white(this.alpha)
         );
-        this.renderDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphics.HoveredTextEffects.NONE));
+        this.extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
     }
 }

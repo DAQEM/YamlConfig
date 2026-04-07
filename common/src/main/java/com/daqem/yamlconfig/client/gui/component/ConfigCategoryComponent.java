@@ -5,7 +5,7 @@ import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         renderHorizontalLines(guiGraphics);
         int currentY = 0;
 
@@ -72,7 +72,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
         }
     }
 
-    private void renderHorizontalLines(GuiGraphics graphics) {
+    private void renderHorizontalLines(GuiGraphicsExtractor graphics) {
         if (this.key == null) return;
 
         int lineYStart = Minecraft.getInstance().font.lineHeight + 6;

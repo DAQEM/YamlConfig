@@ -1,7 +1,6 @@
 package com.daqem.yamlconfig.fabric;
 
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.client.networking.*;
 import com.daqem.yamlconfig.event.PlayerJoinEvent;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import com.daqem.yamlconfig.networking.c2s.*;
@@ -11,7 +10,7 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-public class YamlConfigCommonFabric implements ModInitializer {
+public class YamlConfigFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
@@ -27,17 +26,17 @@ public class YamlConfigCommonFabric implements ModInitializer {
 
     private void registerNetworking() {
         // C2S
-        PayloadTypeRegistry.playC2S().register(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, ServerboundOpenConfigScreenPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(YamlConfigNetworking.SERVERBOUND_SAVE_CONFIG_PACKET, ServerboundSaveConfigPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, ServerboundOpenConfigsScreenPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, ServerboundOpenConfigScreenPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(YamlConfigNetworking.SERVERBOUND_SAVE_CONFIG_PACKET, ServerboundSaveConfigPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIGS_SCREEN_PACKET, (payload, context) -> payload.handleServerSide(context.player()));
         ServerPlayNetworking.registerGlobalReceiver(YamlConfigNetworking.SERVERBOUND_OPEN_CONFIG_SCREEN_PACKET, (payload, context) -> payload.handleServerSide(context.player()));
         ServerPlayNetworking.registerGlobalReceiver(YamlConfigNetworking.SERVERBOUND_SAVE_CONFIG_PACKET, (payload, context) -> payload.handleServerSide(context.player()));
 
         // S2C
-        PayloadTypeRegistry.playS2C().register(YamlConfigNetworking.CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(YamlConfigNetworking.CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(YamlConfigNetworking.CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(YamlConfigNetworking.CLIENTBOUND_SYNC_CONFIG, ClientboundSyncConfigPacket.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(YamlConfigNetworking.CLIENTBOUND_OPEN_CONFIGS_SCREEN_PACKET, ClientboundOpenConfigsScreenPacket.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(YamlConfigNetworking.CLIENTBOUND_OPEN_CONFIG_SCREEN_PACKET, ClientboundOpenConfigScreenPacket.STREAM_CODEC);
     }
 }

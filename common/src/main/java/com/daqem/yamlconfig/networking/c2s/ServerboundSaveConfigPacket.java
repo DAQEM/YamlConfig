@@ -1,13 +1,13 @@
 package com.daqem.yamlconfig.networking.c2s;
 
 import com.daqem.yamlconfig.YamlConfig;
-import com.daqem.yamlconfig.YamlConfigExpectPlatform;
 import com.daqem.yamlconfig.api.config.ConfigType;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.config.serializer.IConfigSerializer;
 import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import com.daqem.yamlconfig.networking.s2c.ClientboundSyncConfigPacket;
+import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -54,7 +54,7 @@ public class ServerboundSaveConfigPacket implements CustomPacketPayload {
             if (existingConfig.getType() == ConfigType.COMMON) {
                 //Sync the config to the players on the server
                 Objects.requireNonNull(serverPlayer.level().getServer()).getPlayerList().getPlayers().forEach(player ->
-                        YamlConfigExpectPlatform.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig)));
+                        Services.PLATFORM.sendToPlayer(player, new ClientboundSyncConfigPacket(existingConfig)));
             }
         }
     }

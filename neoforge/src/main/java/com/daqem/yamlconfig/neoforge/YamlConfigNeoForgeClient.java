@@ -4,6 +4,7 @@ import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.client.YamlConfigClient;
 import com.daqem.yamlconfig.client.event.KeyPressEvent;
 import com.daqem.yamlconfig.client.event.PlayerLeaveEvent;
+import com.daqem.yamlconfig.neoforge.platform.PlatformHelperNeoForge;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -24,7 +25,7 @@ public class YamlConfigNeoForgeClient {
     }
 
     private void registerKeys(RegisterKeyMappingsEvent event) {
-        YamlConfigExpectPlatformImpl.KEYS_TO_REGISTER.forEach(event::register);
+        PlatformHelperNeoForge.KEYS_TO_REGISTER.forEach(event::register);
     }
 
     @SubscribeEvent
