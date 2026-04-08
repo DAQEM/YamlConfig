@@ -10,7 +10,6 @@ import com.daqem.yamlconfig.client.gui.screen.ConfigScreen;
 import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigScreenPacket;
 import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;
@@ -21,23 +20,17 @@ public class ConfigsCategoryComponent extends AbstractComponent {
     private static final int TOP_MARGIN = 12;
     private static final int TITLE_HEIGHT = 10;
 
-    private final List<IConfig> configs;
-    private final Font font;
-
-    private final TruncatedTextComponent title;
     private final List<ButtonWidget> configButtons;
 
-    public ConfigsCategoryComponent(int x, int y, Font font, List<IConfig> configs) {
+    public ConfigsCategoryComponent(int x, int y, List<IConfig> configs) {
         super(x, y, WIDTH, calculateHeight(configs));
-        this.configs = configs;
-        this.font = font;
 
         if (configs.isEmpty()) {
             throw new IllegalArgumentException("Configs list cannot be empty");
         }
 
         IConfig firstConfig = configs.getFirst();
-        this.title = new TruncatedTextComponent(4, TOP_MARGIN, WIDTH, firstConfig.getModName());
+        TruncatedTextComponent title = new TruncatedTextComponent(4, TOP_MARGIN, WIDTH, firstConfig.getModName());
 
         this.configButtons = configs.stream()
                 .map(config -> new ButtonWidget(0, 0, 144, 20, config.getDisplayName(),
@@ -50,12 +43,12 @@ public class ConfigsCategoryComponent extends AbstractComponent {
                         }))
                 .toList();
 
-        this.addComponent(this.title);
+        this.addComponent(title);
         this.configButtons.forEach(this::addWidget);
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         guiGraphics.fill(getTotalX(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT, getTotalX() + getWidth(), getTotalY() + TOP_MARGIN + TITLE_HEIGHT + 1, 0xFFFFFFFF);
         this.configButtons.forEach(button -> {
             button.setX(3 + (this.configButtons.indexOf(button) % 2) * 150);

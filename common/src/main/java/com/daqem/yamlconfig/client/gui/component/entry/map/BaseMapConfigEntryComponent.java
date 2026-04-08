@@ -201,8 +201,8 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         renderHorizontalLines(guiGraphics);
         this.addEntryButton.active = getConfigEntry().getMaxLength() > this.editBoxWidgets.size();
         this.editBoxWidgets.values().forEach(crossButtonComponent -> crossButtonComponent.active = getConfigEntry().getMinLength() < this.editBoxWidgets.size());

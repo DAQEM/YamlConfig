@@ -54,7 +54,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         renderHorizontalLines(guiGraphics);
         int currentY = 0;
 
@@ -65,7 +65,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
 
         for (AbstractComponent child : this.children) {
             child.setY(currentY);
-            child.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+            child.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
 
             // Add height + gap for the next element's position
             currentY += child.getHeight() + 10;

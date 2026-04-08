@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.client.gui.screen;
 
 import com.daqem.uilib.gui.AbstractScreen;
 import com.daqem.uilib.gui.background.BlurredBackground;
+import com.daqem.uilib.gui.component.EmptyComponent;
 import com.daqem.uilib.gui.component.sprite.SpriteComponent;
 import com.daqem.uilib.gui.component.text.TextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
@@ -12,7 +13,6 @@ import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.ConfigEntryComponentBuilder;
 import com.daqem.yamlconfig.client.gui.component.ConfigCategoryComponent;
-import com.daqem.yamlconfig.client.gui.component.EmptyComponent;
 import com.daqem.yamlconfig.client.gui.component.MarginComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.event.ConfigEvent;
