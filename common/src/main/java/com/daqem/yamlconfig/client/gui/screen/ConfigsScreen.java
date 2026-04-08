@@ -2,6 +2,7 @@ package com.daqem.yamlconfig.client.gui.screen;
 
 import com.daqem.uilib.gui.AbstractScreen;
 import com.daqem.uilib.gui.background.BlurredBackground;
+import com.daqem.uilib.gui.component.EmptyComponent;
 import com.daqem.uilib.gui.component.sprite.SpriteComponent;
 import com.daqem.uilib.gui.component.text.TextComponent;
 import com.daqem.uilib.gui.widget.ButtonWidget;
@@ -9,7 +10,6 @@ import com.daqem.uilib.gui.widget.ScrollContainerWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.component.ConfigsCategoryComponent;
-import com.daqem.yamlconfig.client.gui.component.EmptyComponent;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class ConfigsScreen extends AbstractScreen {
 
         List<ConfigsCategoryComponent> configCategories = new ArrayList<>();
         this.configs.values().forEach(modConfigs ->
-                configCategories.add(new ConfigsCategoryComponent(0, 0, getFont(), modConfigs))
+                configCategories.add(new ConfigsCategoryComponent(0, 0, modConfigs))
         );
 
         EmptyComponent scrollContainerComponent = new EmptyComponent(this.width / 2 - (310 / 2), 34, 310, this.height - 34 - 32);

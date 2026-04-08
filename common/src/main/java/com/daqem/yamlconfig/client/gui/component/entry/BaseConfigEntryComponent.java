@@ -37,7 +37,7 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         this.resetValueButton.active = !isOriginalValue();
     }
 

@@ -3,8 +3,6 @@ package com.daqem.yamlconfig.client.gui.component;
 import com.daqem.uilib.gui.component.text.TruncatedTextComponent;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
-import com.daqem.yamlconfig.api.config.entry.comment.IComments;
-import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.locale.Language;
@@ -26,8 +24,8 @@ public class TruncatedKeyTextComponent extends TruncatedTextComponent {
     }
 
     @Override
-    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         if (configEntry != null && this.getRectangle().containsPoint(mouseX, mouseY)) {
             List<String> comments = configEntry
                     .getComments()
