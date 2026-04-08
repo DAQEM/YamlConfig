@@ -1,5 +1,6 @@
 plugins {
     id 'multiloader-common'
+    id 'com.gradleup.shadow'
 }
 
 configurations {
@@ -8,6 +9,11 @@ configurations {
     }
     commonResources{
         canBeResolved = true
+    }
+
+    shadowBundle {
+        canBeResolved = true
+        canBeConsumed = false
     }
 }
 
@@ -38,3 +44,27 @@ tasks.named('sourcesJar', Jar) {
     dependsOn(configurations.commonResources)
     from(configurations.commonResources)
 }
+
+shadowJar {
+    configurations = [project.configurations.shadowBundle]
+
+    // YAML
+    relocate "org.snakeyaml", "com.daqem.yamlconfig.libs.snakeyaml"
+
+    // TOML
+    relocate "com.electronwill.nightconfig", "com.daqem.yamlconfig.libs.nightconfig"
+
+    // JSON5
+    relocate "blue.endless.jankson", "com.daqem.yamlconfig.libs.jankson"
+
+    // HOCON
+    relocate "org.spongepowered.configurate", "com.daqem.yamlconfig.libs.configurate"
+    relocate "com.typesafe.config", "com.daqem.yamlconfig.libs.typesafe.config"
+    relocate "io.leangen.geantyref", "com.daqem.yamlconfig.libs.geantyref"
+
+    archiveClassifier = ""
+
+    mergeServiceFiles()
+}
+
+assemble.dependsOn shadowJar

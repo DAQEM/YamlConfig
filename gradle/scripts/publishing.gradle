@@ -11,7 +11,7 @@ unifiedPublishing {
         gameVersions = rootProject.supported_minecraft_versions.split(",").toList()
         gameLoaders = [project.name]
 
-        mainPublication tasks.jar
+        mainPublication tasks.shadowJar
 
         var cursetoken = System.getenv("CURSEFORGE_API_KEY")
         if (cursetoken != null) {

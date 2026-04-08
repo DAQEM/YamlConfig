@@ -15,6 +15,14 @@ dependencies {
     implementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
     }
+
+    shadowBundle "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    shadowBundle "com.electronwill.night-config:toml:${project.toml_version}"
+    shadowBundle "com.electronwill.night-config:core:${project.toml_version}"
+    shadowBundle "blue.endless:jankson:${project.json5_version}"
+    shadowBundle("org.spongepowered:configurate-hocon:${project.hocon_version}") {
+        exclude group: 'org.checkerframework'
+    }
 }
 
 neoForge {
