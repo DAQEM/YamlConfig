@@ -24,6 +24,19 @@ repositories {
         }
         filter { includeGroupAndSubgroups('org.spongepowered') }
     }
+    exclusiveContent {
+        forRepositories(
+                maven {
+                    name = 'ParchmentMC'
+                    url = 'https://maven.parchmentmc.org/'
+                },
+                maven {
+                    name = "NeoForge"
+                    url = 'https://maven.neoforged.net/releases'
+                }
+        )
+        filter { includeGroup('org.parchmentmc.data') }
+    }
     maven {
         name = 'DAQEM Releases'
         url = 'https://maven.daqem.com/releases'
@@ -31,6 +44,16 @@ repositories {
     maven {
         name = 'DAQEM Snapshots'
         url = 'https://maven.daqem.com/snapshots'
+    }
+}
+
+['apiElements', 'runtimeElements', 'sourcesElements'].each { variant ->
+    configurations."$variant".outgoing {
+        capability("$group:${base.archivesName.get()}:$version")
+        capability("$group:$mod_id-${project.name}-${minecraft_version}:$version")
+    }
+    publishing.publications.configureEach {
+        suppressPomMetadataWarningsFor(variant)
     }
 }
 
@@ -87,4 +110,8 @@ processResources {
     }
 
     inputs.properties(expandProps)
+}
+
+tasks.withType(AbstractCopyTask).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }

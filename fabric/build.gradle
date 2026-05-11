@@ -1,19 +1,23 @@
 plugins {
     id 'multiloader-loader'
-    id 'net.fabricmc.fabric-loom'
+    id 'fabric-loom'
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    implementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
-    implementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
-    implementation "com.electronwill.night-config:toml:${project.toml_version}"
-    implementation "com.electronwill.night-config:core:${project.toml_version}"
-    implementation "blue.endless:jankson:${project.json5_version}"
-    implementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
+    modImplementation "com.daqem.uilib:uilib-fabric:${project.uilib_version}"
+    modImplementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    modImplementation "com.electronwill.night-config:toml:${project.toml_version}"
+    modImplementation "com.electronwill.night-config:core:${project.toml_version}"
+    modImplementation "blue.endless:jankson:${project.json5_version}"
+    modImplementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
         exclude group: 'org.checkerframework'
     }
 
@@ -30,10 +34,6 @@ apply from: rootProject.file("gradle/scripts/publishing.gradle")
 apply from: rootProject.file("gradle/scripts/maven-publishing.gradle")
 
 loom {
-    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
-    if (aw.exists()) {
-        accessWidenerPath.set(aw)
-    }
     runs {
         client {
             client()
@@ -46,25 +46,6 @@ loom {
             setConfigName('Fabric Server')
             ideConfigGenerated(true)
             runDir('runs/server')
-        }
-    }
-}
-
-// Implement mcgradleconventions loader attribute
-def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
-['apiElements', 'runtimeElements', 'sourcesElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
-    configurations.named("$variant") {
-        attributes {
-            attribute(loaderAttribute, 'fabric')
-        }
-    }
-}
-sourceSets.configureEach {
-    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName].each { variant->
-        configurations.named("$variant") {
-            attributes {
-                attribute(loaderAttribute, 'fabric')
-            }
         }
     }
 }
