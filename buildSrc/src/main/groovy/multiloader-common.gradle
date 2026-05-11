@@ -25,8 +25,12 @@ repositories {
         filter { includeGroupAndSubgroups('org.spongepowered') }
     }
     maven {
-        name = 'DAQEM'
+        name = 'DAQEM Releases'
         url = 'https://maven.daqem.com/releases'
+    }
+    maven {
+        name = 'DAQEM Snapshots'
+        url = 'https://maven.daqem.com/snapshots'
     }
 }
 
