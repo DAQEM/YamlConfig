@@ -2,12 +2,12 @@ package com.daqem.yamlconfig.api.config.entry.minecraft;
 
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Represents a resource location configuration entry.
  */
-public interface IIdentifierConfigEntry extends IConfigEntry<Identifier> {
+public interface IResourceLocationConfigEntry extends IConfigEntry<ResourceLocation> {
     /**
      * Gets the regex pattern the resource location must match.
      *

@@ -18,8 +18,9 @@ import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import com.daqem.yamlconfig.event.ConfigEvent;
 import com.daqem.yamlconfig.networking.c2s.ServerboundSaveConfigPacket;
 import com.daqem.yamlconfig.platform.Services;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -66,9 +67,9 @@ public class ConfigScreen extends AbstractScreen {
             this.onClose();
         }) {
             @Override
-            protected void extractContents(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
+            protected void renderWidget(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
                 this.active = configEntryComponents.stream().noneMatch(IConfigEntryComponent::hasValidationErrors);
-                super.extractContents(guiGraphics, i, j, f);
+                super.renderWidget(guiGraphics, i, j, f);
             }
         };
 
@@ -100,5 +101,13 @@ public class ConfigScreen extends AbstractScreen {
         } else {
             super.onClose();
         }
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        RenderSystem.disableBlend();
     }
 }

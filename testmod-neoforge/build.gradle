@@ -49,6 +49,15 @@ configurations {
 }
 
 dependencies {
+    implementation "com.daqem.uilib:uilib-neoforge:${project.uilib_version}"
+    implementation "org.snakeyaml:snakeyaml-engine:${project.yaml_version}"
+    implementation "com.electronwill.night-config:toml:${project.toml_version}"
+    implementation "com.electronwill.night-config:core:${project.toml_version}"
+    implementation "blue.endless:jankson:${project.json5_version}"
+    implementation("org.spongepowered:configurate-hocon:${project.hocon_version}") {
+        exclude group: 'org.checkerframework'
+    }
+
     testmodCommonJava project(path: ':testmod-common', configuration: 'testmodCommonJava')
     testmodCommonResources project(path: ':testmod-common', configuration: 'testmodCommonResources')
 }

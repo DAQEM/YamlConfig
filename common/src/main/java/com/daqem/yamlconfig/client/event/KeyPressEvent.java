@@ -7,13 +7,12 @@ import com.daqem.yamlconfig.networking.c2s.ServerboundOpenConfigsScreenPacket;
 import com.daqem.yamlconfig.platform.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
 
 public class KeyPressEvent {
 
-    public static void onKeyPress(Minecraft client, KeyEvent event, int action) {
+    public static void onKeyPress(Minecraft client, int key, int scanCode, int action) {
         Screen screen = client.screen;
-        if (action == 1 && YamlConfigClient.CONFIGS_KEY.matches(event)) {
+        if (action == 1 && YamlConfigClient.CONFIGS_KEY.matches(key, scanCode)) {
             if (screen instanceof ConfigsScreen configsScreen && !(configsScreen.getFocused() instanceof IInputValidatable)) {
                 screen.onClose();
             } else if (screen == null) {

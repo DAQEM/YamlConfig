@@ -3,7 +3,7 @@ package com.daqem.yamlconfig.api.config.entry.type;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Represents the type of a configuration entry, used for serialization and identification.
@@ -16,9 +16,9 @@ public interface IConfigEntryType<C extends IConfigEntry<T>, T> {
     /**
      * Gets the unique identifier for this entry type.
      *
-     * @return The {@link Identifier} ID.
+     * @return The {@link ResourceLocation} ID.
      */
-    Identifier getId();
+    ResourceLocation getId();
 
     /**
      * Gets the serializer for this entry type.

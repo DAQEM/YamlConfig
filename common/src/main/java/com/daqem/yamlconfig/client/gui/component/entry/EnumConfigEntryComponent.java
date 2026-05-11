@@ -28,15 +28,13 @@ public class EnumConfigEntryComponent<E extends Enum<E>> extends BaseConfigEntry
                 Component.empty(),
                 index,
                 value,
-                () -> value,
                 CycleButton.ValueListSupplier.create(values),
                 e -> Component.literal(e.name()),
                 CycleButton::createDefaultNarrationMessage,
                 (cycleButton, o) -> {
                 },
-                o -> null,
-                CycleButton.DisplayState.VALUE,
-                (cycleButton, object1) -> null
+                val -> null,
+                true
         );
         this.cycleButtonComponent.setValue(configEntry.get());
         this.addWidget(this.cycleButtonComponent);

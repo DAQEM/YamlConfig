@@ -10,7 +10,10 @@ import com.daqem.uilib.gui.widget.ScrollContainerWidget;
 import com.daqem.yamlconfig.YamlConfig;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.client.gui.component.ConfigsCategoryComponent;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,5 +63,13 @@ public class ConfigsScreen extends AbstractScreen {
         this.addComponent(scrollContainerComponent);
 
         super.init();
+    }
+
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        RenderSystem.disableBlend();
     }
 }

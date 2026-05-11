@@ -30,7 +30,7 @@ public class YamlConfigNeoForgeClient {
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.Key event) {
-        KeyPressEvent.onKeyPress(Minecraft.getInstance(), event.getKeyEvent(), event.getAction());
+        KeyPressEvent.onKeyPress(Minecraft.getInstance(), event.getKey(), event.getScanCode(), event.getAction());
     }
 
     @SubscribeEvent

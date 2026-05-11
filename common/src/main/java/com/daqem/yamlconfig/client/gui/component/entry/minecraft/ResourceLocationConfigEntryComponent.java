@@ -2,19 +2,19 @@ package com.daqem.yamlconfig.client.gui.component.entry.minecraft;
 
 import com.daqem.uilib.gui.widget.EditBoxWidget;
 import com.daqem.uilib.util.ValidationErrors;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class IdentifierConfigEntryComponent extends BaseConfigEntryComponent<IIdentifierConfigEntry> {
+public class ResourceLocationConfigEntryComponent extends BaseConfigEntryComponent<IResourceLocationConfigEntry> {
 
     private final EditBoxWidget editBoxWidget;
 
-    public IdentifierConfigEntryComponent(String key, IIdentifierConfigEntry configEntry) {
+    public ResourceLocationConfigEntryComponent(String key, IResourceLocationConfigEntry configEntry) {
         super(key, configEntry, 0, 0, DEFAULT_HEIGHT);
 
         this.editBoxWidget = new EditBoxWidget(
@@ -28,9 +28,9 @@ public class IdentifierConfigEntryComponent extends BaseConfigEntryComponent<IId
             @Override
             public List<Component> validateInput(String input) {
                 List<Component> list = super.validateInput(input);
-                Identifier value = Identifier.tryParse(input);
+                ResourceLocation value = ResourceLocation.tryParse(input);
                 if (value == null || value.getPath().isEmpty() || value.getNamespace().isEmpty() || value.getPath().contains(" ") || value.getNamespace().contains(" ")){
-                    list.add(ValidationErrors.invalidIdentifier());
+                    list.add(ValidationErrors.invalidResourceLocation());
                 } else {
                     if (configEntry.getPattern() != null && !input.matches(configEntry.getPattern())) {
                         list.add(ValidationErrors.pattern(configEntry.getPattern()));
@@ -48,7 +48,7 @@ public class IdentifierConfigEntryComponent extends BaseConfigEntryComponent<IId
 
     @Override
     public boolean isOriginalValue() {
-        return this.getConfigEntry().getDefaultValue().equals(Identifier.tryParse(this.editBoxWidget.getValue()));
+        return this.getConfigEntry().getDefaultValue().equals(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class IdentifierConfigEntryComponent extends BaseConfigEntryComponent<IId
     @Override
     public void applyValue() {
         if (this.editBoxWidget.hasInputValidationErrors()) return;
-        this.getConfigEntry().set(Identifier.tryParse(this.editBoxWidget.getValue()));
+        this.getConfigEntry().set(ResourceLocation.tryParse(this.editBoxWidget.getValue()));
     }
 
     @Override

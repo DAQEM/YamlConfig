@@ -1,7 +1,7 @@
 package com.daqem.yamlconfig.fabric.platform;
 
 import com.daqem.yamlconfig.platform.IPlatformHelper;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
@@ -30,6 +30,6 @@ public class PlatformHelperFabric implements IPlatformHelper {
 
     @Override
     public void registerKeyBinding(KeyMapping mapping) {
-        KeyMappingHelper.registerKeyMapping(mapping);
+        KeyBindingHelper.registerKeyBinding(mapping);
     }
 }

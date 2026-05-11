@@ -10,7 +10,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 
 public class TestMod {
@@ -27,10 +27,10 @@ public class TestMod {
         TEST_ENTRY_TYPE = register(getId("test"), new TestConfigEntrySerializer());
     }
 
-    private static <C extends IConfigEntry<T>, T> IConfigEntryType<C, T> register(Identifier id, IConfigEntrySerializer<C, T> serializer) {
+    private static <C extends IConfigEntry<T>, T> IConfigEntryType<C, T> register(ResourceLocation id, IConfigEntrySerializer<C, T> serializer) {
         return Registry.register(YamlConfigRegistry.CONFIG_ENTRY, id, new IConfigEntryType<>() {
             @Override
-            public Identifier getId() {
+            public ResourceLocation getId() {
                 return id;
             }
 
@@ -41,7 +41,7 @@ public class TestMod {
         });
     }
 
-    public static Identifier getId(String id) {
-        return Identifier.fromNamespaceAndPath(MOD_ID, id);
+    public static ResourceLocation getId(String id) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
     }
 }

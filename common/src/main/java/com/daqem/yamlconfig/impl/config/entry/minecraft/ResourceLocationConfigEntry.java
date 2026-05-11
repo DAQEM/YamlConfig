@@ -2,7 +2,7 @@ package com.daqem.yamlconfig.impl.config.entry.minecraft;
 
 import com.daqem.yamlconfig.api.config.entry.comment.IComments;
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
-import com.daqem.yamlconfig.api.config.entry.minecraft.IIdentifierConfigEntry;
+import com.daqem.yamlconfig.api.config.entry.minecraft.IResourceLocationConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.serializer.IConfigEntrySerializer;
 import com.daqem.yamlconfig.api.config.entry.type.IConfigEntryType;
 import com.daqem.yamlconfig.api.exception.ConfigEntryValidationException;
@@ -14,32 +14,32 @@ import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
-public class IdentifierConfigEntry extends BaseConfigEntry<Identifier> implements IIdentifierConfigEntry {
+public class ResourceLocationConfigEntry extends BaseConfigEntry<ResourceLocation> implements IResourceLocationConfigEntry {
 
     private final String pattern;
 
-    public IdentifierConfigEntry(String key, Identifier defaultValue) {
+    public ResourceLocationConfigEntry(String key, ResourceLocation defaultValue) {
         this(key, defaultValue, null);
     }
 
-    public IdentifierConfigEntry(String key, Identifier defaultValue, String pattern) {
+    public ResourceLocationConfigEntry(String key, ResourceLocation defaultValue, String pattern) {
         super(key, defaultValue);
         this.pattern = pattern;
     }
 
     @Override
-    public void validate(Identifier value) throws ConfigEntryValidationException {
+    public void validate(ResourceLocation value) throws ConfigEntryValidationException {
         if (pattern != null && !value.toString().matches(pattern)) {
             throw new ConfigEntryValidationException(getKey(), "Value does not match pattern: " + pattern);
         }
     }
 
     @Override
-    public IConfigEntryType<IConfigEntry<Identifier>, Identifier> getType() {
+    public IConfigEntryType<IConfigEntry<ResourceLocation>, ResourceLocation> getType() {
         //noinspection unchecked
-        return (IConfigEntryType<IConfigEntry<Identifier>, Identifier>) (IConfigEntryType<?, ?>) ConfigEntryTypes.RESOURCE_LOCATION;
+        return (IConfigEntryType<IConfigEntry<ResourceLocation>, ResourceLocation>) (IConfigEntryType<?, ?>) ConfigEntryTypes.RESOURCE_LOCATION;
     }
 
     @Override
@@ -61,20 +61,20 @@ public class IdentifierConfigEntry extends BaseConfigEntry<Identifier> implement
         return comments;
     }
 
-    public static class Serializer implements IConfigEntrySerializer<IIdentifierConfigEntry, Identifier> {
+    public static class Serializer implements IConfigEntrySerializer<IResourceLocationConfigEntry, ResourceLocation> {
 
         @Override
-        public void toNode(IIdentifierConfigEntry configEntry, IMapNode parentMap) {
+        public void toNode(IResourceLocationConfigEntry configEntry, IMapNode parentMap) {
             ConfigValueNode<String> node = new ConfigValueNode<>(configEntry.get().toString());
             node.setComments(configEntry.getComments().getComments());
             parentMap.put(configEntry.getKey(), node);
         }
 
         @Override
-        public void fromNode(IIdentifierConfigEntry configEntry, IMapNode parentMap) {
+        public void fromNode(IResourceLocationConfigEntry configEntry, IMapNode parentMap) {
             IConfigNode node = parentMap.get(configEntry.getKey());
             if (node instanceof IValueNode<?> valueNode && valueNode.getValue() != null) {
-                Identifier rl = Identifier.tryParse(valueNode.getValue().toString());
+                ResourceLocation rl = ResourceLocation.tryParse(valueNode.getValue().toString());
                 if (rl != null) {
                     configEntry.set(rl);
                 }
@@ -82,31 +82,31 @@ public class IdentifierConfigEntry extends BaseConfigEntry<Identifier> implement
         }
 
         @Override
-        public void valueToNetwork(RegistryFriendlyByteBuf buf, IIdentifierConfigEntry configEntry, Identifier value) {
-            buf.writeIdentifier(value);
+        public void valueToNetwork(RegistryFriendlyByteBuf buf, IResourceLocationConfigEntry configEntry, ResourceLocation value) {
+            buf.writeResourceLocation(value);
         }
 
         @Override
-        public Identifier valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readIdentifier();
+        public ResourceLocation valueFromNetwork(RegistryFriendlyByteBuf buf) {
+            return buf.readResourceLocation();
         }
 
         @Override
-        public void toNetwork(RegistryFriendlyByteBuf buf, IIdentifierConfigEntry configEntry) {
+        public void toNetwork(RegistryFriendlyByteBuf buf, IResourceLocationConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeIdentifier(configEntry.get());
-            buf.writeIdentifier(configEntry.getDefaultValue());
+            buf.writeResourceLocation(configEntry.get());
+            buf.writeResourceLocation(configEntry.getDefaultValue());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
             buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
         }
 
         @Override
-        public IIdentifierConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
+        public IResourceLocationConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
-            Identifier value = buf.readIdentifier();
-            Identifier defaultValue = buf.readIdentifier();
+            ResourceLocation value = buf.readResourceLocation();
+            ResourceLocation defaultValue = buf.readResourceLocation();
             String pattern = buf.readUtf();
-            IdentifierConfigEntry configEntry = new IdentifierConfigEntry(key, defaultValue, pattern.isEmpty() ? null : pattern);
+            ResourceLocationConfigEntry configEntry = new ResourceLocationConfigEntry(key, defaultValue, pattern.isEmpty() ? null : pattern);
             configEntry.set(value);
             buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
             return configEntry;

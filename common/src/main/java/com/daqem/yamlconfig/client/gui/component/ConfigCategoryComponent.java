@@ -5,7 +5,7 @@ import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class ConfigCategoryComponent extends AbstractComponent {
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         renderHorizontalLines(guiGraphics);
         int currentY = 0;
 
@@ -65,14 +65,14 @@ public class ConfigCategoryComponent extends AbstractComponent {
 
         for (AbstractComponent child : this.children) {
             child.setY(currentY);
-            child.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+            child.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
 
             // Add height + gap for the next element's position
             currentY += child.getHeight() + 10;
         }
     }
 
-    private void renderHorizontalLines(GuiGraphicsExtractor graphics) {
+    private void renderHorizontalLines(GuiGraphics graphics) {
         if (this.key == null) return;
 
         int lineYStart = Minecraft.getInstance().font.lineHeight + 6;

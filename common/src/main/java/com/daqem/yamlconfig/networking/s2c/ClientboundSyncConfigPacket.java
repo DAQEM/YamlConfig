@@ -30,7 +30,7 @@ public class ClientboundSyncConfigPacket implements CustomPacketPayload {
                 buf.writeMap(packet.config.getEntries(),
                         FriendlyByteBuf::writeUtf,
                         (entryBuf, entry) -> {
-                            entryBuf.writeIdentifier(entry.getType().getId());
+                            entryBuf.writeResourceLocation(entry.getType().getId());
                             //noinspection unchecked
                             ((IConfigEntry<Object>) entry).getType().getSerializer()
                                     .valueToNetwork(
@@ -46,7 +46,7 @@ public class ClientboundSyncConfigPacket implements CustomPacketPayload {
 
                 Map<String, ?> data = buf.readMap(FriendlyByteBuf::readUtf,
                         entryBuf -> {
-                            Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.get(buf.readIdentifier());
+                            Optional<Holder.Reference<IConfigEntryType<?, ?>>> reference = YamlConfigRegistry.CONFIG_ENTRY.getHolder(buf.readResourceLocation());
                             IConfigEntryType<?, ?> type = reference.map(Holder.Reference::value).orElse(null);
                             return Objects.requireNonNull(type).getSerializer().valueFromNetwork((RegistryFriendlyByteBuf) entryBuf);
                         });

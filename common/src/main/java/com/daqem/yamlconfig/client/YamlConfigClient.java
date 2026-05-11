@@ -15,8 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
 public class YamlConfigClient {
-    public static final KeyMapping.Category YAML_CONFIG_CATEGORY = new KeyMapping.Category(YamlConfig.getId("category"));
-    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_F12, YAML_CONFIG_CATEGORY);
+    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_F12, "key.category.yamlconfig.category");
 
     public static void init() {
         Services.PLATFORM.registerKeyBinding(CONFIGS_KEY);
@@ -38,7 +37,7 @@ public class YamlConfigClient {
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.FLOAT_MAP, FloatMapConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.INTEGER_MAP, IntegerMapConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.REGISTRY, (key, entry) -> new RegistryConfigEntryComponent(key, entry));
-        ConfigEntryComponentRegistry.register(ConfigEntryTypes.RESOURCE_LOCATION, IdentifierConfigEntryComponent::new);
+        ConfigEntryComponentRegistry.register(ConfigEntryTypes.RESOURCE_LOCATION, ResourceLocationConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.DOUBLE, DoubleConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.FLOAT, FloatConfigEntryComponent::new);
         ConfigEntryComponentRegistry.register(ConfigEntryTypes.INTEGER, IntegerConfigEntryComponent::new);

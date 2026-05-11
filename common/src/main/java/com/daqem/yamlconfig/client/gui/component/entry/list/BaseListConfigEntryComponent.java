@@ -9,7 +9,7 @@ import com.daqem.yamlconfig.api.gui.component.IComponentValidator;
 import com.daqem.yamlconfig.client.gui.component.CrossButtonComponent;
 import com.daqem.yamlconfig.client.gui.component.entry.BaseConfigEntryComponent;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 
@@ -124,14 +124,14 @@ public abstract class BaseListConfigEntryComponent<C extends IListConfigEntry<?>
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick, parentWidth, parentHeight);
         renderHorizontalLines(guiGraphics);
         this.addEntryButton.active = getConfigEntry().getMaxLength() > this.editBoxWidgets.size();
         this.editBoxWidgets.values().forEach(crossButtonComponent -> crossButtonComponent.active = getConfigEntry().getMinLength() < this.editBoxWidgets.size());
     }
 
-    private void renderHorizontalLines(GuiGraphicsExtractor graphics) {
+    private void renderHorizontalLines(GuiGraphics graphics) {
         int lineYStart = Minecraft.getInstance().font.lineHeight + 6;
         graphics.fill(getTotalX(), getTotalY() + lineYStart, getTotalX() + WIDTH,  getTotalY() + lineYStart + 1, 0xFFFFFFFF);
     }

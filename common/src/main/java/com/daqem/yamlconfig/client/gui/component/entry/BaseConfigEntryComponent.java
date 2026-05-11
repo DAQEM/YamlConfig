@@ -5,7 +5,7 @@ import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.gui.component.IConfigEntryComponent;
 import com.daqem.yamlconfig.client.gui.component.ResetValueButtonComponent;
 import com.daqem.yamlconfig.client.gui.component.TruncatedKeyTextComponent;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.GuiGraphics;
 
 public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extends AbstractComponent implements IConfigEntryComponent<C> {
 
@@ -37,7 +37,7 @@ public abstract class BaseConfigEntryComponent<C extends IConfigEntry<?>> extend
     }
 
     @Override
-    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, int parentWidth, int parentHeight) {
         this.resetValueButton.active = !isOriginalValue();
     }
 

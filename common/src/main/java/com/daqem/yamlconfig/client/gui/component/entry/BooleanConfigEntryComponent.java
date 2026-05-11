@@ -24,15 +24,13 @@ public class BooleanConfigEntryComponent extends BaseConfigEntryComponent<IBoole
                 Component.empty(),
                 configEntry.get() ? 0 : 1,
                 configEntry.get() ? Boolean.TRUE : Boolean.FALSE,
-                () -> configEntry.get() ? Boolean.TRUE : Boolean.FALSE,
                 CycleButton.ValueListSupplier.create(List.of(Boolean.TRUE, Boolean.FALSE)),
                 value -> value == Boolean.TRUE ? YamlConfig.translatable("gui.value.true") : YamlConfig.translatable("gui.value.false"),
                 CycleButton::createDefaultNarrationMessage,
-                (cycleButton, o) -> {
+                (cycleButton, aBoolean) -> {
                 },
-                o -> null,
-                CycleButton.DisplayState.VALUE,
-                (cycleButton, object1) -> null
+                val -> null,
+                true
         );
         this.cycleButtonComponent.setValue(configEntry.get() ? Boolean.TRUE : Boolean.FALSE);
         this.addWidget(this.cycleButtonComponent);

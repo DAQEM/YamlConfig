@@ -9,10 +9,9 @@ import com.daqem.yamlconfig.client.networking.ClientboundSyncConfigPacketHandler
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.input.KeyEvent;
 
 public class YamlConfigClientFabric implements ClientModInitializer {
 
@@ -28,7 +27,7 @@ public class YamlConfigClientFabric implements ClientModInitializer {
                 PlayerLeaveEvent.onPlayerLeave());
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             while (YamlConfigClient.CONFIGS_KEY.consumeClick()) {
-                KeyPressEvent.onKeyPress(client, new KeyEvent(KeyMappingHelper.getBoundKeyOf(YamlConfigClient.CONFIGS_KEY).getValue(), 0, 0), 1);
+                KeyPressEvent.onKeyPress(client, KeyBindingHelper.getBoundKeyOf(YamlConfigClient.CONFIGS_KEY).getValue(), 0, 1);
             }
         });
     }

@@ -1,38 +1,20 @@
 package com.daqem.yamlconfig.client.gui.component;
 
-import com.daqem.uilib.gui.widget.ButtonWidget;
+import com.daqem.uilib.gui.widget.CustomButtonWidget;
 import com.daqem.yamlconfig.YamlConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.WidgetSprites;
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
+import net.minecraft.resources.ResourceLocation;
 
-public class CrossButtonComponent extends ButtonWidget {
+public class CrossButtonComponent extends CustomButtonWidget {
 
     private static final WidgetSprites DEFAULT_SPRITES = new WidgetSprites(
-            Identifier.withDefaultNamespace("widget/cross_button"),
+            ResourceLocation.withDefaultNamespace("widget/cross_button"),
             YamlConfig.getId("widget/cross_button_disabled"),
-            Identifier.withDefaultNamespace("widget/cross_button_highlighted")
+            ResourceLocation.withDefaultNamespace("widget/cross_button_highlighted")
     );
 
     public CrossButtonComponent(int x, int y, OnPress onPress) {
-        super(x, y, 14, 14, Component.empty(), onPress);
-    }
-
-    @Override
-    protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
-        guiGraphics.blitSprite(
-                RenderPipelines.GUI_TEXTURED,
-                DEFAULT_SPRITES.get(this.active, this.isHoveredOrFocused()),
-                this.getX(),
-                this.getY(),
-                this.getWidth(),
-                this.getHeight(),
-                ARGB.white(this.alpha)
-        );
-        this.extractDefaultLabel(guiGraphics.textRendererForWidget(this, GuiGraphicsExtractor.HoveredTextEffects.NONE));
+        super(x, y, 14, 14, Component.empty(), DEFAULT_SPRITES, onPress);
     }
 }
