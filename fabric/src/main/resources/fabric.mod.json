@@ -32,6 +32,6 @@
     "fabric": "*",
     "minecraft": ">=${minecraft_version}",
     "architectury": ">=${architectury_version}",
-    "uilib": ">=${ui_library_version}"
+    "uilib": ">=${uilib_version}"
   }
 }
