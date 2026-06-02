@@ -61,4 +61,27 @@ public class ConfigsScreen extends AbstractScreen {
 
         super.init();
     }
+
+    public void addServerConfigs(Map<String, List<IConfig>> serverConfigs) {
+        boolean changed = false;
+        for (Map.Entry<String, List<IConfig>> entry : serverConfigs.entrySet()) {
+            if (entry.getValue().isEmpty()) continue;
+
+            this.configs.computeIfAbsent(entry.getKey(), k -> new ArrayList<>());
+
+            for (IConfig config : entry.getValue()) {
+                boolean exists = this.configs.get(entry.getKey()).stream()
+                        .anyMatch(c -> c.getName().equals(config.getName()) && c.getType() == config.getType());
+
+                if (!exists) {
+                    this.configs.get(entry.getKey()).add(config);
+                    changed = true;
+                }
+            }
+        }
+
+        if (changed) {
+            this.rebuildWidgets();
+        }
+    }
 }
