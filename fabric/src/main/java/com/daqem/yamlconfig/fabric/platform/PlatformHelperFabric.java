@@ -20,7 +20,9 @@ public class PlatformHelperFabric implements IPlatformHelper {
 
     @Override
     public void sendToServer(CustomPacketPayload payload) {
-        ClientPlayNetworking.send(payload);
+        if (ClientPlayNetworking.canSend(payload.type())) {
+            ClientPlayNetworking.send(payload);
+        }
     }
 
     @Override
