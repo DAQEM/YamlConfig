@@ -23,7 +23,13 @@ public class PlatformHelperNeoForge implements IPlatformHelper {
 
     @Override
     public void sendToServer(CustomPacketPayload payload) {
-        ClientPacketDistributor.sendToServer(payload);
+        try {
+            ClientPacketDistributor.sendToServer(payload);
+        } catch (UnsupportedOperationException e) {
+            // The server doesn't have the mod installed. Ignore.
+        } catch (Exception e) {
+            // Catch any other potential networking issues
+        }
     }
 
     @Override
