@@ -17,7 +17,9 @@ public class YamlConfigExpectPlatformImpl {
     }
 
     public static void sendToServer(CustomPacketPayload payload) {
-        ClientPlayNetworking.send(payload);
+        if (ClientPlayNetworking.canSend(payload.type())) {
+            ClientPlayNetworking.send(payload);
+        }
     }
 
     public static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
