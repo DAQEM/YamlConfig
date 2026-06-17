@@ -7,6 +7,6 @@ import net.minecraft.client.Minecraft;
 public class ClientboundOpenConfigScreenPacketHandler {
 
     public static void handleClientSide(ClientboundOpenConfigScreenPacket packet) {
-        Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, packet.config));
+        Minecraft.getInstance().gui.setScreen(new ConfigScreen(Minecraft.getInstance().gui.screen(), packet.config));
     }
 }

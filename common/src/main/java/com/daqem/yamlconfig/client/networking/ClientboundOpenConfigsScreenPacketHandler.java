@@ -14,7 +14,7 @@ public class ClientboundOpenConfigsScreenPacketHandler {
 
     public static void handleClientSide(ClientboundOpenConfigsScreenPacket packet) {
         Minecraft client = Minecraft.getInstance();
-        Screen screen = client.screen;
+        Screen screen = client.gui.screen();
 
         if (screen instanceof ConfigsScreen configsScreen) {
             configsScreen.addServerConfigs(packet.configs);
@@ -27,7 +27,7 @@ public class ClientboundOpenConfigsScreenPacketHandler {
                     packet.configs.put(clientConfig.getModId(), new ArrayList<>(List.of(clientConfig)));
                 }
             }
-            client.setScreen(new ConfigsScreen(packet.configs));
+            client.gui.setScreen(new ConfigsScreen(packet.configs));
         }
     }
 }

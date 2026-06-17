@@ -96,7 +96,7 @@ public class ConfigScreen extends AbstractScreen {
     @Override
     public void onClose() {
         if (this.previousScreen != null) {
-            Minecraft.getInstance().setScreen(this.previousScreen);
+            Minecraft.getInstance().gui.setScreen(this.previousScreen);
         } else {
             super.onClose();
         }

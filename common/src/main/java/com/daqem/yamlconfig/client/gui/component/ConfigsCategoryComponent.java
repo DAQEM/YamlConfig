@@ -37,7 +37,7 @@ public class ConfigsCategoryComponent extends AbstractComponent {
                         button -> {
                             ConfigType type = config.getType();
                             switch (type) {
-                                case CLIENT -> Minecraft.getInstance().setScreen(new ConfigScreen(Minecraft.getInstance().screen, YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
+                                case CLIENT -> Minecraft.getInstance().gui.setScreen(new ConfigScreen(Minecraft.getInstance().gui.screen(), YamlConfig.CONFIG_MANAGER.getConfig(config.getModId(), config.getName())));
                                 case COMMON, SERVER -> Services.PLATFORM.sendToServer(new ServerboundOpenConfigScreenPacket(config.getModId(), config.getName()));
                             }
                         }))

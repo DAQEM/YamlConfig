@@ -32,8 +32,8 @@ public class StringMapConfigEntryComponent extends BaseMapConfigEntryComponent<I
 
         Map<String, String> map = this.editBoxWidgets.keySet().stream()
             .collect(Collectors.toMap(
-                    entry -> entry.getA().getValue(),
-                    entry -> entry.getB().getValue()
+                    entry -> entry.keyWidget().getValue(),
+                    entry -> entry.valueWidget().getValue()
             ));
 
         this.getConfigEntry().set(map);

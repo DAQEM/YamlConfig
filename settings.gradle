@@ -31,4 +31,4 @@ include("testmod-common")
 include("testmod-fabric")
 include("testmod-neoforge")
 
-rootProject.name = "YAMLConfig 26.1.1"
+rootProject.name = "YAMLConfig 26.2"

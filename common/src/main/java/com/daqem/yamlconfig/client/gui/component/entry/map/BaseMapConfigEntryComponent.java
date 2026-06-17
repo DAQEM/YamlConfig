@@ -13,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Tuple;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -22,7 +21,9 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
     private static final int WIDTH = KEY_WIDTH + GAP_WIDTH + VALUE_WIDTH;
 
-    protected final Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> editBoxWidgets;
+    protected record EditBoxPair(EditBoxWidget keyWidget, EditBoxWidget valueWidget) {}
+
+    protected final Map<EditBoxPair, CrossButtonComponent> editBoxWidgets;
     protected final ButtonWidget addEntryButton;
 
     protected final IComponentValidator validator;
@@ -33,7 +34,7 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
         this.editBoxWidgets = createEditBoxWidgets(new ArrayList<>(new LinkedHashMap<>(configEntry.get()).entrySet()));
         this.addEntryButton = createAddEntryButton();
 
-        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).toList()));
+        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(pair -> Stream.of(pair.keyWidget(), pair.valueWidget())).toList()));
         this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
         this.addWidget(this.addEntryButton);
     }
@@ -58,19 +59,19 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     }
 
     private void handleAddEntryButtonClick(Button clickedButton) {
-        Tuple<EditBoxWidget, EditBoxWidget> newTextBoxes = createEditBoxWidgets(editBoxWidgets.size());
+        EditBoxPair newTextBoxes = createEditBoxWidgets(editBoxWidgets.size());
         CrossButtonComponent newCrossButton = createCrossButtonComponent(newTextBoxes);
 
         editBoxWidgets.put(newTextBoxes, newCrossButton);
-        this.addWidget(newTextBoxes.getA());
-        this.addWidget(newTextBoxes.getB());
+        this.addWidget(newTextBoxes.keyWidget());
+        this.addWidget(newTextBoxes.valueWidget());
         this.addWidget(newCrossButton);
 
         adjustLayoutForNewEntry(clickedButton);
     }
 
-    private Tuple<EditBoxWidget, EditBoxWidget> createEditBoxWidgets(int index) {
-        return new Tuple<>(createKeyEditBoxWidget(index), createValueEditBoxWidget(index));
+    private EditBoxPair createEditBoxWidgets(int index) {
+        return new EditBoxPair(createKeyEditBoxWidget(index), createValueEditBoxWidget(index));
     }
 
     private EditBoxWidget createKeyEditBoxWidget(int index) {
@@ -88,37 +89,37 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
                 if (editBoxWidgets != null) {
                     List<String> currentKeys = editBoxWidgets.keySet().stream()
-                            .map(Tuple::getA)
-                            .filter(EditBoxWidget -> EditBoxWidget != this)
+                            .map(EditBoxPair::keyWidget)
+                            .filter(widget -> widget != this)
                             .map(EditBoxWidget::getValue)
                             .toList();
 
                     if (currentKeys.contains(input)) {
                         errors.add(ValidationErrors.duplicateKey());
                         editBoxWidgets.keySet().stream()
-                                .map(Tuple::getA)
-                                .filter(EditBoxWidget -> EditBoxWidget != this)
-                                .filter(EditBoxWidget -> EditBoxWidget.getValue().equals(input))
-                                .forEach(EditBoxWidget -> {
-                                    EditBoxWidget.setInputValidationErrors(new ArrayList<>(EditBoxWidget.getInputValidationErrors()));
-                                    if (!EditBoxWidget.getInputValidationErrors().contains(ValidationErrors.duplicateKey())) {
-                                        EditBoxWidget.getInputValidationErrors().add(ValidationErrors.duplicateKey());
+                                .map(EditBoxPair::keyWidget)
+                                .filter(widget -> widget != this)
+                                .filter(widget -> widget.getValue().equals(input))
+                                .forEach(widget -> {
+                                    widget.setInputValidationErrors(new ArrayList<>(widget.getInputValidationErrors()));
+                                    if (!widget.getInputValidationErrors().contains(ValidationErrors.duplicateKey())) {
+                                        widget.getInputValidationErrors().add(ValidationErrors.duplicateKey());
                                     }
                                 });
                     } else {
-                        for (Map.Entry<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
-                            String key = entry.getKey().getA().getValue();
+                        for (Map.Entry<EditBoxPair, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
+                            String key = entry.getKey().keyWidget().getValue();
                             List<String> duplicateKeys = editBoxWidgets.keySet().stream()
-                                    .map(Tuple::getA)
-                                    .filter(EditBoxWidget -> EditBoxWidget != this)
-                                    .filter(EditBoxWidget -> EditBoxWidget != entry.getKey().getA())
+                                    .map(EditBoxPair::keyWidget)
+                                    .filter(widget -> widget != this)
+                                    .filter(widget -> widget != entry.getKey().keyWidget())
                                     .map(EditBoxWidget::getValue)
                                     .filter(value -> value.equals(key))
                                     .toList();
 
                             if (duplicateKeys.isEmpty()) {
-                                entry.getKey().getA().setInputValidationErrors(
-                                        new ArrayList<>(entry.getKey().getA().getInputValidationErrors()
+                                entry.getKey().keyWidget().setInputValidationErrors(
+                                        new ArrayList<>(entry.getKey().keyWidget().getInputValidationErrors()
                                                 .stream()
                                                 .filter(component -> !component.equals(ValidationErrors.duplicateKey()))
                                                 .toList()
@@ -156,23 +157,23 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
         };
     }
 
-    private CrossButtonComponent createCrossButtonComponent(Tuple<EditBoxWidget, EditBoxWidget> editBoxWidgets) {
+    private CrossButtonComponent createCrossButtonComponent(EditBoxPair editBoxPair) {
         return new CrossButtonComponent(
                 WIDTH + GAP_WIDTH + 3,
-                editBoxWidgets.getA().getY() + 3,
-                button -> handleRemoveEntryButtonClick(editBoxWidgets, (CrossButtonComponent) button)
+                editBoxPair.keyWidget().getY() + 3,
+                button -> handleRemoveEntryButtonClick(editBoxPair, (CrossButtonComponent) button)
         );
     }
 
-    private void handleRemoveEntryButtonClick(Tuple<EditBoxWidget, EditBoxWidget> editBoxWidgets, CrossButtonComponent crossButtonComponent) {
-        removeEntry(editBoxWidgets, crossButtonComponent);
+    private void handleRemoveEntryButtonClick(EditBoxPair editBoxPair, CrossButtonComponent crossButtonComponent) {
+        removeEntry(editBoxPair, crossButtonComponent);
     }
 
-    private void removeEntry(Tuple<EditBoxWidget, EditBoxWidget> editBoxWidgets, CrossButtonComponent crossButtonWidget) {
+    private void removeEntry(EditBoxPair editBoxPair, CrossButtonComponent crossButtonWidget) {
         this.removeWidget(crossButtonWidget);
-        this.removeWidget(editBoxWidgets.getA());
-        this.removeWidget(editBoxWidgets.getB());
-        this.editBoxWidgets.remove(editBoxWidgets);
+        this.removeWidget(editBoxPair.keyWidget());
+        this.removeWidget(editBoxPair.valueWidget());
+        this.editBoxWidgets.remove(editBoxPair);
         adjustLayoutForRemovedEntry();
     }
 
@@ -191,10 +192,10 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
 
     private void updateComponentPositions() {
         int index = 0;
-        for (Map.Entry<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
+        for (Map.Entry<EditBoxPair, CrossButtonComponent> entry : editBoxWidgets.entrySet()) {
             int yPosition = index * (DEFAULT_HEIGHT + GAP_WIDTH) + DEFAULT_HEIGHT + GAP_WIDTH;
-            entry.getKey().getA().setY(yPosition);
-            entry.getKey().getB().setY(yPosition);
+            entry.getKey().keyWidget().setY(yPosition);
+            entry.getKey().valueWidget().setY(yPosition);
             entry.getValue().setY(yPosition + 3);
             index++;
         }
@@ -216,14 +217,14 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     @Override
     public boolean isOriginalValue() {
         List<String> currentKeyValues = this.editBoxWidgets.keySet().stream()
-                .map(Tuple::getA)
+                .map(EditBoxPair::keyWidget)
                 .map(EditBoxWidget::getValue)
                 .toList();
         List<String> originalKeyValues = this.getConfigEntry().getDefaultValue().keySet().stream()
                 .map(Object::toString)
                 .toList();
         List<String> currentValueValues = this.editBoxWidgets.keySet().stream()
-                .map(Tuple::getB)
+                .map(EditBoxPair::valueWidget)
                 .map(EditBoxWidget::getValue)
                 .toList();
         List<String> originalValueValues = this.getConfigEntry().getDefaultValue().values().stream()
@@ -236,13 +237,13 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
     public void resetValue() {
         clearEntries();
         this.editBoxWidgets.putAll(createEditBoxWidgets(new ArrayList<>(new LinkedHashMap<>(configEntry.getDefaultValue()).entrySet())));
-        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).toList()));
+        this.addWidgets(new ArrayList<>(editBoxWidgets.keySet().stream().flatMap(pair -> Stream.of(pair.keyWidget(), pair.valueWidget())).toList()));
         this.addWidgets(new ArrayList<>(editBoxWidgets.values()));
         resetLayout();
     }
 
     private void clearEntries() {
-        this.editBoxWidgets.keySet().stream().flatMap(tuple -> Stream.of(tuple.getA(), tuple.getB())).forEach(this::removeWidget);
+        this.editBoxWidgets.keySet().stream().flatMap(pair -> Stream.of(pair.keyWidget(), pair.valueWidget())).forEach(this::removeWidget);
         this.editBoxWidgets.values().forEach(this::removeWidget);
         this.editBoxWidgets.clear();
     }
@@ -253,23 +254,23 @@ public abstract class BaseMapConfigEntryComponent<C extends IMapConfigEntry<?>> 
         this.addEntryButton.setY(newHeight - DEFAULT_HEIGHT);
     }
 
-    private Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> createEditBoxWidgets(List<Map.Entry<String, ?>> configValues) {
-        Map<Tuple<EditBoxWidget, EditBoxWidget>, CrossButtonComponent> components = new LinkedHashMap<>();
+    private Map<EditBoxPair, CrossButtonComponent> createEditBoxWidgets(List<Map.Entry<String, ?>> configValues) {
+        Map<EditBoxPair, CrossButtonComponent> components = new LinkedHashMap<>();
         for (int i = 0; i < configValues.size(); i++) {
             EditBoxWidget keyTextBox = createKeyEditBoxWidget(i);
             EditBoxWidget valueTextBox = createValueEditBoxWidget(i);
             keyTextBox.setValue(configValues.get(i).getKey());
             valueTextBox.setValue(configValues.get(i).getValue().toString());
-            Tuple<EditBoxWidget, EditBoxWidget> tuple = new Tuple<>(keyTextBox, valueTextBox);
-            CrossButtonComponent crossButton = createCrossButtonComponent(tuple);
-            components.put(tuple, crossButton);
+            EditBoxPair pair = new EditBoxPair(keyTextBox, valueTextBox);
+            CrossButtonComponent crossButton = createCrossButtonComponent(pair);
+            components.put(pair, crossButton);
         }
         return components;
     }
 
     public boolean hasInputValidationErrors() {
         return this.editBoxWidgets.keySet().stream()
-                .flatMap(key -> Stream.of(key.getA(), key.getB()))
+                .flatMap(pair -> Stream.of(pair.keyWidget(), pair.valueWidget()))
                 .anyMatch(IInputValidatable::hasInputValidationErrors);
     }
 

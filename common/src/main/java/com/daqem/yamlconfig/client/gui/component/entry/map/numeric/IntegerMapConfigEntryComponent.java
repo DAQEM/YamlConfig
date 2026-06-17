@@ -38,8 +38,8 @@ public class IntegerMapConfigEntryComponent extends BaseMapConfigEntryComponent<
 
         Map<String, Integer> map = this.editBoxWidgets.keySet().stream()
                 .collect(Collectors.toMap(
-                        entry -> entry.getA().getValue(),
-                        entry -> Integer.parseInt(entry.getB().getValue())
+                        entry -> entry.keyWidget().getValue(),
+                        entry -> Integer.parseInt(entry.valueWidget().getValue())
                 ));
 
         this.getConfigEntry().set(map);

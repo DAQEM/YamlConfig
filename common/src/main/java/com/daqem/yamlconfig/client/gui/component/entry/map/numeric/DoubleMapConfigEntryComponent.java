@@ -38,8 +38,8 @@ public class DoubleMapConfigEntryComponent extends BaseMapConfigEntryComponent<I
 
         Map<String, Double> map = this.editBoxWidgets.keySet().stream()
                 .collect(Collectors.toMap(
-                        entry -> entry.getA().getValue(),
-                        entry -> Double.parseDouble(entry.getB().getValue())
+                        entry -> entry.keyWidget().getValue(),
+                        entry -> Double.parseDouble(entry.valueWidget().getValue())
                 ));
 
         this.getConfigEntry().set(map);

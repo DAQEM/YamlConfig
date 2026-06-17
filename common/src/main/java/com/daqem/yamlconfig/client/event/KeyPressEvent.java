@@ -19,7 +19,7 @@ import java.util.Map;
 public class KeyPressEvent {
 
     public static void onKeyPress(Minecraft client, KeyEvent event, int action) {
-        Screen screen = client.screen;
+        Screen screen = client.gui.screen();
         if (action == 1 && YamlConfigClient.CONFIGS_KEY.matches(event)) {
             if (screen instanceof ConfigsScreen configsScreen && !(configsScreen.getFocused() instanceof IInputValidatable)) {
                 screen.onClose();
@@ -28,7 +28,7 @@ public class KeyPressEvent {
                 for (IConfig clientConfig : YamlConfig.CONFIG_MANAGER.getAllClientConfigs()) {
                     clientConfigsMap.computeIfAbsent(clientConfig.getModId(), k -> new ArrayList<>()).add(clientConfig);
                 }
-                client.setScreen(new ConfigsScreen(clientConfigsMap));
+                client.gui.setScreen(new ConfigsScreen(clientConfigsMap));
 
                 Services.PLATFORM.sendToServer(new ServerboundOpenConfigsScreenPacket());
             }
