@@ -11,7 +11,6 @@ import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,7 +146,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.get());
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -159,7 +158,7 @@ public class StringConfigEntry extends BaseConfigEntry<String> implements IStrin
                     buf.readInt()
             );
             configEntry.set(buf.readUtf());
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

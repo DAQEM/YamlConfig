@@ -40,14 +40,14 @@ public class TestConfigEntrySerializer implements IConfigEntrySerializer<TestCon
         buf.writeUtf(configEntry.getKey());
         buf.writeUtf(configEntry.getDefaultValue());
         buf.writeUtf(configEntry.get());
-        buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+        configEntry.getComments().toNetwork(buf);
     }
 
     @Override
     public TestConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
         TestConfigEntry entry = new TestConfigEntry(buf.readUtf(), buf.readUtf());
         entry.set(buf.readUtf());
-        buf.readList(FriendlyByteBuf::readUtf).forEach(entry.getComments()::addComment);
+        entry.getComments().fromNetwork(buf);
         return entry;
     }
 }

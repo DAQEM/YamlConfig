@@ -9,12 +9,7 @@ import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 public class LongConfigEntry extends BaseNumericConfigEntry<Long> implements ILongConfigEntry {
 
@@ -71,7 +66,7 @@ public class LongConfigEntry extends BaseNumericConfigEntry<Long> implements ILo
             buf.writeLong(configEntry.getMinValue());
             buf.writeLong(configEntry.getMaxValue());
             buf.writeLong(configEntry.get());
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -83,7 +78,7 @@ public class LongConfigEntry extends BaseNumericConfigEntry<Long> implements ILo
                     buf.readLong()
             );
             configEntry.set(buf.readLong());
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

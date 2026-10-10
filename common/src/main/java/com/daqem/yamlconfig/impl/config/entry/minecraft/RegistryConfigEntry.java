@@ -15,14 +15,9 @@ import com.daqem.yamlconfig.impl.node.ConfigValueNode;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -35,7 +30,6 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
         super(key, defaultValue);
         this.registry = registry;
     }
-
 
     @Override
     public void validate(T value) throws ConfigEntryValidationException {
@@ -112,7 +106,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             buf.writeResourceKey(configEntry.getRegistry().key());
             buf.writeIdentifier(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.get())));
             buf.writeIdentifier(Objects.requireNonNull(configEntry.getRegistry().getKey(configEntry.getDefaultValue())));
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -125,7 +119,7 @@ public class RegistryConfigEntry<T> extends BaseConfigEntry<T> implements IRegis
             Optional<Holder.Reference<Registry<Object>>> reference = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(registryKey);
             RegistryConfigEntry<Object> configEntry = new RegistryConfigEntry<>(key, reference.map(registry -> registry.value().get(defaultIdentifier).get().value()).orElse(null), reference.map(Holder.Reference::value).orElse(null));
             configEntry.set(reference.map(registry -> registry.value().get(resourceLocation).get().value()).orElse(null));
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return (IRegistryConfigEntry<T>) configEntry;
         }
     }

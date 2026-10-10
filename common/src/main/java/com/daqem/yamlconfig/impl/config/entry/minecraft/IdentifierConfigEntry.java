@@ -12,7 +12,6 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.BaseConfigEntry;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 
@@ -97,7 +96,7 @@ public class IdentifierConfigEntry extends BaseConfigEntry<Identifier> implement
             buf.writeIdentifier(configEntry.get());
             buf.writeIdentifier(configEntry.getDefaultValue());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -108,7 +107,7 @@ public class IdentifierConfigEntry extends BaseConfigEntry<Identifier> implement
             String pattern = buf.readUtf();
             IdentifierConfigEntry configEntry = new IdentifierConfigEntry(key, defaultValue, pattern.isEmpty() ? null : pattern);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

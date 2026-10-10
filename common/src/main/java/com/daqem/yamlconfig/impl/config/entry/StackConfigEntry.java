@@ -8,7 +8,6 @@ import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.registry.YamlConfigRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import java.util.*;
@@ -69,7 +68,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
                 ((IConfigEntry<Object>) entry.getValue()).getType().getSerializer()
                         .toNetwork(buf, (IConfigEntry<Object>) entry.getValue());
             }
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @SuppressWarnings("DuplicatedCode")
@@ -98,7 +97,7 @@ public class StackConfigEntry extends BaseConfigEntry<LinkedHashMap<String, ICon
 
             StackConfigEntry configEntry = new StackConfigEntry(key, defaultValue);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

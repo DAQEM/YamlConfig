@@ -11,8 +11,10 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigListNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +40,9 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleListConfigEntry, List<Double>> {
+
+        private static final StreamCodec<ByteBuf, List<Double>> LIST_CODEC =
+                ByteBufCodecs.DOUBLE.apply(ByteBufCodecs.list());
 
         @Override
         public void toNode(IDoubleListConfigEntry configEntry, IMapNode parentMap) {
@@ -65,38 +70,38 @@ public class DoubleListConfigEntry extends BaseNumericListConfigEntry<Double> im
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IDoubleListConfigEntry configEntry, List<Double> value) {
-            buf.writeCollection(value, FriendlyByteBuf::writeDouble);
+            LIST_CODEC.encode(buf, value);
         }
 
         @Override
         public List<Double> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readList(FriendlyByteBuf::readDouble);
+            return LIST_CODEC.decode(buf);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleListConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeDouble);
-            buf.writeCollection(configEntry.getDefaultValue(), FriendlyByteBuf::writeDouble);
+            LIST_CODEC.encode(buf, configEntry.get());
+            LIST_CODEC.encode(buf, configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
         public IDoubleListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
-            List<Double> value = buf.readList(FriendlyByteBuf::readDouble);
-            List<Double> defaultValue = buf.readList(FriendlyByteBuf::readDouble);
+            List<Double> value = LIST_CODEC.decode(buf);
+            List<Double> defaultValue = LIST_CODEC.decode(buf);
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             double minValue = buf.readDouble();
             double maxValue = buf.readDouble();
             DoubleListConfigEntry configEntry = new DoubleListConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

@@ -34,7 +34,7 @@ public class ServerboundOpenConfigsScreenPacket implements CustomPacketPayload {
     }
 
     public void handleServerSide(ServerPlayer serverPlayer) {
-        Map<String, List<IConfig>> configMap = new HashMap<>();
+        HashMap<String, List<IConfig>> configMap = new HashMap<>();
 
         if (serverPlayer.permissions().hasPermission(new Permission.HasCommandLevel(PermissionLevel.byId(2)))) {
             configMap.putAll(YamlConfig.CONFIG_MANAGER.getAllServerAndCommonConfigs().stream()

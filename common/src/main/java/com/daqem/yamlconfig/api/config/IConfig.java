@@ -1,17 +1,27 @@
 package com.daqem.yamlconfig.api.config;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import com.daqem.yamlconfig.api.config.entry.IConfigEntry;
 import com.daqem.yamlconfig.api.config.entry.IStackConfigEntry;
 
+import com.daqem.yamlconfig.impl.config.BaseConfig;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 /**
  * Represents a configuration file.
  */
 public interface IConfig {
+
+    StreamCodec<RegistryFriendlyByteBuf, IConfig> CONFIG_CODEC =
+            BaseConfig.STREAM_CODEC.map(c -> c, c -> (BaseConfig) c);
+    StreamCodec<RegistryFriendlyByteBuf, List<IConfig>> CONFIG_LIST_CODEC =
+            CONFIG_CODEC.apply(ByteBufCodecs.list());
 
     /**
      * Loads the configuration from the file system.

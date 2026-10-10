@@ -16,7 +16,7 @@ import net.minecraft.client.KeyMapping;
 
 public class YamlConfigClient {
     public static final KeyMapping.Category YAML_CONFIG_CATEGORY = new KeyMapping.Category(YamlConfig.getId("category"));
-    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYSYM, InputConstants.KEY_F12, YAML_CONFIG_CATEGORY);
+    public static final KeyMapping CONFIGS_KEY = new KeyMapping("key.yamlconfig.configs", InputConstants.Type.KEYBOARD, InputConstants.KEY_F12, YAML_CONFIG_CATEGORY);
 
     public static void init() {
         Services.PLATFORM.registerKeyBinding(CONFIGS_KEY);

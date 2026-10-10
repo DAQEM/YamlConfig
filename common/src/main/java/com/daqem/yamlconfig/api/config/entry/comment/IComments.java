@@ -1,5 +1,9 @@
 package com.daqem.yamlconfig.api.config.entry.comment;
 
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,17 @@ import java.util.List;
  * Represents comments associated with a configuration entry.
  */
 public interface IComments {
+
+    StreamCodec<ByteBuf, List<String>> COMMENTS_CODEC =
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list());
+
+    default void toNetwork(ByteBuf buf) {
+        COMMENTS_CODEC.encode(buf, getComments(false));
+    }
+
+    default void fromNetwork(ByteBuf buf) {
+        COMMENTS_CODEC.decode(buf).forEach(this::addComment);
+    }
 
     /**
      * Gets the list of comments.

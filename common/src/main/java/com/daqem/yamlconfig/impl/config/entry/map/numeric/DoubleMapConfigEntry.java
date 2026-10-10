@@ -10,18 +10,13 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigMapNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.MappingNode;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> implements IDoubleMapConfigEntry {
 
@@ -44,6 +39,9 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
     }
 
     public static class Serializer implements IConfigEntrySerializer<IDoubleMapConfigEntry, Map<String, Double>> {
+
+        private static final StreamCodec<ByteBuf, Map<String, Double>> MAP_CODEC =
+                ByteBufCodecs.map(LinkedHashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.DOUBLE);
 
         @Override
         public void toNode(IDoubleMapConfigEntry configEntry, IMapNode parentMap) {
@@ -71,38 +69,38 @@ public class DoubleMapConfigEntry extends BaseNumericMapConfigEntry<Double> impl
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry, Map<String, Double> value) {
-            buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
+            MAP_CODEC.encode(buf, value);
         }
 
         @Override
         public Map<String, Double> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble);
+            return MAP_CODEC.decode(buf);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IDoubleMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
+            MAP_CODEC.encode(buf, configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeDouble(configEntry.getMinValue());
             buf.writeDouble(configEntry.getMaxValue());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeDouble);
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            MAP_CODEC.encode(buf, configEntry.get());
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
         public IDoubleMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
-            DoubleMapConfigEntry configEntry = new DoubleMapConfigEntry(
-                    buf.readUtf(),
-                    buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble),
-                    buf.readInt(),
-                    buf.readInt(),
-                    buf.readDouble(),
-                    buf.readDouble()
-            );
-            configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readDouble));
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            String key = buf.readUtf();
+            Map<String, Double> defaultValue = MAP_CODEC.decode(buf);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            double minValue = buf.readDouble();
+            double maxValue = buf.readDouble();
+            Map<String, Double> value = MAP_CODEC.decode(buf);
+            DoubleMapConfigEntry configEntry = new DoubleMapConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
+            configEntry.set(value);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

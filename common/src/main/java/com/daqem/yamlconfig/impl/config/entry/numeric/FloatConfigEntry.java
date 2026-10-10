@@ -9,12 +9,7 @@ import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements IFloatConfigEntry {
 
@@ -71,7 +66,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
             buf.writeFloat(configEntry.getMinValue());
             buf.writeFloat(configEntry.getMaxValue());
             buf.writeFloat(configEntry.get());
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -83,7 +78,7 @@ public class FloatConfigEntry extends BaseNumericConfigEntry<Float> implements I
                     buf.readFloat()
             );
             configEntry.set(buf.readFloat());
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

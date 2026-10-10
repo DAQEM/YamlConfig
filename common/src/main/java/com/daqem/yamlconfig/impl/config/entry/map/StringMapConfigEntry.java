@@ -12,8 +12,11 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigMapNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -94,6 +97,11 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
 
     public static class Serializer implements IConfigEntrySerializer<IStringMapConfigEntry, Map<String, String>> {
 
+        private static final StreamCodec<ByteBuf, Map<String, String>> MAP_CODEC =
+                ByteBufCodecs.map(LinkedHashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.STRING_UTF8);
+        private static final StreamCodec<ByteBuf, List<String>> STRING_LIST_CODEC =
+                ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list());
+
         @Override
         public void toNode(IStringMapConfigEntry configEntry, IMapNode parentMap) {
             ConfigMapNode mapNode = new ConfigMapNode();
@@ -120,38 +128,38 @@ public class StringMapConfigEntry extends BaseMapConfigEntry<String> implements 
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry, Map<String, String> value) {
-            buf.writeMap(value, FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
+            MAP_CODEC.encode(buf, value);
         }
 
         @Override
         public Map<String, String> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
+            return MAP_CODEC.decode(buf);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IStringMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
-            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, (b, v) -> b.writeUtf(v));
+            MAP_CODEC.encode(buf, configEntry.get());
+            MAP_CODEC.encode(buf, configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
-            buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            STRING_LIST_CODEC.encode(buf, configEntry.getValidValues());
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
         public IStringMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
-            Map<String, String> value = buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
-            Map<String, String> defaultValue = buf.readMap(FriendlyByteBuf::readUtf, b -> b.readUtf());
+            Map<String, String> value = MAP_CODEC.decode(buf);
+            Map<String, String> defaultValue = MAP_CODEC.decode(buf);
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             String pattern = buf.readUtf();
-            List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
+            List<String> validValues = STRING_LIST_CODEC.decode(buf);
             StringMapConfigEntry configEntry = new StringMapConfigEntry(key, defaultValue, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

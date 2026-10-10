@@ -11,12 +11,7 @@ import com.daqem.yamlconfig.api.node.IMapNode;
 import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.NodeTuple;
-import org.snakeyaml.engine.v2.nodes.ScalarNode;
-import org.snakeyaml.engine.v2.nodes.Tag;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -114,7 +109,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
             buf.writeLong(configEntry.getDefaultValue().toEpochSecond(ZoneOffset.UTC));
             buf.writeLong(configEntry.getMinDateTime() != null ? configEntry.getMinDateTime().toEpochSecond(ZoneOffset.UTC) : Long.MIN_VALUE);
             buf.writeLong(configEntry.getMaxDateTime() != null ? configEntry.getMaxDateTime().toEpochSecond(ZoneOffset.UTC) : Long.MAX_VALUE);
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
@@ -126,7 +121,7 @@ public class DateTimeConfigEntry extends BaseConfigEntry<LocalDateTime> implemen
             LocalDateTime maxDateTime = buf.readLong() != Long.MAX_VALUE ? LocalDateTime.ofEpochSecond(buf.readLong(), 0, ZoneOffset.UTC) : null;
             DateTimeConfigEntry configEntry = new DateTimeConfigEntry(key, defaultValue, minDateTime, maxDateTime);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

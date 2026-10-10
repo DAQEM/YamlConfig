@@ -3,38 +3,25 @@ package com.daqem.yamlconfig.networking.s2c;
 import com.daqem.yamlconfig.api.config.IConfig;
 import com.daqem.yamlconfig.impl.config.BaseConfig;
 import com.daqem.yamlconfig.networking.YamlConfigNetworking;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ClientboundOpenConfigsScreenPacket implements CustomPacketPayload {
 
-    public final Map<String, List<IConfig>> configs;
+    public final HashMap<String, List<IConfig>> configs;
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundOpenConfigsScreenPacket> STREAM_CODEC = StreamCodec.of(
-            (buf, packet) ->
-                    buf.writeMap(packet.configs,
-                            FriendlyByteBuf::writeUtf,
-                            (buf1, configs) ->
-                                    buf1.writeCollection(configs, (buf2, config) ->
-                                            BaseConfig.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf2, (BaseConfig) config))
-                    ),
-            buf ->
-                    new ClientboundOpenConfigsScreenPacket(
-                            buf.readMap(
-                                    FriendlyByteBuf::readUtf,
-                                    buf1 -> buf1.readList(buf2 ->
-                                            BaseConfig.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf2))
-                            )
-                    )
-    );
+    public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundOpenConfigsScreenPacket> STREAM_CODEC =
+            ByteBufCodecs.map(HashMap::new, ByteBufCodecs.STRING_UTF8, IConfig.CONFIG_LIST_CODEC)
+                    .map(ClientboundOpenConfigsScreenPacket::new, packet -> packet.configs);
 
-    public ClientboundOpenConfigsScreenPacket(Map<String, List<IConfig>> configs) {
+    public ClientboundOpenConfigsScreenPacket(HashMap<String, List<IConfig>> configs) {
         this.configs = configs;
     }
 

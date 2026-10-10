@@ -13,12 +13,11 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigListNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
-import org.snakeyaml.engine.v2.common.FlowStyle;
-import org.snakeyaml.engine.v2.common.ScalarStyle;
-import org.snakeyaml.engine.v2.nodes.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,6 +109,9 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
 
     public static class Serializer implements IConfigEntrySerializer<IStringListConfigEntry, List<String>> {
 
+        private static final StreamCodec<ByteBuf, List<String>> LIST_CODEC =
+                ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list());
+
         @Override
         public void toNode(IStringListConfigEntry configEntry, IMapNode parentMap) {
             ConfigListNode listNode = new ConfigListNode();
@@ -136,38 +138,38 @@ public class StringListConfigEntry extends BaseListConfigEntry<String> implement
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IStringListConfigEntry configEntry, List<String> value) {
-            buf.writeCollection(value, FriendlyByteBuf::writeUtf);
+            LIST_CODEC.encode(buf, value);
         }
 
         @Override
         public List<String> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readList(FriendlyByteBuf::readUtf);
+            return LIST_CODEC.decode(buf);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IStringListConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeCollection(configEntry.get(), FriendlyByteBuf::writeUtf);
-            buf.writeCollection(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf);
+            LIST_CODEC.encode(buf, configEntry.get());
+            LIST_CODEC.encode(buf, configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeUtf(configEntry.getPattern() == null ? "" : configEntry.getPattern());
-            buf.writeCollection(configEntry.getValidValues(), FriendlyByteBuf::writeUtf);
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            LIST_CODEC.encode(buf, configEntry.getValidValues());
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
         public IStringListConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
             String key = buf.readUtf();
-            List<String> value = buf.readList(FriendlyByteBuf::readUtf);
-            List<String> defaultValue = buf.readList(FriendlyByteBuf::readUtf);
+            List<String> value = LIST_CODEC.decode(buf);
+            List<String> defaultValue = LIST_CODEC.decode(buf);
             int minLength = buf.readInt();
             int maxLength = buf.readInt();
             String pattern = buf.readUtf();
-            List<String> validValues = buf.readList(FriendlyByteBuf::readUtf);
+            List<String> validValues = LIST_CODEC.decode(buf);
             StringListConfigEntry configEntry = new StringListConfigEntry(key, defaultValue, minLength, maxLength, pattern.isEmpty() ? null : pattern, validValues);
             configEntry.set(value);
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }

@@ -10,8 +10,10 @@ import com.daqem.yamlconfig.api.node.IValueNode;
 import com.daqem.yamlconfig.impl.config.entry.type.ConfigEntryTypes;
 import com.daqem.yamlconfig.impl.node.ConfigMapNode;
 import com.daqem.yamlconfig.impl.node.ConfigValueNode;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,6 +39,9 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
     }
 
     public static class Serializer implements IConfigEntrySerializer<IIntegerMapConfigEntry, Map<String, Integer>> {
+
+        private static final StreamCodec<ByteBuf, Map<String, Integer>> MAP_CODEC =
+                ByteBufCodecs.map(LinkedHashMap::new, ByteBufCodecs.STRING_UTF8, ByteBufCodecs.INT);
 
         @Override
         public void toNode(IIntegerMapConfigEntry configEntry, IMapNode parentMap) {
@@ -64,38 +69,38 @@ public class IntegerMapConfigEntry extends BaseNumericMapConfigEntry<Integer> im
 
         @Override
         public void valueToNetwork(RegistryFriendlyByteBuf buf, IIntegerMapConfigEntry configEntry, Map<String, Integer> value) {
-            buf.writeMap(value, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
+            MAP_CODEC.encode(buf, value);
         }
 
         @Override
         public Map<String, Integer> valueFromNetwork(RegistryFriendlyByteBuf buf) {
-            return buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readInt);
+            return MAP_CODEC.decode(buf);
         }
 
         @Override
         public void toNetwork(RegistryFriendlyByteBuf buf, IIntegerMapConfigEntry configEntry) {
             buf.writeUtf(configEntry.getKey());
-            buf.writeMap(configEntry.getDefaultValue(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
+            MAP_CODEC.encode(buf, configEntry.getDefaultValue());
             buf.writeInt(configEntry.getMinLength());
             buf.writeInt(configEntry.getMaxLength());
             buf.writeInt(configEntry.getMinValue());
             buf.writeInt(configEntry.getMaxValue());
-            buf.writeMap(configEntry.get(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeInt);
-            buf.writeCollection(configEntry.getComments().getComments(false), FriendlyByteBuf::writeUtf);
+            MAP_CODEC.encode(buf, configEntry.get());
+            configEntry.getComments().toNetwork(buf);
         }
 
         @Override
         public IIntegerMapConfigEntry fromNetwork(RegistryFriendlyByteBuf buf) {
-            IntegerMapConfigEntry configEntry = new IntegerMapConfigEntry(
-                    buf.readUtf(),
-                    buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readInt),
-                    buf.readInt(),
-                    buf.readInt(),
-                    buf.readInt(),
-                    buf.readInt()
-            );
-            configEntry.set(buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readInt));
-            buf.readList(FriendlyByteBuf::readUtf).forEach(configEntry.getComments()::addComment);
+            String key = buf.readUtf();
+            Map<String, Integer> defaultValue = MAP_CODEC.decode(buf);
+            int minLength = buf.readInt();
+            int maxLength = buf.readInt();
+            int minValue = buf.readInt();
+            int maxValue = buf.readInt();
+            Map<String, Integer> value = MAP_CODEC.decode(buf);
+            IntegerMapConfigEntry configEntry = new IntegerMapConfigEntry(key, defaultValue, minLength, maxLength, minValue, maxValue);
+            configEntry.set(value);
+            configEntry.getComments().fromNetwork(buf);
             return configEntry;
         }
     }
